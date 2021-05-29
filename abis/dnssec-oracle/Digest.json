@@ -1,0 +1,386 @@
+{
+  "contractName": "Digest",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "hash",
+          "type": "bytes"
+        }
+      ],
+      "name": "verify",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"hash\",\"type\":\"bytes\"}],\"name\":\"verify\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"An interface for contracts implementing a DNSSEC digest.\",\"kind\":\"dev\",\"methods\":{\"verify(bytes,bytes)\":{\"details\":\"Verifies a cryptographic hash.\",\"params\":{\"data\":\"The data to hash.\",\"hash\":\"The hash to compare to.\"},\"returns\":{\"_0\":\"True iff the hashed data matches the provided hash value.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol\":\"Digest\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol\":{\"keccak256\":\"0x10a3ed9231c6a7e16c5e673f8449f205c33df2a2cc4c09db0abac046abe6231e\",\"urls\":[\"bzz-raw://589c2266b6124c93c8410059d9f5902ca95d23a5e04961aa0c7489fcdc63e57c\",\"dweb:/ipfs/QmPKkuWhG6TtQXeEG5nTu8WukjeojqSMANqBgCFMf8fdnC\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.7.4;\n\n/**\n* @dev An interface for contracts implementing a DNSSEC digest.\n*/\ninterface Digest {\n    /**\n    * @dev Verifies a cryptographic hash.\n    * @param data The data to hash.\n    * @param hash The hash to compare to.\n    * @return True iff the hashed data matches the provided hash value.\n    */\n    function verify(bytes calldata data, bytes calldata hash) external virtual pure returns (bool);\n}\n",
+  "sourcePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol",
+  "ast": {
+    "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol",
+    "exportedSymbols": {
+      "Digest": [
+        5741
+      ]
+    },
+    "id": 5742,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5729,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".4"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:14"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 5730,
+          "nodeType": "StructuredDocumentation",
+          "src": "25:70:14",
+          "text": " @dev An interface for contracts implementing a DNSSEC digest."
+        },
+        "fullyImplemented": false,
+        "id": 5741,
+        "linearizedBaseContracts": [
+          5741
+        ],
+        "name": "Digest",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 5731,
+              "nodeType": "StructuredDocumentation",
+              "src": "119:202:14",
+              "text": " @dev Verifies a cryptographic hash.\n @param data The data to hash.\n @param hash The hash to compare to.\n @return True iff the hashed data matches the provided hash value."
+            },
+            "functionSelector": "f7e83aee",
+            "id": 5740,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "verify",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5736,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5733,
+                  "mutability": "mutable",
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5740,
+                  "src": "342:19:14",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5732,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "342:5:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5735,
+                  "mutability": "mutable",
+                  "name": "hash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5740,
+                  "src": "363:19:14",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5734,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "363:5:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "341:42:14"
+            },
+            "returnParameters": {
+              "id": 5739,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5738,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5740,
+                  "src": "415:4:14",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5737,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "415:4:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "414:6:14"
+            },
+            "scope": 5741,
+            "src": "326:95:14",
+            "stateMutability": "pure",
+            "virtual": true,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5742,
+        "src": "96:327:14"
+      }
+    ],
+    "src": "0:424:14"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol",
+    "exportedSymbols": {
+      "Digest": [
+        5741
+      ]
+    },
+    "id": 5742,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5729,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".4"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:14"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 5730,
+          "nodeType": "StructuredDocumentation",
+          "src": "25:70:14",
+          "text": " @dev An interface for contracts implementing a DNSSEC digest."
+        },
+        "fullyImplemented": false,
+        "id": 5741,
+        "linearizedBaseContracts": [
+          5741
+        ],
+        "name": "Digest",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 5731,
+              "nodeType": "StructuredDocumentation",
+              "src": "119:202:14",
+              "text": " @dev Verifies a cryptographic hash.\n @param data The data to hash.\n @param hash The hash to compare to.\n @return True iff the hashed data matches the provided hash value."
+            },
+            "functionSelector": "f7e83aee",
+            "id": 5740,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "verify",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5736,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5733,
+                  "mutability": "mutable",
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5740,
+                  "src": "342:19:14",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5732,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "342:5:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5735,
+                  "mutability": "mutable",
+                  "name": "hash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5740,
+                  "src": "363:19:14",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5734,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "363:5:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "341:42:14"
+            },
+            "returnParameters": {
+              "id": 5739,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5738,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5740,
+                  "src": "415:4:14",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5737,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "415:4:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "414:6:14"
+            },
+            "scope": 5741,
+            "src": "326:95:14",
+            "stateMutability": "pure",
+            "virtual": true,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5742,
+        "src": "96:327:14"
+      }
+    ],
+    "src": "0:424:14"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.7.4+commit.3f05b770.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.2",
+  "updatedAt": "2021-01-20T20:53:41.264Z",
+  "devdoc": {
+    "details": "An interface for contracts implementing a DNSSEC digest.",
+    "kind": "dev",
+    "methods": {
+      "verify(bytes,bytes)": {
+        "details": "Verifies a cryptographic hash.",
+        "params": {
+          "data": "The data to hash.",
+          "hash": "The hash to compare to."
+        },
+        "returns": {
+          "_0": "True iff the hashed data matches the provided hash value."
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

@@ -1,0 +1,1062 @@
+{
+  "contractName": "SHA1Digest",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "hash",
+          "type": "bytes"
+        }
+      ],
+      "name": "verify",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"hash\",\"type\":\"bytes\"}],\"name\":\"verify\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Implements the DNSSEC SHA1 digest.\",\"kind\":\"dev\",\"methods\":{\"verify(bytes,bytes)\":{\"details\":\"Verifies a cryptographic hash.\",\"params\":{\"data\":\"The data to hash.\",\"hash\":\"The hash to compare to.\"},\"returns\":{\"_0\":\"True iff the hashed data matches the provided hash value.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/arachnid/Dropbox/projects/enssec/contracts/digests/SHA1Digest.sol\":\"SHA1Digest\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/arachnid/Dropbox/projects/enssec/contracts/BytesUtils.sol\":{\"keccak256\":\"0x17b0123a981825ac9445ec82c8e20288321b27139518ba1f81c4cbd06f1312ab\",\"urls\":[\"bzz-raw://fe03e00240c645751873f38f56cc3db12d19a82538a0f0e9648ccfc23e8a715d\",\"dweb:/ipfs/QmbT7Q7GUgkZFY5gA4RxhWg3anPKiH9EZoM6HWBKDkK7dp\"]},\"/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol\":{\"keccak256\":\"0x10a3ed9231c6a7e16c5e673f8449f205c33df2a2cc4c09db0abac046abe6231e\",\"urls\":[\"bzz-raw://589c2266b6124c93c8410059d9f5902ca95d23a5e04961aa0c7489fcdc63e57c\",\"dweb:/ipfs/QmPKkuWhG6TtQXeEG5nTu8WukjeojqSMANqBgCFMf8fdnC\"]},\"/home/arachnid/Dropbox/projects/enssec/contracts/digests/SHA1Digest.sol\":{\"keccak256\":\"0xc4c644dfb2cbcecf31d8425395dd4fdf01c42d947a339415a1effd0ed9a79304\",\"urls\":[\"bzz-raw://ba90c056544b639b9da3cfc48d6fdf6af7be86cb2898fcc2e4824220bdd08b9f\",\"dweb:/ipfs/Qmec6CHBG5YJgU8WLBvedNSRmWKimiQ4WZspHPU5ErGwJy\"]},\"@ensdomains/solsha1/contracts/SHA1.sol\":{\"keccak256\":\"0xf400ebc75f77539e256b05773b840a1908b7c79ac39863ea8e80a3408c90a30a\",\"urls\":[\"bzz-raw://7b2ff0c33b4215ce9eb2343ae83b8ed15a2d8b76c0d91c864ed691b15ad5a4b9\",\"dweb:/ipfs/Qme6LYwQDT1zcKzNjaFZssUKrhMNZoT1qPn4sw5ZckGp7c\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610787806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063f7e83aee14610030575b600080fd5b6100fc6004803603604081101561004657600080fd5b810190808035906020019064010000000081111561006357600080fd5b82018360208201111561007557600080fd5b8035906020019184600183028401116401000000008311171561009757600080fd5b9091929391929390803590602001906401000000008111156100b857600080fd5b8201836020820111156100ca57600080fd5b803590602001918460018302840111640100000000831117156100ec57600080fd5b9091929391929390505050610114565b60405180821515815260200191505060405180910390f35b60008061016f600085858080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050506101ef90919063ffffffff16565b6bffffffffffffffffffffffff1916905060006101cf87878080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f82011690508083019250505050505050610233565b9050806bffffffffffffffffffffffff1916821492505050949350505050565b6000825160148301111561020257600080fd5b7fffffffffffffffffffffffffffffffffffffffff0000000000000000000000008260208501015116905092915050565b60006040518251602084019350604067ffffffffffffffc0600183011601600982820310600181146102645761026b565b6040820191505b50776745230100efcdab890098badcfe001032547600c3d2e1f06102c3565b6000838310156102bc57828201519050828403935060208410156102bb576001846020036101000a03198082169150505b5b9392505050565b60005b828110156106d1576102d984828961028a565b85526102e984602083018961028a565b6020860152604081850310600181146103015761030a565b60808286038701535b506040830381146001811461031e5761032e565b6008850260208701511760208701525b5060405b60808110156103ba5760408103860151603882038701511860208203870151600c830388015118187c010000000100000001000000010000000100000001000000010000000163800000008204167ffffffffefffffffefffffffefffffffefffffffefffffffefffffffefffffffe6002830216179050808288015250600c81019050610332565b5060805b61014081101561044757608081038601516070820387015118604082038701516018830388015118187c030000000300000003000000030000000300000003000000030000000363400000008204167ffffffffcfffffffcfffffffcfffffffcfffffffcfffffffcfffffffcfffffffc60048302161790508082880152506018810190506103be565b508160008060005b60508110156106a357601481046000811461048157600181146104cb5760028114610508576003811461056b576105a4565b6501000000000085046a01000000000000000000008604189350836f01000000000000000000000000000000860416935083650100000000008604189350635a82799992506105a4565b6a010000000000000000000085046f01000000000000000000000000000000860418935083650100000000008604189350636ed9eba192506105a4565b6a010000000000000000000085046f01000000000000000000000000000000860417935083650100000000008604169350836a010000000000000000000086046f01000000000000000000000000000000870416179350638f1bbcdc92506105a4565b6a010000000000000000000085046f0100000000000000000000000000000086041893508365010000000000860418935063ca62c1d692505b50601f770800000000000000000000000000000000000000000000008504168063ffffffe073080000000000000000000000000000000000000087041617905080840190508063ffffffff86160190508083019050807c0100000000000000000000000000000000000000000000000000000000600484028c0151040190507401000000000000000000000000000000000000000081026501000000000086041794506a0100000000000000000000633fffffff6a040000000000000000000087041663c00000006604000000000000880416170277ffffffff00ffffffff000000000000ffffffff00ffffffff86161794505060018101905061044f565b5077ffffffff00ffffffff00ffffffff00ffffffff00ffffffff8386011694505050506040810190506102c6565b506c0100000000000000000000000063ffffffff821667ffffffff000000006101008404166bffffffff0000000000000000620100008504166fffffffff000000000000000000000000630100000086041673ffffffff00000000000000000000000000000000640100000000870416171717170294505050505091905056fea264697066735822122014eb0bfc67186b5e794eb7a585fe5f3603ce7c5f7ef904ed8512fc090d34c40264736f6c63430007040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063f7e83aee14610030575b600080fd5b6100fc6004803603604081101561004657600080fd5b810190808035906020019064010000000081111561006357600080fd5b82018360208201111561007557600080fd5b8035906020019184600183028401116401000000008311171561009757600080fd5b9091929391929390803590602001906401000000008111156100b857600080fd5b8201836020820111156100ca57600080fd5b803590602001918460018302840111640100000000831117156100ec57600080fd5b9091929391929390505050610114565b60405180821515815260200191505060405180910390f35b60008061016f600085858080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050506101ef90919063ffffffff16565b6bffffffffffffffffffffffff1916905060006101cf87878080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f82011690508083019250505050505050610233565b9050806bffffffffffffffffffffffff1916821492505050949350505050565b6000825160148301111561020257600080fd5b7fffffffffffffffffffffffffffffffffffffffff0000000000000000000000008260208501015116905092915050565b60006040518251602084019350604067ffffffffffffffc0600183011601600982820310600181146102645761026b565b6040820191505b50776745230100efcdab890098badcfe001032547600c3d2e1f06102c3565b6000838310156102bc57828201519050828403935060208410156102bb576001846020036101000a03198082169150505b5b9392505050565b60005b828110156106d1576102d984828961028a565b85526102e984602083018961028a565b6020860152604081850310600181146103015761030a565b60808286038701535b506040830381146001811461031e5761032e565b6008850260208701511760208701525b5060405b60808110156103ba5760408103860151603882038701511860208203870151600c830388015118187c010000000100000001000000010000000100000001000000010000000163800000008204167ffffffffefffffffefffffffefffffffefffffffefffffffefffffffefffffffe6002830216179050808288015250600c81019050610332565b5060805b61014081101561044757608081038601516070820387015118604082038701516018830388015118187c030000000300000003000000030000000300000003000000030000000363400000008204167ffffffffcfffffffcfffffffcfffffffcfffffffcfffffffcfffffffcfffffffc60048302161790508082880152506018810190506103be565b508160008060005b60508110156106a357601481046000811461048157600181146104cb5760028114610508576003811461056b576105a4565b6501000000000085046a01000000000000000000008604189350836f01000000000000000000000000000000860416935083650100000000008604189350635a82799992506105a4565b6a010000000000000000000085046f01000000000000000000000000000000860418935083650100000000008604189350636ed9eba192506105a4565b6a010000000000000000000085046f01000000000000000000000000000000860417935083650100000000008604169350836a010000000000000000000086046f01000000000000000000000000000000870416179350638f1bbcdc92506105a4565b6a010000000000000000000085046f0100000000000000000000000000000086041893508365010000000000860418935063ca62c1d692505b50601f770800000000000000000000000000000000000000000000008504168063ffffffe073080000000000000000000000000000000000000087041617905080840190508063ffffffff86160190508083019050807c0100000000000000000000000000000000000000000000000000000000600484028c0151040190507401000000000000000000000000000000000000000081026501000000000086041794506a0100000000000000000000633fffffff6a040000000000000000000087041663c00000006604000000000000880416170277ffffffff00ffffffff000000000000ffffffff00ffffffff86161794505060018101905061044f565b5077ffffffff00ffffffff00ffffffff00ffffffff00ffffffff8386011694505050506040810190506102c6565b506c0100000000000000000000000063ffffffff821667ffffffff000000006101008404166bffffffff0000000000000000620100008504166fffffffff000000000000000000000000630100000086041673ffffffff00000000000000000000000000000000640100000000870416171717170294505050505091905056fea264697066735822122014eb0bfc67186b5e794eb7a585fe5f3603ce7c5f7ef904ed8512fc090d34c40264736f6c63430007040033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "175:299:16:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "175:299:16:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;240:232;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;330:4;346:16;365:19;382:1;365:4;;:16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:19;;;;:::i;:::-;346:38;;;;;394:16;413:15;423:4;;413:15;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:9;:15::i;:::-;394:34;;457:8;445:20;;;:8;:20;438:27;;;;240:232;;;;;;:::o;7040:287:0:-;7113:11;7156:4;:11;7150:2;7144:3;:8;:23;;7136:32;;;;;;7244:66;7237:3;7232:2;7226:4;7222:13;7218:23;7212:30;7208:103;7201:110;;7187:134;;;;:::o;74:5661:21:-;129:11;239:4;233:11;344:4;338:11;380:2;374:4;370:13;362:21;;500:2;479:18;475:1;470:3;466:11;462:36;458:45;546:1;540:3;530:8;526:18;523:25;566:1;561:40;;;;516:85;;561:40;596:2;586:8;582:17;570:29;;516:85;;624:50;688:425;;;;790:5;785:3;782:14;779:2;;;844:3;839;835:13;829:20;819:30;;890:3;883:5;879:15;870:24;;928:2;921:5;918:13;915:2;;;1004:1;995:5;991:2;987:14;982:3;978:24;974:32;970:37;1054:4;1046:6;1042:17;1032:27;;932:149;915:2;779;733:380;;;;;:::o;:::-;1142:1;1127:4284;1152:8;1149:1;1146:15;1127:4284;;;1216:22;1234:3;1231:1;1225:4;1216:22;:::i;:::-;1207:7;1200:39;1281:31;1308:3;1303:2;1300:1;1296:10;1290:4;1281:31;:::i;:::-;1276:2;1267:7;1263:16;1256:57;1427:2;1423:1;1418:3;1414:11;1411:19;1452:1;1447:51;;;;1404:94;;1447:51;1491:4;1486:1;1481:3;1477:11;1468:7;1464:25;1456:40;1404:94;;1606:2;1596:8;1592:17;1589:1;1586:24;1632:1;1627:77;;;;1579:125;;1627:77;1698:1;1693:3;1689:11;1683:2;1674:7;1670:16;1664:23;1661:40;1656:2;1647:7;1643:16;1636:66;1579:125;;1791:2;1776:512;1802:3;1799:1;1796:10;1776:512;;;1999:2;1996:1;1992:10;1983:7;1979:24;1973:31;1966:2;1963:1;1959:10;1950:7;1946:24;1940:31;1936:69;1928:2;1925:1;1921:10;1912:7;1908:24;1902:31;1895:2;1892:1;1888:10;1879:7;1875:24;1869:31;1865:69;1861:145;2152:66;2139:10;2133:4;2129:21;2125:94;2056:66;2052:1;2046:4;2042:12;2038:85;2035:185;2027:193;;2265:4;2261:1;2252:7;2248:15;2241:29;1827:461;1821:2;1818:1;1814:10;1809:15;;1776:512;;;1780:15;2320:3;2305:515;2332:3;2329:1;2326:10;2305:515;;;2530:3;2527:1;2523:11;2514:7;2510:25;2504:32;2496:3;2493:1;2489:11;2480:7;2476:25;2470:32;2466:71;2458:2;2455:1;2451:10;2442:7;2438:24;2432:31;2425:2;2422:1;2418:10;2409:7;2405:24;2399:31;2395:69;2391:147;2684:66;2671:10;2665:4;2661:21;2657:94;2588:66;2584:1;2578:4;2574:12;2570:85;2567:185;2559:193;;2797:4;2793:1;2784:7;2780:15;2773:29;2357:463;2351:2;2348:1;2344:10;2339:15;;2305:515;;;2309:16;2847:1;2874;2901;2934;2919:2389;2944:2;2941:1;2938:9;2919:2389;;;3003:2;3000:1;2996:10;3032:1;3027:352;;;;3405:1;3400:282;;;;3708:1;3703:414;;;;4143:1;4138:283;;;;2989:1432;;3027:352;3164:13;3161:1;3157:21;3131:23;3128:1;3124:31;3120:59;3115:64;;3256:1;3220:33;3217:1;3213:41;3209:49;3204:54;;3315:1;3299:13;3296:1;3292:21;3288:29;3283:34;;3347:10;3342:15;;3027:352;;3400:282;3536:23;3533:1;3529:31;3493:33;3490:1;3486:41;3482:79;3477:84;;3618:1;3602:13;3599:1;3595:21;3591:29;3586:34;;3650:10;3645:15;;3400:282;;3703:414;3855:23;3852:1;3848:31;3812:33;3809:1;3805:41;3802:78;3797:83;;3937:1;3921:13;3918:1;3914:21;3910:29;3905:34;;4053:1;4026:23;4023:1;4019:31;3983:33;3980:1;3976:41;3972:79;3969:86;3964:91;;4085:10;4080:15;;3703:414;;4138:283;4275:23;4272:1;4268:31;4232:33;4229:1;4225:41;4221:79;4216:84;;4357:1;4341:13;4338:1;4334:21;4330:29;4325:34;;4389:10;4384:15;;2989:1432;;4583:4;4531:49;4528:1;4524:57;4520:68;4688:4;4675:10;4631:41;4628:1;4624:49;4620:66;4617:76;4609:84;;4729:4;4726:1;4722:12;4714:20;;4787:4;4774:10;4771:1;4767:18;4763:29;4755:37;;4828:4;4825:1;4821:12;4813:20;;4964:4;4902:59;4896:1;4893;4889:9;4880:7;4876:23;4870:30;4866:96;4862:107;4854:115;;5031:43;5025:4;5021:54;5005:13;5002:1;4998:21;4995:81;4990:86;;5265:23;5251:10;5225:23;5222:1;5218:31;5214:48;5201:10;5183:15;5180:1;5176:23;5172:40;5169:94;5165:124;5112:50;5109:1;5105:58;5102:188;5097:193;;2967:2341;2962:1;2959;2955:9;2950:14;;2919:2389;;;2923:14;5346:50;5342:1;5339;5335:9;5331:66;5326:71;;1182:4229;;;1176:2;1173:1;1169:10;1164:15;;1127:4284;;;1131:14;5691:27;5677:10;5674:1;5670:18;5648;5640:5;5637:1;5633:13;5629:38;5599:26;5589:7;5586:1;5582:15;5578:48;5540:34;5528:9;5525:1;5521:17;5517:58;5472:42;5458:11;5455:1;5451:19;5447:68;5444:132;5441:186;5438:230;5435:254;5431:288;5424:295;;161:5568;;;;;;;:::o",
+  "source": "pragma solidity ^0.7.4;\n\nimport \"./Digest.sol\";\nimport \"../BytesUtils.sol\";\nimport \"@ensdomains/solsha1/contracts/SHA1.sol\";\n\n/**\n* @dev Implements the DNSSEC SHA1 digest.\n*/\ncontract SHA1Digest is Digest {\n    using BytesUtils for *;\n\n    function verify(bytes calldata data, bytes calldata hash) external override pure returns (bool) {\n        bytes32 expected = hash.readBytes20(0);\n        bytes20 computed = SHA1.sha1(data);\n        return expected == computed;\n    }\n}\n",
+  "sourcePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/SHA1Digest.sol",
+  "ast": {
+    "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/SHA1Digest.sol",
+    "exportedSymbols": {
+      "BytesUtils": [
+        730
+      ],
+      "Digest": [
+        5741
+      ],
+      "SHA1": [
+        6448
+      ],
+      "SHA1Digest": [
+        5801
+      ]
+    },
+    "id": 5802,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5763,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".4"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:16"
+      },
+      {
+        "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol",
+        "file": "./Digest.sol",
+        "id": 5764,
+        "nodeType": "ImportDirective",
+        "scope": 5802,
+        "sourceUnit": 5742,
+        "src": "25:22:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/BytesUtils.sol",
+        "file": "../BytesUtils.sol",
+        "id": 5765,
+        "nodeType": "ImportDirective",
+        "scope": 5802,
+        "sourceUnit": 731,
+        "src": "48:27:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@ensdomains/solsha1/contracts/SHA1.sol",
+        "file": "@ensdomains/solsha1/contracts/SHA1.sol",
+        "id": 5766,
+        "nodeType": "ImportDirective",
+        "scope": 5802,
+        "sourceUnit": 6449,
+        "src": "76:48:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 5768,
+              "name": "Digest",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 5741,
+              "src": "198:6:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Digest_$5741",
+                "typeString": "contract Digest"
+              }
+            },
+            "id": 5769,
+            "nodeType": "InheritanceSpecifier",
+            "src": "198:6:16"
+          }
+        ],
+        "contractDependencies": [
+          5741
+        ],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 5767,
+          "nodeType": "StructuredDocumentation",
+          "src": "126:48:16",
+          "text": " @dev Implements the DNSSEC SHA1 digest."
+        },
+        "fullyImplemented": true,
+        "id": 5801,
+        "linearizedBaseContracts": [
+          5801,
+          5741
+        ],
+        "name": "SHA1Digest",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "id": 5771,
+            "libraryName": {
+              "id": 5770,
+              "name": "BytesUtils",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 730,
+              "src": "217:10:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BytesUtils_$730",
+                "typeString": "library BytesUtils"
+              }
+            },
+            "nodeType": "UsingForDirective",
+            "src": "211:23:16"
+          },
+          {
+            "baseFunctions": [
+              5740
+            ],
+            "body": {
+              "id": 5799,
+              "nodeType": "Block",
+              "src": "336:136:16",
+              "statements": [
+                {
+                  "assignments": [
+                    5782
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 5782,
+                      "mutability": "mutable",
+                      "name": "expected",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 5799,
+                      "src": "346:16:16",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      },
+                      "typeName": {
+                        "id": 5781,
+                        "name": "bytes32",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "346:7:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 5787,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "hexValue": "30",
+                        "id": 5785,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "382:1:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_0_by_1",
+                          "typeString": "int_const 0"
+                        },
+                        "value": "0"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_rational_0_by_1",
+                          "typeString": "int_const 0"
+                        }
+                      ],
+                      "expression": {
+                        "id": 5783,
+                        "name": "hash",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 5775,
+                        "src": "365:4:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      },
+                      "id": 5784,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "readBytes20",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 391,
+                      "src": "365:16:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_bytes_memory_ptr_$_t_uint256_$returns$_t_bytes20_$bound_to$_t_bytes_memory_ptr_$",
+                        "typeString": "function (bytes memory,uint256) pure returns (bytes20)"
+                      }
+                    },
+                    "id": 5786,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "365:19:16",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes20",
+                      "typeString": "bytes20"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "346:38:16"
+                },
+                {
+                  "assignments": [
+                    5789
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 5789,
+                      "mutability": "mutable",
+                      "name": "computed",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 5799,
+                      "src": "394:16:16",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes20",
+                        "typeString": "bytes20"
+                      },
+                      "typeName": {
+                        "id": 5788,
+                        "name": "bytes20",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "394:7:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes20",
+                          "typeString": "bytes20"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 5794,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "id": 5792,
+                        "name": "data",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 5773,
+                        "src": "423:4:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      ],
+                      "expression": {
+                        "id": 5790,
+                        "name": "SHA1",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 6448,
+                        "src": "413:4:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_SHA1_$6448_$",
+                          "typeString": "type(library SHA1)"
+                        }
+                      },
+                      "id": 5791,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sha1",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 6447,
+                      "src": "413:9:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_bytes_memory_ptr_$returns$_t_bytes20_$",
+                        "typeString": "function (bytes memory) pure returns (bytes20)"
+                      }
+                    },
+                    "id": 5793,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "413:15:16",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes20",
+                      "typeString": "bytes20"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "394:34:16"
+                },
+                {
+                  "expression": {
+                    "commonType": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    },
+                    "id": 5797,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "id": 5795,
+                      "name": "expected",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5782,
+                      "src": "445:8:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "id": 5796,
+                      "name": "computed",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5789,
+                      "src": "457:8:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes20",
+                        "typeString": "bytes20"
+                      }
+                    },
+                    "src": "445:20:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 5780,
+                  "id": 5798,
+                  "nodeType": "Return",
+                  "src": "438:27:16"
+                }
+              ]
+            },
+            "functionSelector": "f7e83aee",
+            "id": 5800,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "verify",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 5777,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "307:8:16"
+            },
+            "parameters": {
+              "id": 5776,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5773,
+                  "mutability": "mutable",
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5800,
+                  "src": "256:19:16",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5772,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "256:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5775,
+                  "mutability": "mutable",
+                  "name": "hash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5800,
+                  "src": "277:19:16",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5774,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "277:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "255:42:16"
+            },
+            "returnParameters": {
+              "id": 5780,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5779,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5800,
+                  "src": "330:4:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5778,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "330:4:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "329:6:16"
+            },
+            "scope": 5801,
+            "src": "240:232:16",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5802,
+        "src": "175:299:16"
+      }
+    ],
+    "src": "0:475:16"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/SHA1Digest.sol",
+    "exportedSymbols": {
+      "BytesUtils": [
+        730
+      ],
+      "Digest": [
+        5741
+      ],
+      "SHA1": [
+        6448
+      ],
+      "SHA1Digest": [
+        5801
+      ]
+    },
+    "id": 5802,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5763,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".4"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:16"
+      },
+      {
+        "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/digests/Digest.sol",
+        "file": "./Digest.sol",
+        "id": 5764,
+        "nodeType": "ImportDirective",
+        "scope": 5802,
+        "sourceUnit": 5742,
+        "src": "25:22:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/arachnid/Dropbox/projects/enssec/contracts/BytesUtils.sol",
+        "file": "../BytesUtils.sol",
+        "id": 5765,
+        "nodeType": "ImportDirective",
+        "scope": 5802,
+        "sourceUnit": 731,
+        "src": "48:27:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@ensdomains/solsha1/contracts/SHA1.sol",
+        "file": "@ensdomains/solsha1/contracts/SHA1.sol",
+        "id": 5766,
+        "nodeType": "ImportDirective",
+        "scope": 5802,
+        "sourceUnit": 6449,
+        "src": "76:48:16",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 5768,
+              "name": "Digest",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 5741,
+              "src": "198:6:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Digest_$5741",
+                "typeString": "contract Digest"
+              }
+            },
+            "id": 5769,
+            "nodeType": "InheritanceSpecifier",
+            "src": "198:6:16"
+          }
+        ],
+        "contractDependencies": [
+          5741
+        ],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 5767,
+          "nodeType": "StructuredDocumentation",
+          "src": "126:48:16",
+          "text": " @dev Implements the DNSSEC SHA1 digest."
+        },
+        "fullyImplemented": true,
+        "id": 5801,
+        "linearizedBaseContracts": [
+          5801,
+          5741
+        ],
+        "name": "SHA1Digest",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "id": 5771,
+            "libraryName": {
+              "id": 5770,
+              "name": "BytesUtils",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 730,
+              "src": "217:10:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_BytesUtils_$730",
+                "typeString": "library BytesUtils"
+              }
+            },
+            "nodeType": "UsingForDirective",
+            "src": "211:23:16"
+          },
+          {
+            "baseFunctions": [
+              5740
+            ],
+            "body": {
+              "id": 5799,
+              "nodeType": "Block",
+              "src": "336:136:16",
+              "statements": [
+                {
+                  "assignments": [
+                    5782
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 5782,
+                      "mutability": "mutable",
+                      "name": "expected",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 5799,
+                      "src": "346:16:16",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      },
+                      "typeName": {
+                        "id": 5781,
+                        "name": "bytes32",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "346:7:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 5787,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "hexValue": "30",
+                        "id": 5785,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "382:1:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_0_by_1",
+                          "typeString": "int_const 0"
+                        },
+                        "value": "0"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_rational_0_by_1",
+                          "typeString": "int_const 0"
+                        }
+                      ],
+                      "expression": {
+                        "id": 5783,
+                        "name": "hash",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 5775,
+                        "src": "365:4:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      },
+                      "id": 5784,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "readBytes20",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 391,
+                      "src": "365:16:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_bytes_memory_ptr_$_t_uint256_$returns$_t_bytes20_$bound_to$_t_bytes_memory_ptr_$",
+                        "typeString": "function (bytes memory,uint256) pure returns (bytes20)"
+                      }
+                    },
+                    "id": 5786,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "365:19:16",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes20",
+                      "typeString": "bytes20"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "346:38:16"
+                },
+                {
+                  "assignments": [
+                    5789
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 5789,
+                      "mutability": "mutable",
+                      "name": "computed",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 5799,
+                      "src": "394:16:16",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes20",
+                        "typeString": "bytes20"
+                      },
+                      "typeName": {
+                        "id": 5788,
+                        "name": "bytes20",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "394:7:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes20",
+                          "typeString": "bytes20"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 5794,
+                  "initialValue": {
+                    "arguments": [
+                      {
+                        "id": 5792,
+                        "name": "data",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 5773,
+                        "src": "423:4:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      ],
+                      "expression": {
+                        "id": 5790,
+                        "name": "SHA1",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 6448,
+                        "src": "413:4:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_contract$_SHA1_$6448_$",
+                          "typeString": "type(library SHA1)"
+                        }
+                      },
+                      "id": 5791,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sha1",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 6447,
+                      "src": "413:9:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_pure$_t_bytes_memory_ptr_$returns$_t_bytes20_$",
+                        "typeString": "function (bytes memory) pure returns (bytes20)"
+                      }
+                    },
+                    "id": 5793,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "413:15:16",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes20",
+                      "typeString": "bytes20"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "394:34:16"
+                },
+                {
+                  "expression": {
+                    "commonType": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    },
+                    "id": 5797,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "id": 5795,
+                      "name": "expected",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5782,
+                      "src": "445:8:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "id": 5796,
+                      "name": "computed",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 5789,
+                      "src": "457:8:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes20",
+                        "typeString": "bytes20"
+                      }
+                    },
+                    "src": "445:20:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 5780,
+                  "id": 5798,
+                  "nodeType": "Return",
+                  "src": "438:27:16"
+                }
+              ]
+            },
+            "functionSelector": "f7e83aee",
+            "id": 5800,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "verify",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 5777,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "307:8:16"
+            },
+            "parameters": {
+              "id": 5776,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5773,
+                  "mutability": "mutable",
+                  "name": "data",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5800,
+                  "src": "256:19:16",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5772,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "256:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5775,
+                  "mutability": "mutable",
+                  "name": "hash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5800,
+                  "src": "277:19:16",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 5774,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "277:5:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "255:42:16"
+            },
+            "returnParameters": {
+              "id": 5780,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5779,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5800,
+                  "src": "330:4:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5778,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "330:4:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "329:6:16"
+            },
+            "scope": 5801,
+            "src": "240:232:16",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5802,
+        "src": "175:299:16"
+      }
+    ],
+    "src": "0:475:16"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.7.4+commit.3f05b770.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.2",
+  "updatedAt": "2021-01-20T20:53:41.266Z",
+  "devdoc": {
+    "details": "Implements the DNSSEC SHA1 digest.",
+    "kind": "dev",
+    "methods": {
+      "verify(bytes,bytes)": {
+        "details": "Verifies a cryptographic hash.",
+        "params": {
+          "data": "The data to hash.",
+          "hash": "The hash to compare to."
+        },
+        "returns": {
+          "_0": "True iff the hashed data matches the provided hash value."
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
