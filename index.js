@@ -1,17 +1,19 @@
-import Buff from 'buffer/'
-const Buffer = Buff.Buffer
-
-import uts46 from 'idna-uts46-hx'
-import jssha3 from 'js-sha3'
+import { Buffer as Buffer } from 'buffer/'
+import { keccak_256 as sha3 } from 'js-sha3'
 import { ethers } from "ethers"
-const sha3 = jssha3.keccak_256
 
-import { abi as ensContractAbi } from './abis/ens/ENS.json'
-import { abi as registrarContractAbi } from './abis/ens/FIFSRegistrar'
-import { abi as resolverContractAbi } from './abis/resolver/Resolver.json'
+import { abi as EnsAbi } from './contracts/ENSRegistry.json'
+import { abi as RegistrarAbi } from './contracts/BaseRegistrarImplementation.json'
+import { abi as ResolverAbi } from './contracts/PublicResolver.json'
+import { abi as ReverseRegistrar } from './contracts/ReverseRegistrar.json'
+import { abi as DummyOracleAbi } from './contracts/DummyOracle.json'
+import { abi as StablePriceOracleAbi } from './contracts/StablePriceOracle.json'
+import { abi as ETHRegistrarControllerAbi } from './contracts/ETHRegistrarController.json'
+import { abi as BulkRenewalAbi } from './contracts/BulkRenewal.json'
+
 
 function normalize(name) {
-  return name ? uts46.toAscii(name, {useStd3ASCII: true, transitional: false}) : name
+  return name
 }
 
 function encodeLabelhash(hash) {
@@ -120,9 +122,9 @@ class PNS {
 
     this.provider = new ethers.providers.Web3Provider(window.ethereum)
     this.signer = this.provider.getSigner()
-    this.ensContract = new ethers.Contract(ensAddress, ensContractAbi, this.signer);
-    this.resolverContract = new ethers.Contract(resolverAddress, resolverContractAbi, this.signer);
-    this.registrarContract = new ethers.Contract(registrarAddress, registrarContractAbi, this.signer);
+    this.ensContract = new ethers.Contract(ensAddress, EnsAbi, this.signer);
+    this.resolverContract = new ethers.Contract(resolverAddress, ResolverAbi, this.signer);
+    this.registrarContract = new ethers.Contract(registrarAddress, RegistrarAbi, this.signer);
 
     return {
       provider: this.provider,
@@ -150,7 +152,6 @@ class PNS {
 function start () {
   const pns = new PNS()
   document.querySelector('button').addEventListener('click', async () => {
-    
     let ensAddress = '0xef9Da876d7f9e5b1E8919a7CF94A327d57c6CAb7'
     let resolverAddress = '0xd581f8C423408d08E8FDa4cEcDF4951D29867f89'
     let registrarAddress = '0x09270d622cE1E2D2d53DA920EE9577dB83A167CB'
@@ -171,3 +172,4 @@ function start () {
 if (document) {
   start()
 }
+
