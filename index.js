@@ -11,7 +11,6 @@ import { abi as StablePriceOracleAbi } from './contracts/StablePriceOracle.json'
 import { abi as ETHRegistrarControllerAbi } from './contracts/ETHRegistrarController.json'
 import { abi as BulkRenewalAbi } from './contracts/BulkRenewal.json'
 
-
 function normalize(name) {
   return name
 }
@@ -92,6 +91,34 @@ function namehash(inputName) {
   return '0x' + node
 }
 
+// let TLD = "dot"
+// let configs = {
+//   "0x4": {
+//     ensAddress: '0xef9Da876d7f9e5b1E8919a7CF94A327d57c6CAb7',
+//     resolverAddress: '0xd581f8C423408d08E8FDa4cEcDF4951D29867f89',
+//     registrarAddress: '0x09270d622cE1E2D2d53DA920EE9577dB83A167CB',
+//     reverseRegistrarAddress: '0x47FeB315728FeC50b2090035cEed0bE65065C14a',
+//   }
+// }
+
+const TLD = "eth"
+const interfaces = {
+  legacyRegistrar: '0x7ba18ba1',
+  permanentRegistrar: '0x018fac06',
+  permanentRegistrarWithConfig: '0xca27ac4c',
+  baseRegistrar: '0x6ccb2df4',
+  dnsRegistrar: '0x1aa2e641',
+  bulkRenewal: '0x3150bfba'
+}
+const configs = {
+  "0x4": {
+    ensAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    resolverAddress: '0xd581f8C423408d08E8FDa4cEcDF4951D29867f89',
+    registrarAddress: '0x09270d622cE1E2D2d53DA920EE9577dB83A167CB',
+    reverseRegistrarAddress: '0x47FeB315728FeC50b2090035cEed0bE65065C14a',
+  }
+}
+
 
 class PNS {
   constructor () {}
@@ -101,6 +128,10 @@ class PNS {
       ethereum.enable()
       .catch(console.error)
     }
+  }
+
+  getTLD () {
+    return TLD
   }
 
   async getAccount () {
@@ -113,7 +144,7 @@ class PNS {
     return from
   }
 
-  async getProvider (ensAddress, resolverAddress, registrarAddress,reverseRegistrarAddress) {
+  async setup ({ ensAddress }) {
     let accounts = await ethereum.request({ method: 'eth_accounts' })
     this.account = accounts[0]
     if (!this.account) {
@@ -123,13 +154,41 @@ class PNS {
     this.provider = new ethers.providers.Web3Provider(window.ethereum)
     this.signer = this.provider.getSigner()
     this.ensContract = new ethers.Contract(ensAddress, EnsAbi, this.signer);
+
+    let resolverAddress = await this.ensContract.resolver(namehash('eth'))
     this.resolverContract = new ethers.Contract(resolverAddress, ResolverAbi, this.signer);
-    this.registrarContract = new ethers.Contract(registrarAddress, RegistrarAbi, this.signer);
+    // console.log('resolver', resolverAddress)
+
+    let ethAddress = await this.ensContract.owner(namehash('eth'))
+    this.registrarContract = new ethers.Contract(ethAddress, RegistrarAbi, this.signer);
+    // console.log('registrarAddress', ethAddress)
+
+    let controllerAddress = await this.resolverContract.interfaceImplementer(
+      namehash('eth'),
+      interfaces.permanentRegistrar
+    )
+    this.controllerContract = new ethers.Contract(controllerAddress, ETHRegistrarControllerAbi, this.signer)
+    // console.log('controllerAddress', controllerAddress)
+
+    let bulkRenewalAddress = await this.resolverContract.interfaceImplementer(
+      namehash('eth'),
+      interfaces.bulkRenewal
+    )
+    this.bulkRenewalContract = new ethers.Contract(bulkRenewalAddress, BulkRenewalAbi, this.signer)
+    // console.log('bulkRenewalAddress', bulkRenewalAddress)
 
     return {
       provider: this.provider,
       signer: this.signer,
     }
+  }
+
+  getChainId () {
+    return ethereum.chainId
+  }
+
+  getChainConfig () {
+    return configs[this.getChainId()]
   }
 
   owner (node) {
@@ -152,20 +211,21 @@ class PNS {
 function start () {
   const pns = new PNS()
   document.querySelector('button').addEventListener('click', async () => {
-    let ensAddress = '0xef9Da876d7f9e5b1E8919a7CF94A327d57c6CAb7'
-    let resolverAddress = '0xd581f8C423408d08E8FDa4cEcDF4951D29867f89'
-    let registrarAddress = '0x09270d622cE1E2D2d53DA920EE9577dB83A167CB'
-    let reverseRegistrarAddress = '0x47FeB315728FeC50b2090035cEed0bE65065C14a'
+    window.pns = pns
 
     console.log('account', await pns.getAccount())
-    console.log(await pns.getProvider(ensAddress, resolverAddress, registrarAddress,reverseRegistrarAddress))
-    console.log('owner dot', await pns.owner('dot'))
-    console.log('owner super.dot', await pns.owner('super.dot'))
-    console.log('register hero', await pns.owner('hero.dot'))
+    console.log(await pns.setup(pns.getChainConfig()))
+    console.log('owner eth', await pns.owner('eth'))
+    console.log('owner jiang.eth', await pns.owner('jiang.eth'))
+    console.log('register hero', await pns.owner('hero.eth'))
+
+    let rentPrice = await pns.controllerContract.rentPrice('eth', 86400*120)
+    console.log(ethers.utils.formatEther(rentPrice))
+
     // console.log('register sub.hero', await pns.createSubdomain('hero.dot'), 'hero')
     // console.log('register hero', await pns.register('hero'))
-    console.log('register hero', await pns.owner('hero.dot'))
-    console.log('register hero.hero.dot', await pns.owner('hero.hero.dot'))
+    // console.log('register hero', await pns.owner('hero.dot'))
+    // console.log('register hero.hero.dot', await pns.owner('hero.hero.dot'))
   })
 }
 

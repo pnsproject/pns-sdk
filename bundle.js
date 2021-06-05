@@ -13537,13 +13537,13 @@
   var Interface = class {
     constructor(fragments) {
       logger14.checkNew(new.target, Interface);
-      let abi4 = [];
+      let abi6 = [];
       if (typeof fragments === "string") {
-        abi4 = JSON.parse(fragments);
+        abi6 = JSON.parse(fragments);
       } else {
-        abi4 = fragments;
+        abi6 = fragments;
       }
-      defineReadOnly(this, "fragments", abi4.map((fragment) => {
+      defineReadOnly(this, "fragments", abi6.map((fragment) => {
         return Fragment.from(fragment);
       }).filter((fragment) => fragment != null));
       defineReadOnly(this, "_abiCoder", getStatic(new.target, "getAbiCoder")());
@@ -13595,11 +13595,11 @@
       if (format === FormatTypes.sighash) {
         logger14.throwArgumentError("interface does not support formatting sighash", "format", format);
       }
-      const abi4 = this.fragments.map((fragment) => fragment.format(format));
+      const abi6 = this.fragments.map((fragment) => fragment.format(format));
       if (format === FormatTypes.json) {
-        return JSON.stringify(abi4.map((j) => JSON.parse(j)));
+        return JSON.stringify(abi6.map((j) => JSON.parse(j)));
       }
-      return abi4;
+      return abi6;
     }
     static getAbiCoder() {
       return defaultAbiCoder;
@@ -17296,14 +17296,14 @@
       if (typeof compilerOutput === "string") {
         compilerOutput = JSON.parse(compilerOutput);
       }
-      const abi4 = compilerOutput.abi;
+      const abi6 = compilerOutput.abi;
       let bytecode = null;
       if (compilerOutput.bytecode) {
         bytecode = compilerOutput.bytecode;
       } else if (compilerOutput.evm && compilerOutput.evm.bytecode) {
         bytecode = compilerOutput.evm.bytecode;
       }
-      return new this(abi4, bytecode, signer);
+      return new this(abi6, bytecode, signer);
     }
     static getInterface(contractInterface) {
       return Contract.getInterface(contractInterface);
@@ -22913,9 +22913,9 @@
     return result;
   }
   function normalizedTally(normalize2, quorum) {
-    return function(configs) {
+    return function(configs2) {
       const tally = {};
-      configs.forEach((c) => {
+      configs2.forEach((c) => {
         const value = normalize2(c.result);
         if (!tally[value]) {
           tally[value] = { count: 0, result: c.result };
@@ -22936,9 +22936,9 @@
     let normalize2 = serialize2;
     switch (method) {
       case "getBlockNumber":
-        return function(configs) {
-          const values = configs.map((c) => c.result);
-          let blockNumber = median(configs.map((c) => c.result), 2);
+        return function(configs2) {
+          const values = configs2.map((c) => c.result);
+          let blockNumber = median(configs2.map((c) => c.result), 2);
           if (blockNumber == null) {
             return void 0;
           }
@@ -22952,14 +22952,14 @@
           return provider._highestBlockNumber;
         };
       case "getGasPrice":
-        return function(configs) {
-          const values = configs.map((c) => c.result);
+        return function(configs2) {
+          const values = configs2.map((c) => c.result);
           values.sort();
           return values[Math.floor(values.length / 2)];
         };
       case "getEtherPrice":
-        return function(configs) {
-          return median(configs.map((c) => c.result));
+        return function(configs2) {
+          return median(configs2.map((c) => c.result));
         };
       case "getBalance":
       case "getTransactionCount":
@@ -23156,16 +23156,16 @@
           yield this.getBlockNumber();
         }
         const processFunc = getProcessFunc(this, method, params);
-        const configs = shuffled(this.providerConfigs.map(shallowCopy));
-        configs.sort((a, b) => a.priority - b.priority);
+        const configs2 = shuffled(this.providerConfigs.map(shallowCopy));
+        configs2.sort((a, b) => a.priority - b.priority);
         const currentBlockNumber = this._highestBlockNumber;
         let i = 0;
         let first = true;
         while (true) {
           const t0 = now();
-          let inflightWeight = configs.filter((c) => c.runner && t0 - c.start < c.stallTimeout).reduce((accum, c) => accum + c.weight, 0);
-          while (inflightWeight < this.quorum && i < configs.length) {
-            const config = configs[i++];
+          let inflightWeight = configs2.filter((c) => c.runner && t0 - c.start < c.stallTimeout).reduce((accum, c) => accum + c.weight, 0);
+          while (inflightWeight < this.quorum && i < configs2.length) {
+            const config = configs2[i++];
             const rid = nextRid++;
             config.start = now();
             config.staller = stall2(config.stallTimeout);
@@ -23209,7 +23209,7 @@
             inflightWeight += config.weight;
           }
           const waiting = [];
-          configs.forEach((c) => {
+          configs2.forEach((c) => {
             if (c.done || !c.runner) {
               return;
             }
@@ -23221,11 +23221,11 @@
           if (waiting.length) {
             yield Promise.race(waiting);
           }
-          const results = configs.filter((c) => c.done && c.error == null);
+          const results = configs2.filter((c) => c.done && c.error == null);
           if (results.length >= this.quorum) {
             const result = processFunc(results);
             if (result !== void 0) {
-              configs.forEach((c) => {
+              configs2.forEach((c) => {
                 if (c.staller) {
                   c.staller.cancel();
                 }
@@ -23238,7 +23238,7 @@
             }
             first = false;
           }
-          const errors = configs.reduce((accum, c) => {
+          const errors = configs2.reduce((accum, c) => {
             if (!c.done || c.error == null) {
               return accum;
             }
@@ -23256,7 +23256,7 @@
             if (tally.weight < this.quorum) {
               return;
             }
-            configs.forEach((c) => {
+            configs2.forEach((c) => {
               if (c.staller) {
                 c.staller.cancel();
               }
@@ -23272,11 +23272,11 @@
             });
             logger37.throwError(e.reason || e.message, errorCode, props);
           });
-          if (configs.filter((c) => !c.done).length === 0) {
+          if (configs2.filter((c) => !c.done).length === 0) {
             break;
           }
         }
-        configs.forEach((c) => {
+        configs2.forEach((c) => {
           if (c.staller) {
             c.staller.cancel();
           }
@@ -23285,7 +23285,7 @@
         return logger37.throwError("failed to meet quorum", Logger.errors.SERVER_ERROR, {
           method,
           params,
-          results: configs.map((c) => exposeDebugConfig(c)),
+          results: configs2.map((c) => exposeDebugConfig(c)),
           provider: this
         });
       });
@@ -26066,6 +26066,632 @@
     }
   ];
 
+  // contracts/ETHRegistrarController.json
+  var abi4 = [
+    {
+      inputs: [
+        {
+          internalType: "contract BaseRegistrarImplementation",
+          name: "_base",
+          type: "address"
+        },
+        {
+          internalType: "contract PriceOracle",
+          name: "_prices",
+          type: "address"
+        },
+        {
+          internalType: "uint256",
+          name: "_minCommitmentAge",
+          type: "uint256"
+        },
+        {
+          internalType: "uint256",
+          name: "_maxCommitmentAge",
+          type: "uint256"
+        }
+      ],
+      stateMutability: "nonpayable",
+      type: "constructor"
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          indexed: true,
+          internalType: "bytes32",
+          name: "label",
+          type: "bytes32"
+        },
+        {
+          indexed: true,
+          internalType: "address",
+          name: "owner",
+          type: "address"
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "cost",
+          type: "uint256"
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "expires",
+          type: "uint256"
+        }
+      ],
+      name: "NameRegistered",
+      type: "event"
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          indexed: true,
+          internalType: "bytes32",
+          name: "label",
+          type: "bytes32"
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "cost",
+          type: "uint256"
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "expires",
+          type: "uint256"
+        }
+      ],
+      name: "NameRenewed",
+      type: "event"
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "oracle",
+          type: "address"
+        }
+      ],
+      name: "NewPriceOracle",
+      type: "event"
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "previousOwner",
+          type: "address"
+        },
+        {
+          indexed: true,
+          internalType: "address",
+          name: "newOwner",
+          type: "address"
+        }
+      ],
+      name: "OwnershipTransferred",
+      type: "event"
+    },
+    {
+      inputs: [],
+      name: "MIN_REGISTRATION_DURATION",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "bytes32",
+          name: "",
+          type: "bytes32"
+        }
+      ],
+      name: "commitments",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [],
+      name: "maxCommitmentAge",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [],
+      name: "minCommitmentAge",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [],
+      name: "owner",
+      outputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [],
+      name: "renounceOwnership",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "newOwner",
+          type: "address"
+        }
+      ],
+      name: "transferOwnership",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          internalType: "uint256",
+          name: "duration",
+          type: "uint256"
+        }
+      ],
+      name: "rentPrice",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        }
+      ],
+      name: "valid",
+      outputs: [
+        {
+          internalType: "bool",
+          name: "",
+          type: "bool"
+        }
+      ],
+      stateMutability: "pure",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        }
+      ],
+      name: "available",
+      outputs: [
+        {
+          internalType: "bool",
+          name: "",
+          type: "bool"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          internalType: "address",
+          name: "owner",
+          type: "address"
+        },
+        {
+          internalType: "bytes32",
+          name: "secret",
+          type: "bytes32"
+        }
+      ],
+      name: "makeCommitment",
+      outputs: [
+        {
+          internalType: "bytes32",
+          name: "",
+          type: "bytes32"
+        }
+      ],
+      stateMutability: "pure",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          internalType: "address",
+          name: "owner",
+          type: "address"
+        },
+        {
+          internalType: "bytes32",
+          name: "secret",
+          type: "bytes32"
+        },
+        {
+          internalType: "address",
+          name: "resolver",
+          type: "address"
+        },
+        {
+          internalType: "address",
+          name: "addr",
+          type: "address"
+        }
+      ],
+      name: "makeCommitmentWithConfig",
+      outputs: [
+        {
+          internalType: "bytes32",
+          name: "",
+          type: "bytes32"
+        }
+      ],
+      stateMutability: "pure",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "bytes32",
+          name: "commitment",
+          type: "bytes32"
+        }
+      ],
+      name: "commit",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          internalType: "address",
+          name: "owner",
+          type: "address"
+        },
+        {
+          internalType: "uint256",
+          name: "duration",
+          type: "uint256"
+        },
+        {
+          internalType: "bytes32",
+          name: "secret",
+          type: "bytes32"
+        }
+      ],
+      name: "register",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+      payable: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          internalType: "address",
+          name: "owner",
+          type: "address"
+        },
+        {
+          internalType: "uint256",
+          name: "duration",
+          type: "uint256"
+        },
+        {
+          internalType: "bytes32",
+          name: "secret",
+          type: "bytes32"
+        },
+        {
+          internalType: "address",
+          name: "resolver",
+          type: "address"
+        },
+        {
+          internalType: "address",
+          name: "addr",
+          type: "address"
+        }
+      ],
+      name: "registerWithConfig",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+      payable: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string"
+        },
+        {
+          internalType: "uint256",
+          name: "duration",
+          type: "uint256"
+        }
+      ],
+      name: "renew",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+      payable: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "contract PriceOracle",
+          name: "_prices",
+          type: "address"
+        }
+      ],
+      name: "setPriceOracle",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "_minCommitmentAge",
+          type: "uint256"
+        },
+        {
+          internalType: "uint256",
+          name: "_maxCommitmentAge",
+          type: "uint256"
+        }
+      ],
+      name: "setCommitmentAges",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      inputs: [],
+      name: "withdraw",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function"
+    },
+    {
+      inputs: [
+        {
+          internalType: "bytes4",
+          name: "interfaceID",
+          type: "bytes4"
+        }
+      ],
+      name: "supportsInterface",
+      outputs: [
+        {
+          internalType: "bool",
+          name: "",
+          type: "bool"
+        }
+      ],
+      stateMutability: "pure",
+      type: "function",
+      constant: true
+    }
+  ];
+
+  // contracts/BulkRenewal.json
+  var abi5 = [
+    {
+      inputs: [
+        {
+          internalType: "contract ENS",
+          name: "_ens",
+          type: "address"
+        }
+      ],
+      stateMutability: "nonpayable",
+      type: "constructor"
+    },
+    {
+      inputs: [],
+      name: "BULK_RENEWAL_ID",
+      outputs: [
+        {
+          internalType: "bytes4",
+          name: "",
+          type: "bytes4"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [],
+      name: "ens",
+      outputs: [
+        {
+          internalType: "contract ENS",
+          name: "",
+          type: "address"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string[]",
+          name: "names",
+          type: "string[]"
+        },
+        {
+          internalType: "uint256",
+          name: "duration",
+          type: "uint256"
+        }
+      ],
+      name: "rentPrice",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "total",
+          type: "uint256"
+        }
+      ],
+      stateMutability: "view",
+      type: "function",
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "string[]",
+          name: "names",
+          type: "string[]"
+        },
+        {
+          internalType: "uint256",
+          name: "duration",
+          type: "uint256"
+        }
+      ],
+      name: "renewAll",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+      payable: true
+    },
+    {
+      inputs: [
+        {
+          internalType: "bytes4",
+          name: "interfaceID",
+          type: "bytes4"
+        }
+      ],
+      name: "supportsInterface",
+      outputs: [
+        {
+          internalType: "bool",
+          name: "",
+          type: "bool"
+        }
+      ],
+      stateMutability: "pure",
+      type: "function",
+      constant: true
+    }
+  ];
+
   // index.js
   function normalize(name2) {
     return name2;
@@ -26105,6 +26731,23 @@
     }
     return "0x" + node;
   }
+  var TLD = "eth";
+  var interfaces = {
+    legacyRegistrar: "0x7ba18ba1",
+    permanentRegistrar: "0x018fac06",
+    permanentRegistrarWithConfig: "0xca27ac4c",
+    baseRegistrar: "0x6ccb2df4",
+    dnsRegistrar: "0x1aa2e641",
+    bulkRenewal: "0x3150bfba"
+  };
+  var configs = {
+    "0x4": {
+      ensAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+      resolverAddress: "0xd581f8C423408d08E8FDa4cEcDF4951D29867f89",
+      registrarAddress: "0x09270d622cE1E2D2d53DA920EE9577dB83A167CB",
+      reverseRegistrarAddress: "0x47FeB315728FeC50b2090035cEed0bE65065C14a"
+    }
+  };
   var PNS = class {
     constructor() {
     }
@@ -26112,6 +26755,9 @@
       if (typeof ethereum !== "undefined") {
         ethereum.enable().catch(console.error);
       }
+    }
+    getTLD() {
+      return TLD;
     }
     async getAccount() {
       let accounts = await ethereum.request({ method: "eth_accounts" });
@@ -26122,7 +26768,7 @@
       this.account = from;
       return from;
     }
-    async getProvider(ensAddress, resolverAddress, registrarAddress, reverseRegistrarAddress) {
+    async setup({ ensAddress }) {
       let accounts = await ethereum.request({ method: "eth_accounts" });
       this.account = accounts[0];
       if (!this.account) {
@@ -26131,12 +26777,24 @@
       this.provider = new ethers_exports.providers.Web3Provider(window.ethereum);
       this.signer = this.provider.getSigner();
       this.ensContract = new ethers_exports.Contract(ensAddress, abi, this.signer);
+      let resolverAddress = await this.ensContract.resolver(namehash2("eth"));
       this.resolverContract = new ethers_exports.Contract(resolverAddress, abi3, this.signer);
-      this.registrarContract = new ethers_exports.Contract(registrarAddress, abi2, this.signer);
+      let ethAddress = await this.ensContract.owner(namehash2("eth"));
+      this.registrarContract = new ethers_exports.Contract(ethAddress, abi2, this.signer);
+      let controllerAddress = await this.resolverContract.interfaceImplementer(namehash2("eth"), interfaces.permanentRegistrar);
+      this.controllerContract = new ethers_exports.Contract(controllerAddress, abi4, this.signer);
+      let bulkRenewalAddress = await this.resolverContract.interfaceImplementer(namehash2("eth"), interfaces.bulkRenewal);
+      this.bulkRenewalContract = new ethers_exports.Contract(bulkRenewalAddress, abi5, this.signer);
       return {
         provider: this.provider,
         signer: this.signer
       };
+    }
+    getChainId() {
+      return ethereum.chainId;
+    }
+    getChainConfig() {
+      return configs[this.getChainId()];
     }
     owner(node) {
       let namehashed = namehash2(node);
@@ -26155,17 +26813,14 @@
   function start() {
     const pns = new PNS();
     document.querySelector("button").addEventListener("click", async () => {
-      let ensAddress = "0xef9Da876d7f9e5b1E8919a7CF94A327d57c6CAb7";
-      let resolverAddress = "0xd581f8C423408d08E8FDa4cEcDF4951D29867f89";
-      let registrarAddress = "0x09270d622cE1E2D2d53DA920EE9577dB83A167CB";
-      let reverseRegistrarAddress = "0x47FeB315728FeC50b2090035cEed0bE65065C14a";
+      window.pns = pns;
       console.log("account", await pns.getAccount());
-      console.log(await pns.getProvider(ensAddress, resolverAddress, registrarAddress, reverseRegistrarAddress));
-      console.log("owner dot", await pns.owner("dot"));
-      console.log("owner super.dot", await pns.owner("super.dot"));
-      console.log("register hero", await pns.owner("hero.dot"));
-      console.log("register hero", await pns.owner("hero.dot"));
-      console.log("register hero.hero.dot", await pns.owner("hero.hero.dot"));
+      console.log(await pns.setup(pns.getChainConfig()));
+      console.log("owner eth", await pns.owner("eth"));
+      console.log("owner jiang.eth", await pns.owner("jiang.eth"));
+      console.log("register hero", await pns.owner("hero.eth"));
+      let rentPrice = await pns.controllerContract.rentPrice("eth", 86400 * 120);
+      console.log(ethers_exports.utils.formatEther(rentPrice));
     });
   }
   if (document) {
