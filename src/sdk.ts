@@ -1,6 +1,6 @@
 import { Buffer as Buffer } from "buffer/";
 import { keccak_256 as sha3 } from "js-sha3";
-import { ethers } from "ethers";
+import { ethers, Contract } from "ethers";
 
 import { abi as EnsAbi } from "../contracts/ENSRegistry.json";
 import { abi as RegistrarAbi } from "../contracts/BaseRegistrarImplementation.json";
@@ -10,6 +10,8 @@ import { abi as DummyOracleAbi } from "../contracts/DummyOracle.json";
 import { abi as StablePriceOracleAbi } from "../contracts/StablePriceOracle.json";
 import { abi as ETHRegistrarControllerAbi } from "../contracts/ETHRegistrarController.json";
 import { abi as BulkRenewalAbi } from "../contracts/BulkRenewal.json";
+import { MetaMaskInpageProvider } from "@metamask/providers";
+import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 
 function normalize(name) {
   return name;
@@ -127,22 +129,22 @@ if ((window as any).ethereum == null) {
   alert("Need a wallet");
 }
 
-var ethereum = (window as any).ethereum;
+var ethereum = (window as any).ethereum as MetaMaskInpageProvider;
 
 export class PNS {
   /** TODO */
   account: any;
   /** TODO */
-  provider: any;
+  provider: Web3Provider;
   /** TODO */
-  signer: any;
+  signer: JsonRpcSigner;
 
   /** TODO TODO... */
-  ensContract: any;
-  resolverContract: any;
-  registrarContract: any;
-  controllerContract: any;
-  bulkRenewalContract: any;
+  ensContract: Contract;
+  resolverContract: Contract;
+  registrarContract: Contract;
+  controllerContract: Contract;
+  bulkRenewalContract: Contract;
 
   constructor() {}
 
@@ -173,7 +175,7 @@ export class PNS {
       return await this.connect();
     }
 
-    this.provider = new ethers.providers.Web3Provider(ethereum);
+    this.provider = new ethers.providers.Web3Provider(ethereum as any);
     this.signer = this.provider.getSigner();
     this.ensContract = new ethers.Contract(ensAddress, EnsAbi, this.signer);
 
