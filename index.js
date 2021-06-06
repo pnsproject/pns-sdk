@@ -202,68 +202,105 @@ class PNS {
     return this.ensContract.owner(namehashed)
   }
 
-  // register (label) {
-  //   label = '0x' + sha3(label)
-  //   return this.registrarContract.register(label, this.account)
-  // }
-
+  // 一次性设置域名信息
+  // function setRecord(bytes32 node, address owner, address resolver, uint64 ttl)
+  // example:
+  // pns.setRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400)
   setRecord (node, newOwner, resolver, ttl) {
     let namehashed = namehash(node)
     return this.ensContract.setRecord(namehashed, newOwner, resolver, ttl)
   }
 
+  // 一次性设置域名信息
+  // function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl)
+  // example:
+  // pns.setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400)
   setSubnodeRecord (node, label, newOwner, resolver, ttl) {
     let namehashed = namehash(node)
     label = '0x' + sha3(label)
     return this.ensContract.setSubnodeRecord(namehashed, label, newOwner, resolver, ttl)
   }
 
+  // 设置子域名的所有者
+  // function setOwner(bytes32 node, address owner)
+  // example:
+  // pns.setOwner('hero.eth', '0x123456789')
   setOwner (node, newOwner) {
     let namehashed = namehash(node)
     return this.ensContract.setOwner(namehashed, label, newOwner)
   }
 
+  // 设置子域名的所有者
+  // function setSubnodeOwner(bytes32 node, bytes32 label, address owner)
+  // example:
+  // pns.setSubnodeOwner('hero.eth', 'sub', '0x123456789')
   setSubnodeOwner (node, label, newOwner) {
     let namehashed = namehash(node)
     label = '0x' + sha3(label)
     return this.ensContract.setSubnodeOwner(namehashed, label, newOwner)
   }
 
+  // 设置域名 resolver 参数，表示域名的解析器
+  // function setResolver(bytes32 node, address resolver)
+  // example:
+  // pns.setResolver('hero.eth', '0x123456789')
   setResolver (node, resolver) {
     let namehashed = namehash(node)
     return this.ensContract.setResolver(namehashed, resolver)
   }
 
+  // 设置域名 ttl 参数，表示域名可以在本地缓存的时间
+  // function setTTL(bytes32 node, uint64 ttl)
+  // example:
+  // pns.setTTL('hero.eth', 3600)
   setTTL (node, ttl) {
     let namehashed = namehash(node)
     return this.ensContract.setTTL(namehashed, ttl)
   }
 
+  // 获得域名 resolver 参数，由用户设置，表示域名的解析器
+  // function getResolver(bytes32 node) returns (address)
+  // example:
+  // pns.getResolver('hero.eth')
   getResolver (node) {
     let namehashed = namehash(node)
     return this.ensContract.resolver(namehashed)
   }
 
+  // 获得域名 ttl 参数，由用户设置，表示域名可以在本地缓存的时间
+  // function getTTL(bytes32 node) returns (uint64)
+  // example:
+  // pns.getTTL('hero.eth')
   getTTL (node) {
     let namehashed = namehash(node)
     return this.ensContract.ttl(namehashed)
   }
 
+  // 检查域名是否已经存在
+  // function recordExists(bytes32 node) returns (bool)
+  // example:
+  // pns.recordExists('hero.eth')
   recordExists (node) {
     let namehashed = namehash(node)
     return this.ensContract.recordExists(namehashed)
   }
 
+  // 获得 MinimumCommitmentAge 参数，忽略
   async getMinimumCommitmentAge() {
     const controllerContract = this.controllerContract
     return controllerContract.minCommitmentAge()
   }
 
+  // 获得 getMaximumCommitmentAge 参数，忽略
   async getMaximumCommitmentAge(){
     const controllerContract = this.controllerContract
     return  controllerContract.maxCommitmentAge()
   }
 
+  // 获得当前域名价格
+  // function getRentPrice(string name, uint duration) returns (uint)
+  // example:
+  // pns.getRentPrice('hero', 86400*365)
   async getRentPrice(name, duration) {
     const controllerContract = this.controllerContract
     let price = await controllerContract.rentPrice(name, duration)
@@ -302,6 +339,7 @@ class PNS {
     return await this.controllerContract.commitments(commitment)
   }
 
+  // 开始注册域名（第一步）
   async commit(label, secret = '') {
     const account = this.account
     const commitment = await this.makeCommitment(label, account, secret)
@@ -309,6 +347,7 @@ class PNS {
     return this.controllerContract.commit(commitment)
   }
 
+  // 内部方法，用于估算交易手续费
   async estimateGasLimit( cb ){
     let gas = 0
     try{
@@ -323,6 +362,7 @@ class PNS {
     return gas + transferGasCost
   }
 
+  // 域名注册（第二步）
   async register(label, duration, secret = '') {
     const permanentRegistrarController = this.controllerContract
     const account = this.account
@@ -398,9 +438,6 @@ function start () {
 
     // console.log('recordExists jiang.eth', await pns.recordExists('jiang.eth'))
     // console.log('recordExists hero.eth', await pns.recordExists('hero.eth'))
-
-    let rentPrice = await pns.controllerContract.rentPrice('eth', 86400*120)
-    console.log(ethers.utils.formatEther(rentPrice))
 
     console.log('getMinimumCommitmentAge', await pns.getMinimumCommitmentAge())
     console.log('rentPrice', ethers.utils.formatEther(await pns.getRentPrice('gavinwood', 86400*365)))

@@ -26925,8 +26925,6 @@
       console.log("owner eth", await pns.owner("eth"));
       console.log("owner jiang.eth", await pns.owner("jiang.eth"));
       console.log("register hero", await pns.owner("hero.eth"));
-      let rentPrice = await pns.controllerContract.rentPrice("eth", 86400 * 120);
-      console.log(ethers_exports.utils.formatEther(rentPrice));
       console.log("getMinimumCommitmentAge", await pns.getMinimumCommitmentAge());
       console.log("rentPrice", ethers_exports.utils.formatEther(await pns.getRentPrice("gavinwood", 86400 * 365)));
       console.log("rentPrices", ethers_exports.utils.formatEther(await pns.getRentPrices(["gavinwood", "gavin"], 86400 * 365)));
