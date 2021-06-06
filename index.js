@@ -119,6 +119,12 @@ const configs = {
   }
 }
 
+function getBufferedPrice(price){
+  return price.mul(110).div(100)
+}
+
+const transferGasCost = 21000
+
 
 class PNS {
   constructor () {}
@@ -196,16 +202,181 @@ class PNS {
     return this.ensContract.owner(namehashed)
   }
 
-  register (label) {
-    label = '0x' + sha3(label)
-    return this.registrarContract.register(label, this.account)
+  // register (label) {
+  //   label = '0x' + sha3(label)
+  //   return this.registrarContract.register(label, this.account)
+  // }
+
+  setRecord (node, newOwner, resolver, ttl) {
+    let namehashed = namehash(node)
+    return this.ensContract.setRecord(namehashed, newOwner, resolver, ttl)
   }
 
-  createSubdomain (node, label) {
+  setSubnodeRecord (node, label, newOwner, resolver, ttl) {
     let namehashed = namehash(node)
     label = '0x' + sha3(label)
-    return this.ensContract.setSubnodeOwner(namehashed, label, this.account)
+    return this.ensContract.setSubnodeRecord(namehashed, label, newOwner, resolver, ttl)
   }
+
+  setOwner (node, newOwner) {
+    let namehashed = namehash(node)
+    return this.ensContract.setOwner(namehashed, label, newOwner)
+  }
+
+  setSubnodeOwner (node, label, newOwner) {
+    let namehashed = namehash(node)
+    label = '0x' + sha3(label)
+    return this.ensContract.setSubnodeOwner(namehashed, label, newOwner)
+  }
+
+  setResolver (node, resolver) {
+    let namehashed = namehash(node)
+    return this.ensContract.setResolver(namehashed, resolver)
+  }
+
+  setTTL (node, ttl) {
+    let namehashed = namehash(node)
+    return this.ensContract.setTTL(namehashed, ttl)
+  }
+
+  getResolver (node) {
+    let namehashed = namehash(node)
+    return this.ensContract.resolver(namehashed)
+  }
+
+  getTTL (node) {
+    let namehashed = namehash(node)
+    return this.ensContract.ttl(namehashed)
+  }
+
+  recordExists (node) {
+    let namehashed = namehash(node)
+    return this.ensContract.recordExists(namehashed)
+  }
+
+  async getMinimumCommitmentAge() {
+    const controllerContract = this.controllerContract
+    return controllerContract.minCommitmentAge()
+  }
+
+  async getMaximumCommitmentAge(){
+    const controllerContract = this.controllerContract
+    return  controllerContract.maxCommitmentAge()
+  }
+
+  async getRentPrice(name, duration) {
+    const controllerContract = this.controllerContract
+    let price = await controllerContract.rentPrice(name, duration)
+    return price
+  }
+
+  async getRentPrices(labels, duration) {
+    const pricesArray = await Promise.all(
+      labels.map(label => {
+        return this.getRentPrice(label, duration)
+      })
+    )
+    return pricesArray.reduce((a, c) => a.add(c))
+  }
+
+  async makeCommitment(name, owner, secret = '') {
+    const controllerContract = this.controllerContract
+    const resolverAddr = await this.owner('resolver.eth')
+    secret = namehash('eth') // todo: store user
+    if (parseInt(resolverAddr, 16) === 0) {
+      return controllerContract.makeCommitment(name, owner, secret)
+    } else {
+      return controllerContract.makeCommitmentWithConfig(
+        name,
+        owner,
+        secret,
+        resolverAddr,
+        this.account
+      )
+    }
+  }
+
+  async checkCommitment(label, secret = '') {
+    const account = this.account
+    const commitment = await this.makeCommitment(label, account, secret)
+    return await this.controllerContract.commitments(commitment)
+  }
+
+  async commit(label, secret = '') {
+    const account = this.account
+    const commitment = await this.makeCommitment(label, account, secret)
+
+    return this.controllerContract.commit(commitment)
+  }
+
+  async estimateGasLimit( cb ){
+    let gas = 0
+    try{
+      gas = (await cb()).toNumber()
+    }catch(e){
+      let matched = e.message.match(/\(supplied gas (.*)\)/)
+      if(matched){
+        gas = parseInt(matched[1])
+      }
+      console.log({gas, e, matched})
+    }
+    return gas + transferGasCost
+  }
+
+  async register(label, duration, secret = '') {
+    const permanentRegistrarController = this.controllerContract
+    const account = this.account
+    const price = await this.getRentPrice(label, duration)
+    const priceWithBuffer = getBufferedPrice(price)
+    const resolverAddr = await this.owner('resolver.eth')
+    secret = namehash('eth')
+    if (parseInt(resolverAddr, 16) === 0) {
+      let gasLimit = await this.estimateGasLimit(() => {
+        return permanentRegistrarController.estimateGas.register(
+          label,
+          account,
+          duration,
+          secret,
+          { value:priceWithBuffer}
+        )
+      })
+
+      gasLimit = 3000000
+
+      return permanentRegistrarController.register(
+        label,
+        account,
+        duration,
+        secret,
+        { value: priceWithBuffer, gasLimit }
+      )
+    } else {
+      let gasLimit = await this.estimateGasLimit(() => {
+        return permanentRegistrarController.estimateGas.registerWithConfig(
+          label,
+          account,
+          duration,
+          secret,
+          resolverAddr,
+          account,
+          { value:priceWithBuffer}
+        )
+      })
+
+      gasLimit = 3000000
+
+      return permanentRegistrarController.registerWithConfig(
+        label,
+        account,
+        duration,
+        secret,
+        resolverAddr,
+        account,
+        { value: priceWithBuffer, gasLimit }
+      )
+    }
+  }
+
 }
 
 function start () {
@@ -219,10 +390,28 @@ function start () {
     console.log('owner jiang.eth', await pns.owner('jiang.eth'))
     console.log('register hero', await pns.owner('hero.eth'))
 
+    // console.log('getResolver jiang.eth', await pns.getResolver('jiang.eth'))
+    // console.log('getResolver hero.eth', await pns.getResolver('hero.eth'))
+
+    // console.log('getTTL jiang.eth', await pns.getTTL('jiang.eth'))
+    // console.log('getTTL hero.eth', await pns.getTTL('hero.eth'))
+
+    // console.log('recordExists jiang.eth', await pns.recordExists('jiang.eth'))
+    // console.log('recordExists hero.eth', await pns.recordExists('hero.eth'))
+
     let rentPrice = await pns.controllerContract.rentPrice('eth', 86400*120)
     console.log(ethers.utils.formatEther(rentPrice))
 
-    // console.log('register sub.hero', await pns.createSubdomain('hero.dot'), 'hero')
+    console.log('getMinimumCommitmentAge', await pns.getMinimumCommitmentAge())
+    console.log('rentPrice', ethers.utils.formatEther(await pns.getRentPrice('gavinwood', 86400*365)))
+    console.log('rentPrices', ethers.utils.formatEther(await pns.getRentPrices(['gavinwood', 'gavin'], 86400*365)))
+    
+    console.log('makeCommitment', await pns.makeCommitment('gavinwood123', pns.account))
+    // console.log('commit', await pns.commit('gavinwood123', ''))
+    // console.log('register', await pns.register('gavinwood123', 86400*120, ''))
+
+
+    // console.log('register sub.hero', await pns.setSubnodeOwner('hero.dot'), 'hero')
     // console.log('register hero', await pns.register('hero'))
     // console.log('register hero', await pns.owner('hero.dot'))
     // console.log('register hero.hero.dot', await pns.owner('hero.hero.dot'))

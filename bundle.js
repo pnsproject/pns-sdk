@@ -13066,8 +13066,8 @@
     let result = Zeros;
     while (name2.length) {
       const partition = name2.match(Partition);
-      const label = toUtf8Bytes(nameprep(partition[3]));
-      result = keccak256(concat([result, keccak256(label)]));
+      const label2 = toUtf8Bytes(nameprep(partition[3]));
+      result = keccak256(concat([result, keccak256(label2)]));
       name2 = partition[2] || "";
     }
     return hexlify(result);
@@ -26748,6 +26748,10 @@
       reverseRegistrarAddress: "0x47FeB315728FeC50b2090035cEed0bE65065C14a"
     }
   };
+  function getBufferedPrice(price) {
+    return price.mul(110).div(100);
+  }
+  var transferGasCost = 21e3;
   var PNS = class {
     constructor() {
     }
@@ -26800,14 +26804,116 @@
       let namehashed = namehash2(node);
       return this.ensContract.owner(namehashed);
     }
-    register(label) {
-      label = "0x" + (0, import_js_sha32.keccak_256)(label);
-      return this.registrarContract.register(label, this.account);
-    }
-    createSubdomain(node, label) {
+    setRecord(node, newOwner, resolver, ttl) {
       let namehashed = namehash2(node);
-      label = "0x" + (0, import_js_sha32.keccak_256)(label);
-      return this.ensContract.setSubnodeOwner(namehashed, label, this.account);
+      return this.ensContract.setRecord(namehashed, newOwner, resolver, ttl);
+    }
+    setSubnodeRecord(node, label2, newOwner, resolver, ttl) {
+      let namehashed = namehash2(node);
+      label2 = "0x" + (0, import_js_sha32.keccak_256)(label2);
+      return this.ensContract.setSubnodeRecord(namehashed, label2, newOwner, resolver, ttl);
+    }
+    setOwner(node, newOwner) {
+      let namehashed = namehash2(node);
+      return this.ensContract.setOwner(namehashed, label, newOwner);
+    }
+    setSubnodeOwner(node, label2, newOwner) {
+      let namehashed = namehash2(node);
+      label2 = "0x" + (0, import_js_sha32.keccak_256)(label2);
+      return this.ensContract.setSubnodeOwner(namehashed, label2, newOwner);
+    }
+    setResolver(node, resolver) {
+      let namehashed = namehash2(node);
+      return this.ensContract.setResolver(namehashed, resolver);
+    }
+    setTTL(node, ttl) {
+      let namehashed = namehash2(node);
+      return this.ensContract.setTTL(namehashed, ttl);
+    }
+    getResolver(node) {
+      let namehashed = namehash2(node);
+      return this.ensContract.resolver(namehashed);
+    }
+    getTTL(node) {
+      let namehashed = namehash2(node);
+      return this.ensContract.ttl(namehashed);
+    }
+    recordExists(node) {
+      let namehashed = namehash2(node);
+      return this.ensContract.recordExists(namehashed);
+    }
+    async getMinimumCommitmentAge() {
+      const controllerContract = this.controllerContract;
+      return controllerContract.minCommitmentAge();
+    }
+    async getMaximumCommitmentAge() {
+      const controllerContract = this.controllerContract;
+      return controllerContract.maxCommitmentAge();
+    }
+    async getRentPrice(name2, duration) {
+      const controllerContract = this.controllerContract;
+      let price = await controllerContract.rentPrice(name2, duration);
+      return price;
+    }
+    async getRentPrices(labels, duration) {
+      const pricesArray = await Promise.all(labels.map((label2) => {
+        return this.getRentPrice(label2, duration);
+      }));
+      return pricesArray.reduce((a, c) => a.add(c));
+    }
+    async makeCommitment(name2, owner, secret = "") {
+      const controllerContract = this.controllerContract;
+      const resolverAddr = await this.owner("resolver.eth");
+      secret = namehash2("eth");
+      if (parseInt(resolverAddr, 16) === 0) {
+        return controllerContract.makeCommitment(name2, owner, secret);
+      } else {
+        return controllerContract.makeCommitmentWithConfig(name2, owner, secret, resolverAddr, this.account);
+      }
+    }
+    async checkCommitment(label2, secret = "") {
+      const account = this.account;
+      const commitment = await this.makeCommitment(label2, account, secret);
+      return await this.controllerContract.commitments(commitment);
+    }
+    async commit(label2, secret = "") {
+      const account = this.account;
+      const commitment = await this.makeCommitment(label2, account, secret);
+      return this.controllerContract.commit(commitment);
+    }
+    async estimateGasLimit(cb) {
+      let gas = 0;
+      try {
+        gas = (await cb()).toNumber();
+      } catch (e) {
+        let matched = e.message.match(/\(supplied gas (.*)\)/);
+        if (matched) {
+          gas = parseInt(matched[1]);
+        }
+        console.log({ gas, e, matched });
+      }
+      return gas + transferGasCost;
+    }
+    async register(label2, duration, secret = "") {
+      const permanentRegistrarController = this.controllerContract;
+      const account = this.account;
+      const price = await this.getRentPrice(label2, duration);
+      const priceWithBuffer = getBufferedPrice(price);
+      const resolverAddr = await this.owner("resolver.eth");
+      secret = namehash2("eth");
+      if (parseInt(resolverAddr, 16) === 0) {
+        let gasLimit = await this.estimateGasLimit(() => {
+          return permanentRegistrarController.estimateGas.register(label2, account, duration, secret, { value: priceWithBuffer });
+        });
+        gasLimit = 3e6;
+        return permanentRegistrarController.register(label2, account, duration, secret, { value: priceWithBuffer, gasLimit });
+      } else {
+        let gasLimit = await this.estimateGasLimit(() => {
+          return permanentRegistrarController.estimateGas.registerWithConfig(label2, account, duration, secret, resolverAddr, account, { value: priceWithBuffer });
+        });
+        gasLimit = 3e6;
+        return permanentRegistrarController.registerWithConfig(label2, account, duration, secret, resolverAddr, account, { value: priceWithBuffer, gasLimit });
+      }
     }
   };
   function start() {
@@ -26821,6 +26927,10 @@
       console.log("register hero", await pns.owner("hero.eth"));
       let rentPrice = await pns.controllerContract.rentPrice("eth", 86400 * 120);
       console.log(ethers_exports.utils.formatEther(rentPrice));
+      console.log("getMinimumCommitmentAge", await pns.getMinimumCommitmentAge());
+      console.log("rentPrice", ethers_exports.utils.formatEther(await pns.getRentPrice("gavinwood", 86400 * 365)));
+      console.log("rentPrices", ethers_exports.utils.formatEther(await pns.getRentPrices(["gavinwood", "gavin"], 86400 * 365)));
+      console.log("makeCommitment", await pns.makeCommitment("gavinwood123", pns.account));
     });
   }
   if (document) {
