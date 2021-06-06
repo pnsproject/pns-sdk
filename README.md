@@ -1,16 +1,36 @@
 ## ENS SDK
 
+<<<<<<< HEAD
 源代码构建 example:
+=======
+### Usage
+>>>>>>> d9222d586b203ec8804971d6ff46991a4ca9970b
 
-```
-  esbuild index.js --bundle --outfile=bundle.js --watch
+基于 Vite 运行:
+
+```hash
+npm
+npm run serve
 ```
 
+打包:
+
+```bash
+npm run build
+```
+
+<<<<<<< HEAD
 
 
 pns.ensContract
 
     function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) external virtual;
+=======
+### APIs
+
+pns.ensContract
+ function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) external virtual;
+>>>>>>> d9222d586b203ec8804971d6ff46991a4ca9970b
 
     function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl) external virtual;
 
@@ -116,7 +136,6 @@ pns.registrarContract
 
 pns.controllerContract
 
-
     mapping(bytes32=>uint) public commitments;
 
     event NameRegistered(string name, bytes32 indexed label, address indexed owner, uint cost, uint expires);
@@ -160,6 +179,3 @@ pns.bulkRenewalContract
     function renewAll(string[] calldata names, uint duration) external payable
 
     function supportsInterface(bytes4 interfaceID) external pure returns (bool)
-
-
-
