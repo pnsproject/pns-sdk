@@ -1,11 +1,15 @@
 ## ENS SDK
 
-build example:
+源代码构建 example:
 
 ```
   esbuild index.js --bundle --outfile=bundle.js --watch
 ```
-pns.ensContract   
+
+
+
+pns.ensContract
+
     function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) external virtual;
 
     function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl) external virtual;
