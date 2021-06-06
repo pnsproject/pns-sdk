@@ -1,10 +1,6 @@
 ## ENS SDK
 
-<<<<<<< HEAD
-源代码构建 example:
-=======
 ### Usage
->>>>>>> d9222d586b203ec8804971d6ff46991a4ca9970b
 
 基于 Vite 运行:
 
@@ -19,18 +15,11 @@ npm run serve
 npm run build
 ```
 
-<<<<<<< HEAD
-
-
-pns.ensContract
-
-    function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) external virtual;
-=======
 ### APIs
 
+```
 pns.ensContract
- function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) external virtual;
->>>>>>> d9222d586b203ec8804971d6ff46991a4ca9970b
+    function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) external virtual;
 
     function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl) external virtual;
 
@@ -179,3 +168,4 @@ pns.bulkRenewalContract
     function renewAll(string[] calldata names, uint duration) external payable
 
     function supportsInterface(bytes4 interfaceID) external pure returns (bool)
+```

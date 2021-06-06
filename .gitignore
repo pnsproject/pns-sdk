@@ -1,8 +1,5 @@
 node_modules/
-<<<<<<< HEAD
 other
-=======
 dist/
 bundle.js
 lib/*
->>>>>>> d9222d586b203ec8804971d6ff46991a4ca9970b
