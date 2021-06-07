@@ -22,13 +22,9 @@ function start() {
     // console.log('recordExists jiang.eth', await pns.recordExists('jiang.eth'))
     // console.log('recordExists hero.eth', await pns.recordExists('hero.eth'))
 
-    let rentPrice = await pns.controllerContract.rentPrice("eth", 86400 * 120);
-    console.log(ethers.utils.formatEther(rentPrice));
-
     console.log("getMinimumCommitmentAge", await pns.getMinimumCommitmentAge());
     console.log("rentPrice", ethers.utils.formatEther(await pns.getRentPrice("gavinwood", 86400 * 365)));
-    let prices: any = await pns.getRentPrices(["gavinwood", "gavin"], 86400 * 365);
-    console.log("rentPrices", ethers.utils.formatEther(prices));
+    console.log("rentPrices", ethers.utils.formatEther((await pns.getRentPrices(["gavinwood", "gavin"], 86400 * 365)) as any));
 
     console.log("makeCommitment", await pns.makeCommitment("gavinwood123", pns.account));
     // console.log('commit', await pns.commit('gavinwood123', ''))
