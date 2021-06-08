@@ -16,7 +16,8 @@
   "dependencies": {
     "buffer": "^6.0.3",
     "ethers": "^5.2.0",
-    "idna-uts46-hx": "^3.4.0"
+    "idna-uts46-hx": "^3.4.0",
+    "is-valid-domain": "0.0.19"
   },
   "devDependencies": {
     "@metamask/providers": "^8.1.1",

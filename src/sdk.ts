@@ -9,6 +9,8 @@ import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 
 import { HexAddress, DomainString } from "./types";
 
+import isValidDomain from 'is-valid-domain'
+
 function normalize(name: string): string {
   return name;
 }
@@ -136,6 +138,10 @@ export class PNS {
   bulkRenewalContract: Contract;
 
   constructor() {}
+
+  isValidDomain (name: string): boolean {
+    return isValidDomain(name, {allowUnicode: false, subdomain: false}) && name.length < 64
+  }
 
   connect() {
     if (typeof ethereum !== "undefined") {
