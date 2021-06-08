@@ -13,6 +13,8 @@ import { abi as BulkRenewalAbi } from "../contracts/BulkRenewal.json";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 
+import isValidDomain from 'is-valid-domain'
+
 function normalize(name) {
   return name;
 }
@@ -143,6 +145,10 @@ export class PNS {
   bulkRenewalContract: Contract;
 
   constructor() {}
+
+  isValidDomain (name) {
+    return isValidDomain(name, {allowUnicode: false, subdomain: false}) && name.length < 64
+  }
 
   connect() {
     if (typeof ethereum !== "undefined") {
