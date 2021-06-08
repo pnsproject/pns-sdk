@@ -2,22 +2,18 @@ import { Buffer as Buffer } from "buffer/";
 import { keccak_256 as sha3 } from "js-sha3";
 import { ethers, Contract } from "ethers";
 
-import { abi as EnsAbi } from "../contracts/ENSRegistry.json";
-import { abi as RegistrarAbi } from "../contracts/BaseRegistrarImplementation.json";
-import { abi as ResolverAbi } from "../contracts/PublicResolver.json";
-import { abi as ReverseRegistrar } from "../contracts/ReverseRegistrar.json";
-import { abi as DummyOracleAbi } from "../contracts/DummyOracle.json";
-import { abi as StablePriceOracleAbi } from "../contracts/StablePriceOracle.json";
-import { abi as ETHRegistrarControllerAbi } from "../contracts/ETHRegistrarController.json";
-import { abi as BulkRenewalAbi } from "../contracts/BulkRenewal.json";
+import { EnsAbi, RegistrarAbi, ResolverAbi, ETHRegistrarControllerAbi, BulkRenewalAbi } from "./contracts";
+
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 
-function normalize(name) {
+import { HexAddress, DomainString } from "./types";
+
+function normalize(name: string): string {
   return name;
 }
 
-function encodeLabelhash(hash) {
+function encodeLabelhash(hash: HexAddress) {
   if (!hash.startsWith("0x")) {
     throw new Error("Expected label hash to start with 0x");
   }
@@ -128,14 +124,11 @@ const transferGasCost = 21000;
 var ethereum = (window as any).ethereum as MetaMaskInpageProvider;
 
 export class PNS {
-  /** TODO */
-  account: any;
-  /** TODO */
+  account: HexAddress;
   provider: Web3Provider;
-  /** TODO */
   signer: JsonRpcSigner;
 
-  /** TODO TODO... */
+  /** 合约, 内部是动态类型... */
   ensContract: Contract;
   resolverContract: Contract;
   registrarContract: Contract;
@@ -154,7 +147,8 @@ export class PNS {
     return TLD;
   }
 
-  async getAccount() {
+  /** TODO, 内部逻辑需要优化, 类型不一致 */
+  async getAccount(): Promise<HexAddress | void> {
     let accounts = await ethereum.request({ method: "eth_accounts" });
     let from = accounts[0];
     if (!from) {
@@ -214,7 +208,7 @@ export class PNS {
   // function setRecord(bytes32 node, address owner, address resolver, uint64 ttl)
   // example:
   // pns.setRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400)
-  setRecord(node, newOwner, resolver, ttl) {
+  setRecord(node: DomainString, newOwner: HexAddress, resolver: HexAddress, ttl: number) {
     let namehashed = namehash(node);
     return this.ensContract.setRecord(namehashed, newOwner, resolver, ttl);
   }
@@ -223,7 +217,7 @@ export class PNS {
   // function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl)
   // example:
   // pns.setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400)
-  setSubnodeRecord(node, label, newOwner, resolver, ttl) {
+  setSubnodeRecord(node: DomainString, label: string, newOwner: HexAddress, resolver, HexAddress, ttl: number) {
     let namehashed = namehash(node);
     label = "0x" + sha3(label);
     return this.ensContract.setSubnodeRecord(namehashed, label, newOwner, resolver, ttl);
@@ -233,7 +227,7 @@ export class PNS {
   // function setOwner(bytes32 node, address owner)
   // example:
   // pns.setOwner('hero.eth', '0x123456789')
-  setOwner(node, newOwner) {
+  setOwner(node: DomainString, newOwner: HexAddress) {
     let namehashed = namehash(node);
     return this.ensContract.setOwner(namehashed, newOwner);
   }
@@ -242,7 +236,7 @@ export class PNS {
   // function setSubnodeOwner(bytes32 node, bytes32 label, address owner)
   // example:
   // pns.setSubnodeOwner('hero.eth', 'sub', '0x123456789')
-  setSubnodeOwner(node, label, newOwner) {
+  setSubnodeOwner(node: DomainString, label: string, newOwner: HexAddress) {
     let namehashed = namehash(node);
     label = "0x" + sha3(label);
     return this.ensContract.setSubnodeOwner(namehashed, label, newOwner);
@@ -252,7 +246,7 @@ export class PNS {
   // function setResolver(bytes32 node, address resolver)
   // example:
   // pns.setResolver('hero.eth', '0x123456789')
-  setResolver(node, resolver) {
+  setResolver(node: DomainString, resolver: HexAddress) {
     let namehashed = namehash(node);
     return this.ensContract.setResolver(namehashed, resolver);
   }
@@ -261,7 +255,7 @@ export class PNS {
   // function setTTL(bytes32 node, uint64 ttl)
   // example:
   // pns.setTTL('hero.eth', 3600)
-  setTTL(node, ttl) {
+  setTTL(node: DomainString, ttl: number): void {
     let namehashed = namehash(node);
     return this.ensContract.setTTL(namehashed, ttl);
   }
@@ -270,7 +264,7 @@ export class PNS {
   // function getResolver(bytes32 node) returns (address)
   // example:
   // pns.getResolver('hero.eth')
-  getResolver(node) {
+  getResolver(node: DomainString): HexAddress {
     let namehashed = namehash(node);
     return this.ensContract.resolver(namehashed);
   }
@@ -279,7 +273,7 @@ export class PNS {
   // function getTTL(bytes32 node) returns (uint64)
   // example:
   // pns.getTTL('hero.eth')
-  getTTL(node) {
+  getTTL(node: DomainString): number {
     let namehashed = namehash(node);
     return this.ensContract.ttl(namehashed);
   }
@@ -288,19 +282,19 @@ export class PNS {
   // function recordExists(bytes32 node) returns (bool)
   // example:
   // pns.recordExists('hero.eth')
-  recordExists(node) {
+  recordExists(node: DomainString): boolean {
     let namehashed = namehash(node);
     return this.ensContract.recordExists(namehashed);
   }
 
   // 获得 MinimumCommitmentAge 参数，忽略
-  async getMinimumCommitmentAge() {
+  async getMinimumCommitmentAge(): Promise<number> {
     const controllerContract = this.controllerContract;
     return controllerContract.minCommitmentAge();
   }
 
   // 获得 getMaximumCommitmentAge 参数，忽略
-  async getMaximumCommitmentAge() {
+  async getMaximumCommitmentAge(): Promise<number> {
     const controllerContract = this.controllerContract;
     return controllerContract.maxCommitmentAge();
   }
@@ -309,13 +303,13 @@ export class PNS {
   // function getRentPrice(string name, uint duration) returns (uint)
   // example:
   // pns.getRentPrice('hero', 86400*365)
-  async getRentPrice(name, duration) {
+  async getRentPrice(name: DomainString, duration: number): Promise<number> {
     const controllerContract = this.controllerContract;
     let price = await controllerContract.rentPrice(name, duration);
     return price;
   }
 
-  async getRentPrices(labels, duration) {
+  async getRentPrices(labels: string[], duration: number): Promise<number> {
     const pricesArray = await Promise.all(
       labels.map((label) => {
         return this.getRentPrice(label, duration);
@@ -324,7 +318,7 @@ export class PNS {
     return pricesArray.reduce((a: any, c) => a.add(c));
   }
 
-  async makeCommitment(name, owner, secret = "") {
+  async makeCommitment(name: DomainString, owner: HexAddress, secret = "") {
     const controllerContract = this.controllerContract;
     const resolverAddr = await this.owner("resolver.eth");
     secret = namehash("eth"); // todo: store user
@@ -335,14 +329,14 @@ export class PNS {
     }
   }
 
-  async checkCommitment(label, secret = "") {
+  async checkCommitment(label: DomainString, secret = "") {
     const account = this.account;
     const commitment = await this.makeCommitment(label, account, secret);
     return await this.controllerContract.commitments(commitment);
   }
 
   // 开始注册域名（第一步）
-  async commit(label, secret = "") {
+  async commit(label: DomainString, secret = "") {
     const account = this.account;
     const commitment = await this.makeCommitment(label, account, secret);
 
@@ -350,7 +344,7 @@ export class PNS {
   }
 
   // 内部方法，用于估算交易手续费
-  async estimateGasLimit(cb) {
+  async estimateGasLimit(cb: () => any) {
     let gas = 0;
     try {
       gas = (await cb()).toNumber();
@@ -365,7 +359,7 @@ export class PNS {
   }
 
   // 域名注册（第二步）
-  async register(label, duration, secret = "") {
+  async register(label: DomainString, duration: number, secret = "") {
     const permanentRegistrarController = this.controllerContract;
     const account = this.account;
     const price = await this.getRentPrice(label, duration);
