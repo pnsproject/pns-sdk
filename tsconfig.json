@@ -15,6 +15,7 @@
     "types": ["node"],
     "baseUrl": "./src/",
     "importsNotUsedAsValues": "preserve",
+    "skipLibCheck": true,
     "plugins": []
   }
 }
