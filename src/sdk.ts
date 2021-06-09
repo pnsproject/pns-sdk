@@ -146,8 +146,7 @@ export class PNS {
   }
 
   isValidDomain(name: string): boolean {
-    // unicode 默认是 false, ts 类型还没更新
-    return isValidDomain(name, { subdomain: false }) && name.length < 64;
+    return isValidDomain(name, { allowUnicode: false, subdomain: false }) && name.length < 64;
   }
 
   isConnected() {
