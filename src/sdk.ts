@@ -1,6 +1,8 @@
+/// <reference path="./typings.d.ts" />
+
 import { Buffer as Buffer } from "buffer/";
 import { keccak_256 as sha3 } from "js-sha3";
-import { ethers, Contract } from "ethers";
+import { ethers, Contract, BigNumber } from "ethers";
 
 import { EnsAbi, RegistrarAbi, ResolverAbi, ETHRegistrarControllerAbi, BulkRenewalAbi } from "./contracts";
 
@@ -9,7 +11,7 @@ import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 
 import { HexAddress, DomainString } from "./types";
 
-import isValidDomain from 'is-valid-domain'
+import isValidDomain from "is-valid-domain";
 
 function normalize(name: string): string {
   return name;
@@ -62,7 +64,7 @@ function labelhash(unnormalisedLabelOrLabelhash) {
     : "0x" + sha3(normalize(unnormalisedLabelOrLabelhash));
 }
 
-function namehash(inputName) {
+function namehash(inputName: string): HexAddress {
   if (inputName === "[root]") {
     return "0x0000000000000000000000000000000000000000000000000000000000000000";
   }
@@ -117,7 +119,7 @@ const configs = {
   },
 };
 
-function getBufferedPrice(price) {
+function getBufferedPrice(price: BigNumber): BigNumber {
   return price.mul(110).div(100);
 }
 
@@ -137,15 +139,26 @@ export class PNS {
   controllerContract: Contract;
   bulkRenewalContract: Contract;
 
-  constructor() {}
-
-  isValidDomain (name: string): boolean {
-    return isValidDomain(name, {allowUnicode: false, subdomain: false}) && name.length < 64
+  constructor() {
+    if (window["ethereum"] == null) {
+      console.error("without global `ethereum` interface, PNS will fall!");
+    }
   }
 
-  connect() {
+  isValidDomain(name: string): boolean {
+    return isValidDomain(name, { allowUnicode: false, subdomain: false }) && name.length < 64;
+  }
+
+  isConnected() {
+    return ethereum.isConnected();
+  }
+
+  async loginAccount(): Promise<void> {
     if (typeof ethereum !== "undefined") {
-      ethereum.enable().catch(console.error);
+      // 调用窗口, 登录账户
+      await ethereum.request({ method: "eth_requestAccounts" });
+    } else {
+      throw new Error("cannot find a global `ethereum` object");
     }
   }
 
@@ -153,12 +166,15 @@ export class PNS {
     return TLD;
   }
 
-  /** TODO, 内部逻辑需要优化, 类型不一致 */
+  /** 获取账号, 如果没有, 请求登录 */
   async getAccount(): Promise<HexAddress | void> {
-    let accounts = await ethereum.request({ method: "eth_accounts" });
+    let accounts: HexAddress[] = await ethereum.request({ method: "eth_accounts" });
+    // console.log("accounts:", accounts);
     let from = accounts[0];
-    if (!from) {
-      return await this.connect();
+    if (accounts.length === 0) {
+      await this.loginAccount(); // try to connect
+      let accounts = await ethereum.request({ method: "eth_accounts" });
+      from = accounts[0];
     }
     this.account = from;
     return from;
@@ -168,7 +184,7 @@ export class PNS {
     let accounts = await ethereum.request({ method: "eth_accounts" });
     this.account = accounts[0];
     if (!this.account) {
-      return await this.connect();
+      return await this.loginAccount();
     }
 
     this.provider = new ethers.providers.Web3Provider(ethereum as any);
@@ -205,7 +221,7 @@ export class PNS {
     return configs[this.getChainId()];
   }
 
-  owner(node) {
+  owner(node: DomainString): Promise<HexAddress> {
     let namehashed = namehash(node);
     return this.ensContract.owner(namehashed);
   }
@@ -214,7 +230,7 @@ export class PNS {
   // function setRecord(bytes32 node, address owner, address resolver, uint64 ttl)
   // example:
   // pns.setRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400)
-  setRecord(node: DomainString, newOwner: HexAddress, resolver: HexAddress, ttl: number) {
+  setRecord(node: DomainString, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
     let namehashed = namehash(node);
     return this.ensContract.setRecord(namehashed, newOwner, resolver, ttl);
   }
@@ -223,7 +239,7 @@ export class PNS {
   // function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl)
   // example:
   // pns.setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400)
-  setSubnodeRecord(node: DomainString, label: string, newOwner: HexAddress, resolver, HexAddress, ttl: number) {
+  setSubnodeRecord(node: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
     let namehashed = namehash(node);
     label = "0x" + sha3(label);
     return this.ensContract.setSubnodeRecord(namehashed, label, newOwner, resolver, ttl);
@@ -233,7 +249,7 @@ export class PNS {
   // function setOwner(bytes32 node, address owner)
   // example:
   // pns.setOwner('hero.eth', '0x123456789')
-  setOwner(node: DomainString, newOwner: HexAddress) {
+  setOwner(node: DomainString, newOwner: HexAddress): Promise<any> {
     let namehashed = namehash(node);
     return this.ensContract.setOwner(namehashed, newOwner);
   }
@@ -242,7 +258,7 @@ export class PNS {
   // function setSubnodeOwner(bytes32 node, bytes32 label, address owner)
   // example:
   // pns.setSubnodeOwner('hero.eth', 'sub', '0x123456789')
-  setSubnodeOwner(node: DomainString, label: string, newOwner: HexAddress) {
+  setSubnodeOwner(node: DomainString, label: string, newOwner: HexAddress): Promise<any> {
     let namehashed = namehash(node);
     label = "0x" + sha3(label);
     return this.ensContract.setSubnodeOwner(namehashed, label, newOwner);
@@ -252,7 +268,7 @@ export class PNS {
   // function setResolver(bytes32 node, address resolver)
   // example:
   // pns.setResolver('hero.eth', '0x123456789')
-  setResolver(node: DomainString, resolver: HexAddress) {
+  setResolver(node: DomainString, resolver: HexAddress): Promise<any> {
     let namehashed = namehash(node);
     return this.ensContract.setResolver(namehashed, resolver);
   }
@@ -261,7 +277,7 @@ export class PNS {
   // function setTTL(bytes32 node, uint64 ttl)
   // example:
   // pns.setTTL('hero.eth', 3600)
-  setTTL(node: DomainString, ttl: number): void {
+  setTTL(node: DomainString, ttl: number): Promise<void> {
     let namehashed = namehash(node);
     return this.ensContract.setTTL(namehashed, ttl);
   }
@@ -270,7 +286,7 @@ export class PNS {
   // function getResolver(bytes32 node) returns (address)
   // example:
   // pns.getResolver('hero.eth')
-  getResolver(node: DomainString): HexAddress {
+  getResolver(node: DomainString): Promise<HexAddress> {
     let namehashed = namehash(node);
     return this.ensContract.resolver(namehashed);
   }
@@ -279,7 +295,7 @@ export class PNS {
   // function getTTL(bytes32 node) returns (uint64)
   // example:
   // pns.getTTL('hero.eth')
-  getTTL(node: DomainString): number {
+  getTTL(node: DomainString): Promise<number> {
     let namehashed = namehash(node);
     return this.ensContract.ttl(namehashed);
   }
@@ -288,7 +304,7 @@ export class PNS {
   // function recordExists(bytes32 node) returns (bool)
   // example:
   // pns.recordExists('hero.eth')
-  recordExists(node: DomainString): boolean {
+  recordExists(node: DomainString): Promise<boolean> {
     let namehashed = namehash(node);
     return this.ensContract.recordExists(namehashed);
   }
@@ -309,13 +325,13 @@ export class PNS {
   // function getRentPrice(string name, uint duration) returns (uint)
   // example:
   // pns.getRentPrice('hero', 86400*365)
-  async getRentPrice(name: DomainString, duration: number): Promise<number> {
+  async getRentPrice(name: DomainString, duration: number): Promise<BigNumber> {
     const controllerContract = this.controllerContract;
     let price = await controllerContract.rentPrice(name, duration);
     return price;
   }
 
-  async getRentPrices(labels: string[], duration: number): Promise<number> {
+  async getRentPrices(labels: string[], duration: number): Promise<BigNumber> {
     const pricesArray = await Promise.all(
       labels.map((label) => {
         return this.getRentPrice(label, duration);
@@ -324,7 +340,7 @@ export class PNS {
     return pricesArray.reduce((a: any, c) => a.add(c));
   }
 
-  async makeCommitment(name: DomainString, owner: HexAddress, secret = "") {
+  async makeCommitment(name: DomainString, owner: HexAddress, secret = ""): Promise<HexAddress> {
     const controllerContract = this.controllerContract;
     const resolverAddr = await this.owner("resolver.eth");
     secret = namehash("eth"); // todo: store user
@@ -350,7 +366,7 @@ export class PNS {
   }
 
   // 内部方法，用于估算交易手续费
-  async estimateGasLimit(cb: () => any) {
+  async estimateGasLimit(cb: () => Promise<BigNumber>): Promise<number> {
     let gas = 0;
     try {
       gas = (await cb()).toNumber();
@@ -365,7 +381,7 @@ export class PNS {
   }
 
   // 域名注册（第二步）
-  async register(label: DomainString, duration: number, secret = "") {
+  async register(label: DomainString, duration: number, secret = ""): Promise<void> {
     const permanentRegistrarController = this.controllerContract;
     const account = this.account;
     const price = await this.getRentPrice(label, duration);

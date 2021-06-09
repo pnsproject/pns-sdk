@@ -4,6 +4,9 @@ import { PNS } from "./sdk";
 
 function start() {
   const pns = new PNS();
+
+  console.log("connection status:", pns.isConnected());
+
   document.querySelector("button").addEventListener("click", async () => {
     (window as any).pns = pns;
 
