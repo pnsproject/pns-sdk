@@ -13,6 +13,11 @@ import { HexAddress, DomainString } from "./types";
 
 import isValidDomain from "is-valid-domain";
 
+import contentHash from '@ensdomains/content-hash'
+
+
+// utils
+
 function normalize(name: string): string {
   return name;
 }
@@ -91,15 +96,102 @@ function namehash(inputName: string): HexAddress {
   return "0x" + node;
 }
 
-// let TLD = "dot"
-// let configs = {
-//   "0x4": {
-//     ensAddress: '0xef9Da876d7f9e5b1E8919a7CF94A327d57c6CAb7',
-//     resolverAddress: '0xd581f8C423408d08E8FDa4cEcDF4951D29867f89',
-//     registrarAddress: '0x09270d622cE1E2D2d53DA920EE9577dB83A167CB',
-//     reverseRegistrarAddress: '0x47FeB315728FeC50b2090035cEed0bE65065C14a',
-//   }
-// }
+function getNamehash(name: string): HexAddress {
+  return namehash(name)
+}
+
+export const stripHexPrefix = (str: HexAddress): string => {
+    return str.slice(0, 2) === '0x' ? str.slice(2) : str
+};
+export const toChecksumAddress = (address: HexAddress, chainId?: number = null) => {
+    if (typeof address !== 'string') {
+        throw new Error("stripHexPrefix param must be type 'string', is currently type " + (typeof address) + ".");
+    }
+    const strip_address = stripHexPrefix(address).toLowerCase()
+    const prefix = chainId != null ? (chainId.toString() + '0x') : ''
+    const keccak_hash = sha3(prefix + strip_address).toString('hex')
+    let output = '0x'
+
+    for (let i = 0; i < strip_address.length; i++)
+        output += parseInt(keccak_hash[i], 16) >= 8 ?
+            strip_address[i].toUpperCase() :
+            strip_address[i];
+    return output
+};
+
+const encoder = toChecksumAddress
+
+
+function checksummedHexDecoder(data: HexAddress): Buffer {
+    const stripped = stripHexPrefix(data);
+    return Buffer.from(stripHexPrefix(stripped), 'hex');
+}
+
+
+function decodeContenthash(encoded) {
+  let decoded, protocolType, error
+  if(!encoded || encoded === '0x'){
+    return {}
+  }
+  if (encoded.error) {
+    return { protocolType: null, decoded: encoded.error }
+  }else if(encoded === false){
+    return { protocolType: null, decoded: 'invalid value' }
+  }
+  if (encoded) {
+    try {
+      decoded = contentHash.decode(encoded)
+      const codec = contentHash.getCodec(encoded)
+      if (codec === 'ipfs-ns') {
+        protocolType = 'ipfs'
+      } else if (codec === 'ipns-ns') {
+        protocolType = 'ipns'
+      } else if (codec === 'swarm-ns') {
+        protocolType = 'bzz'
+      } else if (codec === 'onion') {
+        protocolType = 'onion'
+      } else if (codec === 'onion3') {
+        protocolType = 'onion3'
+      } else if (codec === 'skynet-ns') {
+        protocolType = 'sia'
+      } else {
+        decoded = encoded
+      }
+    } catch (e) {
+      error = e.message
+    }
+  }
+  return { protocolType, decoded, error }
+}
+
+
+function getResolverContract({ address: HexAddress, provider: Web3Provider }): Contract {
+  console.log('address', {address, provider})
+  return new ethers.Contract(address, ResolverAbi, provider)
+}
+
+// globals
+
+let provider: Web3Provider
+let signer: JsonRpcSigner
+let address: HexAddress = null
+let account: HexAddress = null
+let readOnly = false
+let reloadOnAccountsChange
+
+let resolverAddress: HexAddress = null
+
+let ensContract: Contract = null
+let resolverContract: Contract = null
+let registrarContract: Contract = null
+let controllerContract: Contract = null
+let bulkRenewalContract: Contract = null
+
+const emptyAddress: HexAddress = '0x0000000000000000000000000000000000000000'
+
+// constants
+
+const baseGasLimit = 500000;
 
 const TLD = "eth";
 const interfaces = {
@@ -169,7 +261,6 @@ export class PNS {
   /** 获取账号, 如果没有, 请求登录 */
   async getAccount(): Promise<HexAddress | void> {
     let accounts: HexAddress[] = await ethereum.request({ method: "eth_accounts" });
-    // console.log("accounts:", accounts);
     let from = accounts[0];
     if (accounts.length === 0) {
       await this.loginAccount(); // try to connect
@@ -187,25 +278,21 @@ export class PNS {
       return await this.loginAccount();
     }
 
-    this.provider = new ethers.providers.Web3Provider(ethereum as any);
-    this.signer = this.provider.getSigner();
-    this.ensContract = new ethers.Contract(ensAddress, EnsAbi, this.signer);
+    provider = this.provider = new ethers.providers.Web3Provider(ethereum as any);
+    signer = this.signer = this.provider.getSigner();
+    ensContract = this.ensContract = new ethers.Contract(ensAddress, EnsAbi, this.signer);
 
-    let resolverAddress = await this.ensContract.resolver(namehash("eth"));
-    this.resolverContract = new ethers.Contract(resolverAddress, ResolverAbi, this.signer);
-    // console.log('resolver', resolverAddress)
+    resolverAddress = await this.ensContract.resolver(namehash("eth"));
+    resolverContract = this.resolverContract = new ethers.Contract(resolverAddress, ResolverAbi, this.signer);
 
     let ethAddress = await this.ensContract.owner(namehash("eth"));
-    this.registrarContract = new ethers.Contract(ethAddress, RegistrarAbi, this.signer);
-    // console.log('registrarAddress', ethAddress)
+    registrarContract = this.registrarContract = new ethers.Contract(ethAddress, RegistrarAbi, this.signer);
 
     let controllerAddress = await this.resolverContract.interfaceImplementer(namehash("eth"), interfaces.permanentRegistrar);
-    this.controllerContract = new ethers.Contract(controllerAddress, ETHRegistrarControllerAbi, this.signer);
-    // console.log('controllerAddress', controllerAddress)
+    controllerContract = this.controllerContract = new ethers.Contract(controllerAddress, ETHRegistrarControllerAbi, this.signer);
 
     let bulkRenewalAddress = await this.resolverContract.interfaceImplementer(namehash("eth"), interfaces.bulkRenewal);
-    this.bulkRenewalContract = new ethers.Contract(bulkRenewalAddress, BulkRenewalAbi, this.signer);
-    // console.log('bulkRenewalAddress', bulkRenewalAddress)
+    bulkRenewalContract = this.bulkRenewalContract = new ethers.Contract(bulkRenewalAddress, BulkRenewalAbi, this.signer);
 
     return {
       provider: this.provider,
@@ -217,14 +304,206 @@ export class PNS {
     return ethereum.chainId;
   }
 
-  getChainConfig() {
+  getChainConfig(): number {
     return configs[this.getChainId()];
   }
 
-  owner(node: DomainString): Promise<HexAddress> {
+  getOwner(node: DomainString): Promise<HexAddress> {
     let namehashed = namehash(node);
-    return this.ensContract.owner(namehashed);
+    return ensContract.owner(namehashed);
   }
+
+
+  async getAddress(name: DomainString): Promise<HexAddress> {
+    const resolverAddr = await this.getResolver(name)
+    return this.getEthAddressWithResolver(name, resolverAddr)
+  }
+
+  async getAddr(name: DomainString, key: string): HexAddress {
+    const resolverAddr = await this.getResolver(name)
+    if (parseInt(resolverAddr, 16) === 0) return emptyAddress
+    return this.getAddrWithResolver(name, key, resolverAddr)
+  }
+
+  async getAddrWithResolver(name, key, resolverAddr): HexAddress {
+    const namehash = getNamehash(name)
+    try {
+      const Resolver = this.resolverContract
+
+      const coinType = 60
+      // const { coinType, encoder } = formatsByName[key]
+      const addr = await Resolver['addr(bytes32,uint256)'](namehash, coinType)
+      if (addr === '0x') return emptyAddress
+
+      // return encoder(Buffer.from(addr.slice(2), 'hex'))
+      return addr
+    } catch (e) {
+      console.log(e)
+      console.warn(
+        'Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?'
+      )
+      return emptyAddress
+    }
+  }
+
+  async getContent(name: DomainString) {
+    const resolverAddr = await getResolver(name)
+    return getContentWithResolver(name, resolverAddr)
+  }
+
+  async getContentWithResolver(name: DomainString, resolverAddr: HexAddress) {
+    if (parseInt(resolverAddr, 16) === 0) {
+      return emptyAddress
+    }
+    try {
+      const namehash = getNamehash(name)
+      const provider = await getProvider()
+      const Resolver = getResolverContract({
+        address: resolverAddr,
+        provider
+      })
+      const contentHashSignature = utils
+        .solidityKeccak256(['string'], ['contenthash(bytes32)'])
+        .slice(0, 10)
+
+      const isContentHashSupported = await Resolver.supportsInterface(
+        contentHashSignature
+      )
+
+      if (isContentHashSupported) {
+        const encoded = await Resolver.contenthash(namehash)
+        const { protocolType, decoded, error } = decodeContenthash(encoded)
+        if (error) {
+          return {
+            value: error,
+            contentType: 'error'
+          }
+        }
+        return {
+          value: `${protocolType}://${decoded}`,
+          contentType: 'contenthash'
+        }
+      } else {
+        const value = await Resolver.content(namehash)
+        return {
+          value,
+          contentType: 'oldcontent'
+        }
+      }
+    } catch (e) {
+      const message =
+        'Error getting content on the resolver contract, are you sure the resolver address is a resolver contract?'
+      console.warn(message, e)
+      return { value: message, contentType: 'error' }
+    }
+  }
+
+  async getText(name: DomainString, key: string): string {
+    const resolverAddr = await getResolver(name)
+    return getTextWithResolver(name, key, resolverAddr)
+  }
+
+  async getTextWithResolver(name: DomainString, key: string, resolverAddr: HexAddress) {
+    if (parseInt(resolverAddr, 16) === 0) {
+      return ''
+    }
+    const namehash = getNamehash(name)
+    try {
+      const provider = await getProvider()
+      const Resolver = getResolverContract({
+        address: resolverAddr,
+        provider
+      })
+      const addr = await Resolver.text(namehash, key)
+      return addr
+    } catch (e) {
+      console.warn(
+        'Error getting text record on the resolver contract, are you sure the resolver address is a resolver contract?'
+      )
+      return ''
+    }
+  }
+
+  async getName(address: HexAddress): string {
+    const reverseNode = `${address.slice(2)}.addr.reverse`
+    const resolverAddr = await getResolver(reverseNode)
+    return getNameWithResolver(address, resolverAddr)
+  }
+
+  async getNameWithResolver(address: HexAddress, resolverAddr: HexAddress): string {
+    const reverseNode = `${address.slice(2)}.addr.reverse`
+    const reverseNamehash = getNamehash(reverseNode)
+    if (parseInt(resolverAddr, 16) === 0) {
+      return {
+        name: null
+      }
+    }
+
+    try {
+      const provider = await getProvider()
+      const Resolver = getResolverContract({
+        address: resolverAddr,
+        provider
+      })
+      const name = await Resolver.name(reverseNamehash)
+      return {
+        name
+      }
+    } catch (e) {
+      console.log(`Error getting name for reverse record of ${address}`, e)
+    }
+  }
+
+
+  async getResolverDetails(node) {
+    try {
+      const addrPromise = getAddress(node.name)
+      const contentPromise = getContent(node.name)
+      const [addr, content] = await Promise.all([addrPromise, contentPromise])
+      return {
+        ...node,
+        addr,
+        content: content.value,
+        contentType: content.contentType
+      }
+    } catch (e) {
+      return {
+        ...node,
+        addr: '0x0',
+        content: '0x0',
+        contentType: 'error'
+      }
+    }
+  }
+
+  async getDomainDetails(name) {
+    const nameArray = name.split('.')
+    const labelhash = getLabelhash(nameArray[0])
+    const [owner, resolver] = await Promise.all([
+      getOwner(name),
+      getResolver(name)
+    ])
+    const node = {
+      name,
+      label: nameArray[0],
+      labelhash,
+      owner,
+      resolver
+    }
+
+    const hasResolver = parseInt(node.resolver, 16) !== 0
+
+    if (hasResolver) {
+      return getResolverDetails(node)
+    }
+
+    return {
+      ...node,
+      addr: null,
+      content: null
+    }
+  }
+
 
   // 一次性设置域名信息
   // function setRecord(bytes32 node, address owner, address resolver, uint64 ttl)
@@ -300,15 +579,6 @@ export class PNS {
     return this.ensContract.ttl(namehashed);
   }
 
-  // 检查域名是否已经存在
-  // function recordExists(bytes32 node) returns (bool)
-  // example:
-  // pns.recordExists('hero.eth')
-  recordExists(node: DomainString): Promise<boolean> {
-    let namehashed = namehash(node);
-    return this.ensContract.recordExists(namehashed);
-  }
-
   // 获得 MinimumCommitmentAge 参数，忽略
   async getMinimumCommitmentAge(): Promise<number> {
     const controllerContract = this.controllerContract;
@@ -365,45 +635,141 @@ export class PNS {
     return this.controllerContract.commit(commitment);
   }
 
-  // 内部方法，用于估算交易手续费
-  async estimateGasLimit(cb: () => Promise<BigNumber>): Promise<number> {
-    let gas = 0;
-    try {
-      gas = (await cb()).toNumber();
-    } catch (e) {
-      let matched = e.message.match(/\(supplied gas (.*)\)/);
-      if (matched) {
-        gas = parseInt(matched[1]);
-      }
-      console.log({ gas, e, matched });
-    }
-    return gas + transferGasCost;
-  }
-
   // 域名注册（第二步）
   async register(label: DomainString, duration: number, secret = ""): Promise<void> {
-    const permanentRegistrarController = this.controllerContract;
+    const controllerContract = this.controllerContract;
     const account = this.account;
     const price = await this.getRentPrice(label, duration);
     const priceWithBuffer = getBufferedPrice(price);
     const resolverAddr = await this.owner("resolver.eth");
     secret = namehash("eth");
     if (parseInt(resolverAddr, 16) === 0) {
-      let gasLimit = await this.estimateGasLimit(() => {
-        return permanentRegistrarController.estimateGas.register(label, account, duration, secret, { value: priceWithBuffer });
-      });
-
-      gasLimit = 3000000;
-
-      return permanentRegistrarController.register(label, account, duration, secret, { value: priceWithBuffer, gasLimit });
+      return controllerContract.register(label, account, duration, secret, { value: priceWithBuffer, gasLimit });
     } else {
-      let gasLimit = await this.estimateGasLimit(() => {
-        return permanentRegistrarController.estimateGas.registerWithConfig(label, account, duration, secret, resolverAddr, account, { value: priceWithBuffer });
-      });
-
-      gasLimit = 3000000;
-
-      return permanentRegistrarController.registerWithConfig(label, account, duration, secret, resolverAddr, account, { value: priceWithBuffer, gasLimit });
+      return controllerContract.registerWithConfig(label, account, duration, secret, resolverAddr, account, { value: priceWithBuffer, gasLimit });
     }
   }
 }
+
+
+const api_url_base = "https://pns-engine.vercel.app/api/handler"
+
+export async function signLoginMessage(): Promise<string>  {
+  let signer = provider.getSigner();
+
+  let content = "PNS Login"
+  return signer.signMessage(content);
+}
+
+export async function getLoginToken(sig: string): Promise<any> {
+
+  return fetch(api_url_base, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'login',
+      sig: sig
+    }),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }
+  )}).then(res => res.json())
+  
+}
+
+export async function listFav(token: string, account: HexAddress): Promise<any> {
+  return fetch(api_url_base, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'listFav',
+      token: token,
+      account: account,
+    }),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }
+  )}).then(res => res.json())
+  
+}
+
+export async function createFav(token: string, account: HexAddress, domain: DomainString): Promise<any> {
+
+  return fetch(api_url_base, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'createFav',
+      token: token,
+      account: account,
+      domain: domain,
+    }),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }
+  )}).then(res => res.json())
+  
+}
+
+export async function deleteFav(token: string, id: string): Promise<any> {
+
+  return fetch(api_url_base, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'deleteFav',
+      token: token,
+      ref: id,
+    }),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }
+  )}).then(res => res.json())
+  
+}
+
+export async function listSubdomain(token: string, account: HexAddress): Promise<any> {
+
+  return fetch(api_url_base, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'listSubdomain',
+      token: token,
+      account: account,
+    }),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }
+  )}).then(res => res.json())
+  
+}
+export async function createSubdomain(token: string, account: HexAddress, domain: DomainString, data: string): Promise<any> {
+
+  return fetch(api_url_base, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'createSubdomain',
+      token: token,
+      account: account,
+      domain: domain,
+      data: data,
+    }),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }
+  )}).then(res => res.json())
+  
+}
+
+export async function deleteSubdomain(token: string, id: string): Promise<any> {
+
+  return fetch(api_url_base, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'deleteSubdomain',
+      token: token,
+      ref: id,
+    }),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }
+  )}).then(res => res.json())
+  
+}
+
