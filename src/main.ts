@@ -5,6 +5,7 @@ import {
   ContractAddrs,
   getProvider,
   getSigner,
+  getAccount,
   setup,
   getOwner,
   getResolver,
@@ -36,6 +37,8 @@ function start() {
 
     (window as any).provider = getProvider();
     (window as any).signer = getSigner();
+    let account = getAccount();
+    console.log(account)
 
     console.log("eth owner", await getOwner("eth"));
     console.log("eth addr", await getAddr("eth", "ETH"));

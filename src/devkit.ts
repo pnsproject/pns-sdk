@@ -100,6 +100,9 @@ let provider: Web3Provider;
 /** TODO, extracted from JsonRpcSigner */
 let signer: any;
 
+let account: string;
+
+
 /** TODO from contract */
 let ens: any;
 /** TODO from contract */
@@ -126,17 +129,20 @@ export async function setProvider() {
 
   signer = await provider.getSigner();
 
-  console.log(provider, signer);
+  account = await signer.getAddress();
+
+  console.log(provider, signer, account);
+  return
 }
 
 /** 设置ens并初始化 */
 export async function setup(ensAddress: string, resolverAddress: string, registrarAddress: string, controllerAddress: string) {
-  setProvider();
+  await setProvider();
 
-  ens = new ethers.Contract(ensAddress, EnsAbi, provider);
-  resolver = new ethers.Contract(resolverAddress, ResolverAbi, provider);
-  registrar = new ethers.Contract(registrarAddress, RegistrarAbi, provider);
-  controller = new ethers.Contract(controllerAddress, ETHRegistrarControllerAbi, provider);
+  ens = new ethers.Contract(ensAddress, EnsAbi, signer);
+  resolver = new ethers.Contract(resolverAddress, ResolverAbi, signer);
+  registrar = new ethers.Contract(registrarAddress, RegistrarAbi, signer);
+  controller = new ethers.Contract(controllerAddress, ETHRegistrarControllerAbi, signer);
 
   ensAddr = ensAddress;
   resolverAddr = resolverAddress;
@@ -157,6 +163,10 @@ export function getProvider() {
 
 export function getSigner(): JsonRpcSigner {
   return signer;
+}
+
+export function getAccount(): string {
+  return account;
 }
 
 /** 获取域名的当前所有者 */
