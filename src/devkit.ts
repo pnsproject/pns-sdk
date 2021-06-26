@@ -13,7 +13,7 @@ import { EnsAbi, RegistrarAbi, ResolverAbi, ETHRegistrarControllerAbi, BulkRenew
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 
-export function getNamehash(name: string) {
+export function getNamehash(name: string): HexAddress {
   let node = "";
   for (let i = 0; i < 32; i++) {
     node += "00";
@@ -31,7 +31,7 @@ export function getNamehash(name: string) {
   return "0x" + node;
 }
 
-export function getLabelhash(rawlabel: string) {
+export function getLabelhash(rawlabel: string): HexAddress {
   if (rawlabel === "[root]") {
     return "";
   }
@@ -39,7 +39,7 @@ export function getLabelhash(rawlabel: string) {
   return rawlabel.startsWith("[") && rawlabel.endsWith("]") && rawlabel.length === 66 ? "0x" + decodeLabelhash(rawlabel) : "0x" + sha3(rawlabel);
 }
 
-export function encodeLabelhash(hash: string) {
+export function encodeLabelhash(hash: string): string {
   if (!hash.startsWith("0x")) {
     throw new Error("Expected label hash to start with 0x");
   }
@@ -51,7 +51,7 @@ export function encodeLabelhash(hash: string) {
   return `[${hash.slice(2)}]`;
 }
 
-export function decodeLabelhash(hash: string) {
+export function decodeLabelhash(hash: string): string {
   if (!(hash.startsWith("[") && hash.endsWith("]") && hash.length === 66)) {
     throw Error("Expected encoded labelhash to start and end with square brackets");
   }
@@ -67,7 +67,7 @@ function checksummedHexDecoder(data: HexAddress): Buffer {
   return Buffer.from(stripHexPrefix(stripped), "hex");
 }
 
-export const toChecksumAddress = (address: HexAddress) => {
+export const toChecksumAddress = (address: HexAddress): HexAddress => {
   if (typeof address !== "string") {
     throw new Error("stripHexPrefix param must be type 'string', is currently type " + typeof address + ".");
   }
@@ -95,15 +95,21 @@ const secret = "0x0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCD
 
 const api_url_base = "https://pns-engine.vercel.app/api/handler";
 
-let provider: any;
+let provider: Web3Provider;
+/** TODO, extracted from JsonRpcSigner */
 let signer: any;
 
+/** TODO from contract */
 let ens: any;
+/** TODO from contract */
 let resolver: any;
+/** TODO from contract */
 let registrar: any;
+/** TODO from contract */
 let controller: any;
-let ensAddr: any;
-let resolverAddr: any;
+
+let ensAddr: string;
+let resolverAddr: string;
 
 export const ContractAddrs = {
   ens: "0xaf5B6573ADBE5126FB2fc5e60FB7964b1c225dF9",
@@ -148,7 +154,7 @@ export function getProvider() {
   return provider;
 }
 
-export function getSigner() {
+export function getSigner(): JsonRpcSigner {
   return signer;
 }
 
@@ -548,12 +554,15 @@ export async function deleteSubdomain(token: string, id: string): Promise<any> {
   }).then((res) => res.json());
 }
 
-export function matchProtocol(text: string): any {
+export function matchProtocol(text: string): RegExpMatchArray {
   return text.match(/^(ipfs|sia|ipns|bzz|onion|onion3):\/\/(.*)/) || text.match(/\/(ipfs)\/(.*)/) || text.match(/\/(ipns)\/(.*)/);
 }
 
-export function getProtocolType(encoded: string): any {
-  let protocolType, decoded;
+export function getProtocolType(encoded: string): {
+  protocolType: string;
+  decoded: string;
+} {
+  let protocolType: string, decoded: string;
   try {
     let matched = matchProtocol(encoded);
     if (matched) {
