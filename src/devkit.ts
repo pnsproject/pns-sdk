@@ -1,105 +1,99 @@
+/// <reference path="./typings.d.ts" />
+
 import { ethers } from "ethers";
 import { Signer, BigNumber } from "ethers";
-import { keccak_256 } from 'js-sha3';
-import { keccak_256 as sha3 } from 'js-sha3';
+import { keccak_256 } from "js-sha3";
+import { keccak_256 as sha3 } from "js-sha3";
 
 import { Buffer as Buffer } from "buffer/";
 import { HexAddress, DomainString, ContentType } from "./types";
 
 import { EnsAbi, RegistrarAbi, ResolverAbi, ETHRegistrarControllerAbi, BulkRenewalAbi } from "./contracts";
 
+import { MetaMaskInpageProvider } from "@metamask/providers";
+import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 
-export function getNamehash (name: string) {
-  let node = ''
+export function getNamehash(name: string) {
+  let node = "";
   for (let i = 0; i < 32; i++) {
-    node += '00'
+    node += "00";
   }
 
   if (name) {
-    let labels = name.split('.')
+    let labels = name.split(".");
 
-    for(let i = labels.length - 1; i >= 0; i--) {
-      let labelSha = keccak_256(labels[i])
-      node = keccak_256(Buffer.from(node + labelSha, 'hex'))
+    for (let i = labels.length - 1; i >= 0; i--) {
+      let labelSha = keccak_256(labels[i]);
+      node = keccak_256(Buffer.from(node + labelSha, "hex"));
     }
   }
 
-  return '0x' + node
+  return "0x" + node;
 }
 
-
 export function getLabelhash(rawlabel: string) {
-  if(rawlabel === '[root]'){
-    return ''
+  if (rawlabel === "[root]") {
+    return "";
   }
 
-  return (rawlabel.startsWith('[') && rawlabel.endsWith(']') && rawlabel.length === 66)
-    ? '0x' + decodeLabelhash(rawlabel)
-    : '0x' + sha3(rawlabel)
+  return rawlabel.startsWith("[") && rawlabel.endsWith("]") && rawlabel.length === 66 ? "0x" + decodeLabelhash(rawlabel) : "0x" + sha3(rawlabel);
 }
 
 export function encodeLabelhash(hash: string) {
-  if (!hash.startsWith('0x')) {
-    throw new Error('Expected label hash to start with 0x')
+  if (!hash.startsWith("0x")) {
+    throw new Error("Expected label hash to start with 0x");
   }
 
   if (hash.length !== 66) {
-    throw new Error('Expected label hash to have a length of 66')
+    throw new Error("Expected label hash to have a length of 66");
   }
 
-  return `[${hash.slice(2)}]`
+  return `[${hash.slice(2)}]`;
 }
 
 export function decodeLabelhash(hash: string) {
-  if (!(hash.startsWith('[') && hash.endsWith(']') && hash.length === 66)) {
-    throw Error(
-      'Expected encoded labelhash to start and end with square brackets'
-    )
+  if (!(hash.startsWith("[") && hash.endsWith("]") && hash.length === 66)) {
+    throw Error("Expected encoded labelhash to start and end with square brackets");
   }
-  return `${hash.slice(1, -1)}`
+  return `${hash.slice(1, -1)}`;
 }
 
-
 export const stripHexPrefix = (str: HexAddress): string => {
-    return str.slice(0, 2) === '0x' ? str.slice(2) : str
+  return str.slice(0, 2) === "0x" ? str.slice(2) : str;
 };
 
 function checksummedHexDecoder(data: HexAddress): Buffer {
-    const stripped = stripHexPrefix(data);
-    return Buffer.from(stripHexPrefix(stripped), 'hex');
+  const stripped = stripHexPrefix(data);
+  return Buffer.from(stripHexPrefix(stripped), "hex");
 }
 
 export const toChecksumAddress = (address: HexAddress) => {
-    if (typeof address !== 'string') {
-        throw new Error("stripHexPrefix param must be type 'string', is currently type " + (typeof address) + ".");
-    }
-    const strip_address = stripHexPrefix(address).toLowerCase()
-    const keccak_hash = keccak_256(strip_address).toString()
-    // const keccak_hash = keccak_256(strip_address).toString('hex')
-    let output = '0x'
+  if (typeof address !== "string") {
+    throw new Error("stripHexPrefix param must be type 'string', is currently type " + typeof address + ".");
+  }
+  const strip_address = stripHexPrefix(address).toLowerCase();
+  const keccak_hash = keccak_256(strip_address).toString();
+  // const keccak_hash = keccak_256(strip_address).toString('hex')
+  let output = "0x";
 
-    for (let i = 0; i < strip_address.length; i++)
-        output += parseInt(keccak_hash[i], 16) >= 8 ?
-            strip_address[i].toUpperCase() :
-            strip_address[i];
-    return output
+  for (let i = 0; i < strip_address.length; i++) output += parseInt(keccak_hash[i], 16) >= 8 ? strip_address[i].toUpperCase() : strip_address[i];
+  return output;
 };
 
 function getBufferedPrice(price: BigNumber): BigNumber {
   return price.mul(110).div(100);
 }
 
-const emptyAddress = '0x0000000000000000000000000000000000000000'
-const emptyNode = '0x0000000000000000000000000000000000000000000000000000000000000000'
-const resolverLabel = '0x' + sha3("resolver");
+const emptyAddress = "0x0000000000000000000000000000000000000000";
+const emptyNode = "0x0000000000000000000000000000000000000000000000000000000000000000";
+const resolverLabel = "0x" + sha3("resolver");
 const resolverNode = getNamehash("resolver");
-const nonode = '0x0000000000000000000000000000000000000000000000000000000000001234'
+const nonode = "0x0000000000000000000000000000000000000000000000000000000000001234";
 const tld = "eth";
 const DAYS = 24 * 60 * 60;
 const secret = "0x0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 
-const api_url_base = "https://pns-engine.vercel.app/api/handler"
-
+const api_url_base = "https://pns-engine.vercel.app/api/handler";
 
 let provider: any;
 let signer: any;
@@ -112,39 +106,33 @@ let ensAddr: any;
 let resolverAddr: any;
 
 export const ContractAddrs = {
-  ens: '0xaf5B6573ADBE5126FB2fc5e60FB7964b1c225dF9',
-  resolver: '0x2E6fd6dea05781226c1305e21e7caC760872a0AD',
-  registrar: '0xd8E43a8e84C60558aEB3d9fa270b66dc9A17b252',
-  controller: '0x34Ef2EAeA4E7b8F6e8D629b2AdaEe8d1Fb641655',
-}
+  ens: "0xaf5B6573ADBE5126FB2fc5e60FB7964b1c225dF9",
+  resolver: "0x2E6fd6dea05781226c1305e21e7caC760872a0AD",
+  registrar: "0xd8E43a8e84C60558aEB3d9fa270b66dc9A17b252",
+  controller: "0x34Ef2EAeA4E7b8F6e8D629b2AdaEe8d1Fb641655",
+};
 
 const isNode = new Function("try {return this===global;}catch(e){return false;}");
 
 export async function setProvider() {
-  provider = new ethers.providers.Web3Provider((window as any).ethereum)
+  provider = new ethers.providers.Web3Provider((window as any).ethereum);
 
   signer = await provider.getSigner();
 
-  console.log(provider, signer)
+  console.log(provider, signer);
 }
 
 /** 设置ens并初始化 */
-export async function setup(
-  ensAddress: string,
-  resolverAddress: string,
-  registrarAddress: string,
-  controllerAddress: string,
-  ) {
-  setProvider()
+export async function setup(ensAddress: string, resolverAddress: string, registrarAddress: string, controllerAddress: string) {
+  setProvider();
 
   ens = new ethers.Contract(ensAddress, EnsAbi, provider);
   resolver = new ethers.Contract(resolverAddress, ResolverAbi, provider);
   registrar = new ethers.Contract(registrarAddress, RegistrarAbi, provider);
   controller = new ethers.Contract(controllerAddress, ETHRegistrarControllerAbi, provider);
 
-
-  ensAddr = ensAddress
-  resolverAddr = resolverAddress
+  ensAddr = ensAddress;
+  resolverAddr = resolverAddress;
 
   return {
     provider,
@@ -152,16 +140,16 @@ export async function setup(
     ens,
     resolver,
     registrar,
-    controller
-  }
+    controller,
+  };
 }
 
 export function getProvider() {
-  return provider
+  return provider;
 }
 
 export function getSigner() {
-  return signer
+  return signer;
 }
 
 /** 获取域名的当前所有者 */
@@ -173,52 +161,48 @@ export async function getOwner(node: DomainString): Promise<HexAddress> {
 /** 获取域名的解析器合约 */
 export function getResolver(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
-  return ens.resolver(namehash)
+  return ens.resolver(namehash);
 }
 
 /** 获取域名的解析地址 */
 export async function getAddr(name: DomainString, key: string): Promise<HexAddress> {
-  const namehash = getNamehash(name)
+  const namehash = getNamehash(name);
   // const resolverAddr = await ensContract.resolver(namehash)
 
   try {
     // todo : switch cointype
     // const { coinType, encoder } = formatsByName[key]
-    let coinType = 60
-    const addr = await resolver['addr(bytes32,uint256)'](namehash, coinType)
-    if (addr === '0x') return emptyAddress
+    let coinType = 60;
+    const addr = await resolver["addr(bytes32,uint256)"](namehash, coinType);
+    if (addr === "0x") return emptyAddress;
 
     // return encoder(Buffer.from(addr.slice(2), 'hex'))
-    return addr
+    return addr;
   } catch (e) {
-    console.log(e)
-    console.warn(
-      'Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?'
-    )
-    return emptyAddress
+    console.log(e);
+    console.warn("Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?");
+    return emptyAddress;
   }
 }
 
 /** 设置域名的解析地址 */
 export async function setAddr(name: DomainString, key: string, value: string): Promise<HexAddress> {
-  const namehash = getNamehash(name)
+  const namehash = getNamehash(name);
   // const resolverAddr = await ensContract.resolver(namehash)
 
   try {
     // todo : switch cointype
     // const { coinType, encoder } = formatsByName[key]
-    let coinType = 60
-    const addr = await resolver['setAddr(bytes32,uint256,bytes)'](namehash, coinType, value)
-    if (addr === '0x') return emptyAddress
+    let coinType = 60;
+    const addr = await resolver["setAddr(bytes32,uint256,bytes)"](namehash, coinType, value);
+    if (addr === "0x") return emptyAddress;
 
     // return encoder(Buffer.from(addr.slice(2), 'hex'))
-    return addr
+    return addr;
   } catch (e) {
-    console.log(e)
-    console.warn(
-      'Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?'
-    )
-    return emptyAddress
+    console.log(e);
+    console.warn("Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?");
+    return emptyAddress;
   }
 }
 
@@ -231,7 +215,6 @@ export function getMinimumCommitmentAge(controller: any): Promise<number> {
 export function getMaximumCommitmentAge(controller: any): Promise<number> {
   return controller.maxCommitmentAge();
 }
-
 
 /** 获得当前域名注册价格 */
 /** function getRentPrice(string name, uint duration) returns (uint) */
@@ -285,81 +268,79 @@ export async function register(label: DomainString, account: string, duration: n
 }
 
 export function decodeContenthash(encoded: string): any {
-  let decoded, protocolType, error
-  if(!encoded || encoded === '0x'){
-    return {}
+  let decoded, protocolType, error;
+  if (!encoded || encoded === "0x") {
+    return {};
   }
   if (encoded) {
     try {
       // decoded = contentHash.decode(encoded) // todo
       // const codec = contentHash.getCodec(encoded)
-      decoded = encoded
+      decoded = encoded;
     } catch (e) {
-      error = e.message
+      error = e.message;
     }
   }
-  return { protocolType: 'ipfs', decoded, error }
+  return { protocolType: "ipfs", decoded, error };
 }
 
 /** 获得域名的IPFS内容地址 */
 export async function getContent(name: DomainString): Promise<ContentType> {
   try {
-    const namehash = getNamehash(name)
-    const encoded = await resolver.contenthash(namehash)
+    const namehash = getNamehash(name);
+    const encoded = await resolver.contenthash(namehash);
     return {
       value: `ipfs://${ethers.utils.base58.encode(encoded)}`,
-      contentType: 'contenthash'
-    }
+      contentType: "contenthash",
+    };
   } catch (e) {
-    const message =
-      'Error getting content on the resolver contract, are you sure the resolver address is a resolver contract?'
-    console.warn(message, e)
-    return { value: '', contentType: 'error' }
+    const message = "Error getting content on the resolver contract, are you sure the resolver address is a resolver contract?";
+    console.warn(message, e);
+    return { value: "", contentType: "error" };
   }
 }
 
 /** 获得域名详细信息 */
 export async function getDomainDetails(name: DomainString) {
-  const nameArray = name.split('.')
-  const labelhash = getLabelhash(nameArray[0])
-  const owner = await getOwner(name)
-  const nameResolver = await getResolver(name)
+  const nameArray = name.split(".");
+  const labelhash = getLabelhash(nameArray[0]);
+  const owner = await getOwner(name);
+  const nameResolver = await getResolver(name);
 
   const node = {
     name,
     label: nameArray[0],
     labelhash,
     owner,
-    nameResolver
-  }
+    nameResolver,
+  };
 
   if (parseInt(nameResolver, 16) === 0) {
     return {
       ...node,
       addr: null,
-      content: null
-    }
+      content: null,
+    };
   } else {
     try {
-      const addr = await getAddr(node.name, 'ETH')
-      const content = 'await getContent(ens, resolver, node.name)'
+      const addr = await getAddr(node.name, "ETH");
+      const content = "await getContent(ens, resolver, node.name)";
       return {
         ...node,
         addr,
         // content: content.value,
         // contentType: content.contentType
-      }
+      };
     } catch (e) {
       return {
         ...node,
-        addr: '0x0',
-        content: '0x0',
-        contentType: 'error'
-      }
+        addr: "0x0",
+        content: "0x0",
+        contentType: "error",
+      };
     }
   }
 }
-
 
 /** 一次性设置域名信息 */
 /** function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) */
@@ -374,7 +355,7 @@ export function setRecord(node: DomainString, newOwner: HexAddress, resolver: He
 /** setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
 export function setSubnodeRecord(node: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
   let namehash = getNamehash(node);
-  label = ('0x' + sha3(label)) || "0x0";
+  label = "0x" + sha3(label) || "0x0";
   return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
 }
 
@@ -391,7 +372,7 @@ export function setOwner(node: DomainString, newOwner: HexAddress): Promise<any>
 /** setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
 export function setSubnodeOwner(node: DomainString, label: string, newOwner: HexAddress): Promise<any> {
   let namehash = getNamehash(node);
-  label = ('0x' + sha3(label)) || "0x0";
+  label = "0x" + sha3(label) || "0x0";
   return ens.setSubnodeOwner(namehash, label, newOwner);
 }
 
@@ -425,7 +406,6 @@ export function getTTL(node: DomainString): Promise<number> {
   return ens.ttl(namehash);
 }
 
-
 /** 设置域名 ttl 参数，表示域名可以在本地缓存的时间 */
 /** function setTTL(bytes32 node, uint64 ttl) */
 /** setTTL('hero.eth', 3600) */
@@ -447,166 +427,150 @@ export function getText(node: DomainString, key: string): Promise<number> {
 /** setTTL('hero.eth', 3600) */
 export function setContent(node: DomainString, value: string): Promise<void> {
   let namehash = getNamehash(node);
-  console.log(resolver)
+  console.log(resolver);
   return resolver.setContenthash(namehash, value);
 }
 
 // server api
 
 /** 获取用户登录的签名token */
-export async function signLoginMessage(): Promise<string>  {
+export async function signLoginMessage(): Promise<string> {
   let signer = provider.getSigner();
 
-  let content = "PNS Login"
+  let content = "PNS Login";
   return signer.signMessage(content);
 }
 
 /** 通过用户登录的签名token登录 */
 export async function getLoginToken(sig: string): Promise<any> {
-
   return fetch(api_url_base, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify({
-      action: 'login',
-      sig: sig
+      action: "login",
+      sig: sig,
     }),
     headers: new Headers({
-      'Content-Type': 'application/json'
-    }
-  )}).then(res => res.json())
-  
+      "Content-Type": "application/json",
+    }),
+  }).then((res) => res.json());
 }
 
 /** 列出用户关注的域名列表 */
 export async function listFav(token: string, account: HexAddress): Promise<any> {
   return fetch(api_url_base, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify({
-      action: 'listFav',
+      action: "listFav",
       token: token,
       account: account,
     }),
     headers: new Headers({
-      'Content-Type': 'application/json'
-    }
-  )}).then(res => res.json())
-  
+      "Content-Type": "application/json",
+    }),
+  }).then((res) => res.json());
 }
 
 /** 创建用户关注的域名 */
 export async function createFav(token: string, account: HexAddress, domain: DomainString): Promise<any> {
-
-    return fetch(api_url_base, {
-    method: 'POST',
+  return fetch(api_url_base, {
+    method: "POST",
     body: JSON.stringify({
-      action: 'createFav',
+      action: "createFav",
       token: token,
       account: account,
       domain: domain,
     }),
     headers: new Headers({
-      'Content-Type': 'application/json'
-    }
-  )}).then(res => res.json())
-  
+      "Content-Type": "application/json",
+    }),
+  }).then((res) => res.json());
 }
 
 /** 取消用户关注的域名 */
 export async function deleteFav(token: string, id: string): Promise<any> {
-
-    return fetch(api_url_base, {
-    method: 'POST',
+  return fetch(api_url_base, {
+    method: "POST",
     body: JSON.stringify({
-      action: 'deleteFav',
+      action: "deleteFav",
       token: token,
       ref: id,
     }),
     headers: new Headers({
-      'Content-Type': 'application/json'
-    }
-  )}).then(res => res.json())
-  
+      "Content-Type": "application/json",
+    }),
+  }).then((res) => res.json());
 }
 
 /** 列出用户的子域名列表 */
 export async function listSubdomain(token: string, account: HexAddress): Promise<any> {
-
-    return fetch(api_url_base, {
-    method: 'POST',
+  return fetch(api_url_base, {
+    method: "POST",
     body: JSON.stringify({
-      action: 'listSubdomain',
+      action: "listSubdomain",
       token: token,
       account: account,
     }),
     headers: new Headers({
-      'Content-Type': 'application/json'
-    }
-  )}).then(res => res.json())
-  
+      "Content-Type": "application/json",
+    }),
+  }).then((res) => res.json());
 }
 
 /** 创建用户的子域名 */
 export async function createSubdomain(token: string, account: HexAddress, domain: DomainString, data: string): Promise<any> {
-
-    return fetch(api_url_base, {
-    method: 'POST',
+  return fetch(api_url_base, {
+    method: "POST",
     body: JSON.stringify({
-      action: 'createSubdomain',
+      action: "createSubdomain",
       token: token,
       account: account,
       domain: domain,
       data: data,
     }),
     headers: new Headers({
-      'Content-Type': 'application/json'
-    }
-  )}).then(res => res.json())
-  
+      "Content-Type": "application/json",
+    }),
+  }).then((res) => res.json());
 }
 
 /** 删除用户的子域名 */
 export async function deleteSubdomain(token: string, id: string): Promise<any> {
-
-    return fetch(api_url_base, {
-    method: 'POST',
+  return fetch(api_url_base, {
+    method: "POST",
     body: JSON.stringify({
-      action: 'deleteSubdomain',
+      action: "deleteSubdomain",
       token: token,
       ref: id,
     }),
     headers: new Headers({
-      'Content-Type': 'application/json'
-    }
-  )}).then(res => res.json())
-  
+      "Content-Type": "application/json",
+    }),
+  }).then((res) => res.json());
 }
 
 export function matchProtocol(text: string): any {
-  return text.match(/^(ipfs|sia|ipns|bzz|onion|onion3):\/\/(.*)/)
-    || text.match(/\/(ipfs)\/(.*)/)
-    || text.match(/\/(ipns)\/(.*)/)
+  return text.match(/^(ipfs|sia|ipns|bzz|onion|onion3):\/\/(.*)/) || text.match(/\/(ipfs)\/(.*)/) || text.match(/\/(ipns)\/(.*)/);
 }
 
 export function getProtocolType(encoded: string): any {
-  let protocolType, decoded
+  let protocolType, decoded;
   try {
-    let matched = matchProtocol(encoded)
+    let matched = matchProtocol(encoded);
     if (matched) {
-      protocolType = matched[1]
-      decoded = matched[2]
+      protocolType = matched[1];
+      decoded = matched[2];
     }
     return {
       protocolType,
-      decoded
-    }
+      decoded,
+    };
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 }
 
 /** 解析IPFS地址 */
 export function decodeIpfsUrl(url: string): string {
-    let data = getProtocolType(url)
-    return '0x' + Buffer.from(ethers.utils.base58.decode(data.decoded)).toString('hex')
+  let data = getProtocolType(url);
+  return "0x" + Buffer.from(ethers.utils.base58.decode(data.decoded)).toString("hex");
 }
-
