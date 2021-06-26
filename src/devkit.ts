@@ -12,6 +12,7 @@ import { EnsAbi, RegistrarAbi, ResolverAbi, ETHRegistrarControllerAbi, BulkRenew
 
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
+import { default as domainChecker } from "is-valid-domain";
 
 export function getNamehash(name: string): HexAddress {
   let node = "";
@@ -582,4 +583,8 @@ export function getProtocolType(encoded: string): {
 export function decodeIpfsUrl(url: string): string {
   let data = getProtocolType(url);
   return "0x" + Buffer.from(ethers.utils.base58.decode(data.decoded)).toString("hex");
+}
+
+export function isValidDomain(name: string): boolean {
+  return name.length < 64 && domainChecker(name, { allowUnicode: false, subdomain: false });
 }
