@@ -125,6 +125,14 @@ export const ContractAddrs = {
 const isNode = new Function("try {return this===global;}catch(e){return false;}");
 
 export async function setProvider() {
+
+  if (typeof ((window as any).ethereum) !== "undefined") {
+    // 调用窗口, 登录账户
+    await ((window as any).ethereum).request({ method: "eth_requestAccounts" });
+  } else {
+    throw new Error("cannot find a global `ethereum` object");
+  }
+
   provider = new ethers.providers.Web3Provider((window as any).ethereum);
 
   signer = await provider.getSigner();
