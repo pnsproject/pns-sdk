@@ -46,6 +46,8 @@ function start() {
     console.log("jiang.eth owner", await getOwner("jiang.eth"));
 
     console.log("jiang.eth addr", await getAddr("jiang.eth", "ETH"));
+
+    console.log("jiang.eth getRentPrice", await getRentPrice("jiang", 86400));
   });
 }
 
