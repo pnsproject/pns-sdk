@@ -93,7 +93,7 @@ const nonode = "0x00000000000000000000000000000000000000000000000000000000000012
 const tld = "eth";
 const DAYS = 24 * 60 * 60;
 const secret = "0x0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
-const INFURA_URL = 'https://rinkeby.infura.io/v3/a927dc26eb014ee29eeef68dab3ad53b'
+const INFURA_URL = "https://rinkeby.infura.io/v3/a927dc26eb014ee29eeef68dab3ad53b";
 const api_url_base = "https://pns-engine.vercel.app/api/handler";
 
 let provider: Web3Provider;
@@ -101,7 +101,6 @@ let provider: Web3Provider;
 let signer: any;
 
 let account: string;
-
 
 /** TODO from contract */
 let ens: any;
@@ -125,23 +124,21 @@ export const ContractAddrs = {
 const isNode = new Function("try {return this===global;}catch(e){return false;}");
 
 export async function setProvider() {
-
-  if (typeof ((window as any).ethereum) !== "undefined") {
+  if (typeof (window as any).ethereum !== "undefined") {
     // 调用窗口, 登录账户
-    await ((window as any).ethereum).request({ method: "eth_requestAccounts" });
-    provider = new ethers.providers.Web3Provider((window as any).ethereum);
+    await (window as any).ethereum.request({ method: "eth_requestAccounts" });
+    provider = new ethers.providers.Web3Provider((window as any).ethereum) as Web3Provider;
     signer = await provider.getSigner();
     account = await signer.getAddress();
-
   } else {
     console.log("cannot find a global `ethereum` object");
-    provider = new ethers.providers.JsonRpcProvider(INFURA_URL);
+    provider = new ethers.providers.JsonRpcProvider(INFURA_URL) as Web3Provider;
     signer = null;
-    account = '0x0';
+    account = "0x0";
   }
 
   console.log(provider, signer, account);
-  return
+  return;
 }
 
 /** 设置ens并初始化 */
@@ -154,16 +151,16 @@ export async function setup(ensAddress?: string, resolverAddress?: string, regis
       resolver,
       registrar,
       controller,
-    }
+    };
   }
 
   await setProvider();
-  console.log('init sdk')
+  console.log("init sdk");
 
-  ensAddress = ensAddress || ContractAddrs.ens
-  resolverAddress = resolverAddress || ContractAddrs.resolver
-  registrarAddress = registrarAddress || ContractAddrs.registrar
-  controllerAddress = controllerAddress || ContractAddrs.controller
+  ensAddress = ensAddress || ContractAddrs.ens;
+  resolverAddress = resolverAddress || ContractAddrs.resolver;
+  registrarAddress = registrarAddress || ContractAddrs.registrar;
+  controllerAddress = controllerAddress || ContractAddrs.controller;
 
   if (signer) {
     ens = new ethers.Contract(ensAddress, EnsAbi, signer);
@@ -270,7 +267,7 @@ export function getMaximumCommitmentAge(controller: any): Promise<number> {
 /** function getRentPrice(string name, uint duration) returns (uint) */
 /** getRentPrice('hero', 86400*365) */
 export async function getRentPrice(name: DomainString, duration: number): Promise<BigNumber> {
-  await setup()
+  await setup();
   let price = await (await controller.rentPrice(name, duration)).toNumber();
   return price;
 }
