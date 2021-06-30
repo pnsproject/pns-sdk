@@ -263,9 +263,9 @@ export function getMaximumCommitmentAge(controller: any): Promise<number> {
   return controller.maxCommitmentAge();
 }
 
-/** 获得当前域名注册价格 */
-/** function getRentPrice(string name, uint duration) returns (uint) */
-/** getRentPrice('hero', 86400*365) */
+/** 获得当前域名注册价格
+ * function getRentPrice(string name, uint duration) returns (uint)
+ * getRentPrice('hero', 86400*365) */
 export async function getRentPrice(name: DomainString, duration: number): Promise<BigNumber> {
   await setup();
   let price = await (await controller.rentPrice(name, duration)).toNumber();
@@ -390,43 +390,43 @@ export async function getDomainDetails(name: DomainString) {
   }
 }
 
-/** 一次性设置域名信息 */
-/** function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) */
-/** setRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
+/** 一次性设置域名信息
+ * function setRecord(bytes32 node, address owner, address resolver, uint64 ttl)
+ * setRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
 export function setRecord(node: DomainString, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
   let namehash = getNamehash(node);
   return ens.setRecord(namehash, newOwner, resolver, ttl);
 }
 
-/** 一次性设置域名信息 */
-/** function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl) */
-/** setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
+/** 一次性设置域名信息
+ * function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl)
+ * setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
 export function setSubnodeRecord(node: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
   let namehash = getNamehash(node);
   label = "0x" + sha3(label) || "0x0";
   return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
 }
 
-/** 设置子域名的所有者 */
-/** function setOwner(bytes32 node, address owner) */
-/** setOwner('hero.eth', '0x123456789') */
+/** 设置子域名的所有者
+ * function setOwner(bytes32 node, address owner)
+ * setOwner('hero.eth', '0x123456789') */
 export function setOwner(node: DomainString, newOwner: HexAddress): Promise<any> {
   let namehash = getNamehash(node);
   return ens.setOwner(namehash, newOwner);
 }
 
-/** 设置子域名的所有者 */
-/** function setSubnodeOwner(bytes32 node, bytes32 label, address owner) */
-/** setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
+/** 设置子域名的所有者
+ * function setSubnodeOwner(bytes32 node, bytes32 label, address owner)
+ * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
 export function setSubnodeOwner(node: DomainString, label: string, newOwner: HexAddress): Promise<any> {
   let namehash = getNamehash(node);
   label = "0x" + sha3(label) || "0x0";
   return ens.setSubnodeOwner(namehash, label, newOwner);
 }
 
-/** 设置域名 resolver 参数，表示域名的解析器 */
-/** function setResolver(bytes32 node, address resolver) */
-/** setResolver('hero.eth', '0x123456789') */
+/** 设置域名 resolver 参数，表示域名的解析器
+ * function setResolver(bytes32 node, address resolver)
+ * setResolver('hero.eth', '0x123456789') */
 export function setResolver(node: DomainString, resolver: HexAddress): Promise<any> {
   let namehash = getNamehash(node);
   return ens.setResolver(namehash, resolver);
@@ -438,41 +438,41 @@ export function setDefaultResolver(node: DomainString): Promise<any> {
   return ens.setResolver(namehash, resolverAddr);
 }
 
-/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间 */
-/** function setTTL(bytes32 node, uint64 ttl) */
-/** setTTL('hero.eth', 3600) */
+/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
+ * function setTTL(bytes32 node, uint64 ttl)
+ * setTTL('hero.eth', 3600) */
 export function setTTL(node: DomainString, ttl: number): Promise<void> {
   let namehash = getNamehash(node);
   return ens.setTTL(namehash, ttl);
 }
 
-/** 获得域名 ttl 参数，由用户设置，表示域名可以在本地缓存的时间 */
-/** function getTTL(bytes32 node) returns (uint64) */
-/** getTTL('hero.eth') */
+/** 获得域名 ttl 参数，由用户设置，表示域名可以在本地缓存的时间
+ * function getTTL(bytes32 node) returns (uint64)
+ * getTTL('hero.eth') */
 export function getTTL(node: DomainString): Promise<number> {
   let namehash = getNamehash(node);
   return ens.ttl(namehash);
 }
 
-/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间 */
-/** function setTTL(bytes32 node, uint64 ttl) */
-/** setTTL('hero.eth', 3600) */
+/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
+ * function setTTL(bytes32 node, uint64 ttl)
+ * setTTL('hero.eth', 3600) */
 export function setText(node: DomainString, key: string, value: string): Promise<void> {
   let namehash = getNamehash(node);
   return resolver.setText(namehash, key, value);
 }
 
-/** 获得域名 ttl 参数，由用户设置，表示域名可以在本地缓存的时间 */
-/** function getTTL(bytes32 node) returns (uint64) */
-/** getTTL('hero.eth') */
+/** 获得域名 ttl 参数，由用户设置，表示域名可以在本地缓存的时间
+ * function getTTL(bytes32 node) returns (uint64)
+ * getTTL('hero.eth') */
 export function getText(node: DomainString, key: string): Promise<number> {
   let namehash = getNamehash(node);
   return resolver.text(namehash, key);
 }
 
-/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间 */
-/** function setTTL(bytes32 node, uint64 ttl) */
-/** setTTL('hero.eth', 3600) */
+/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
+ * function setTTL(bytes32 node, uint64 ttl)
+ * setTTL('hero.eth', 3600) */
 export function setContent(node: DomainString, value: string): Promise<void> {
   let namehash = getNamehash(node);
   console.log(resolver);

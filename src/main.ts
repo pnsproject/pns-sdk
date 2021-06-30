@@ -49,15 +49,15 @@ function start() {
     console.log(res);
 
     let mydomains = await listFav(jwt, account); // 获取用户的域名列表
-    console.log("mydomains", mydomains);
+    console.log("my fav domains", mydomains);
 
     let domainId = mydomains[0].id;
-    console.log("mydomains", domainId);
+    console.log("domainId to delete", domainId);
 
     await deleteFav(jwt, domainId); // 删除用户的域名
 
     mydomains = await listFav(jwt, account); // 获取用户的域名列表
-    console.log("mydomains", mydomains);
+    console.log("my fav domains", mydomains);
 
     console.log("eth owner", await getOwner("eth"));
     console.log("eth addr", await getAddr("eth", "ETH"));
