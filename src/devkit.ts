@@ -506,6 +506,25 @@ export async function getLoginToken(sig: string): Promise<any> {
   }).then((res) => res.json());
 }
 
+export async function tryLogin(): Promise<string> {
+  await setup()
+  let hasLocalstorage = typeof ((window as any).localStorage) !== "undefined"
+
+  if (hasLocalstorage && localStorage.getItem('pns-jwt')) {
+    console.log('jwt loaded')
+    return localStorage.getItem('pns-jwt')
+  } else {
+    let signed = await signLoginMessage()
+    let { jwt } = await getLoginToken(signed)
+    console.log('get new jwt')
+
+    if (hasLocalstorage) {
+      localStorage.setItem('pns-jwt', jwt)
+    }
+    return jwt
+  }
+}
+
 /** 列出用户关注的域名列表 */
 export async function listFav(token: string, account: HexAddress): Promise<any> {
   return fetch(api_url_base, {
@@ -549,7 +568,8 @@ export async function deleteFav(token: string, id: string): Promise<any> {
     headers: new Headers({
       "Content-Type": "application/json",
     }),
-  }).then((res) => res.json());
+  }).then((res) => res.json())
+  .catch((err) => "err");
 }
 
 /** 列出用户的子域名列表 */
