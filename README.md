@@ -21,6 +21,8 @@ npm run build
 npm run fmt
 ```
 
+### 业务功能
+
 用户注册流程:
 
 使用 signLoginMessage 让用户进行签名
@@ -36,3 +38,58 @@ npm run fmt
 提交域名注册 commit
 
 完成域名注册 register
+
+### TypeScript API
+
+#### 登录
+
+```ts
+let token = await tryLogin();
+```
+
+或得 token 用于后续的 API.
+
+#### 获取账户信息
+
+先登录, 然后调用
+
+```ts
+let account = await getAccount();
+// -> HexAddress
+```
+
+#### 查询域名是否已经注册
+
+```ts
+await getOwner("eth"))
+```
+
+- 可用, 返回 `0x00000`
+- 已经被占用, 返回 ??
+
+#### 注册域名前查询加个
+
+```ts
+await getRentPrice("jiang", 86400); // 换算成"天"
+// -> number
+```
+
+#### 管理 favorites
+
+```ts
+await listFav(jwt, account);
+await createFav(jwt, account, "polkadot.eth");
+await deleteFav(jwt, domainId);
+```
+
+#### 查询域名对应的地址
+
+```ts
+await getAddr("eth", "ETH"); // ??
+```
+
+#### 提交域名注册请求
+
+???
+
+#### TODO
