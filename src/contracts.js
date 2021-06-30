@@ -1,4 +1,3 @@
-
 /**
  * 多绕一个 js 文件, 不然 TypeScript 检查 JSON 的性能太慢了
  */

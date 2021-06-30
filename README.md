@@ -15,6 +15,12 @@ npm run serve
 npm run build
 ```
 
+代码格式化:
+
+```bash
+npm run fmt
+```
+
 用户注册流程:
 
 使用 signLoginMessage 让用户进行签名
@@ -30,4 +36,3 @@ npm run build
 提交域名注册 commit
 
 完成域名注册 register
-

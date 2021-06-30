@@ -39,29 +39,25 @@ import {
 
 function start() {
   document.querySelector("button").addEventListener("click", async () => {
-
     await setup();
     let jwt = await tryLogin(); // 进行登录，获取 jwt
 
     let account = getAccount(); // 获取 account
-    console.log(account)
+    console.log(account);
 
-    let res = await createFav(jwt, account, 'polkadot.eth') // 添加用户的域名
-    console.log(res)
+    let res = await createFav(jwt, account, "polkadot.eth"); // 添加用户的域名
+    console.log(res);
 
-    let mydomains = await listFav(jwt, account) // 获取用户的域名列表
-    console.log('mydomains', mydomains)
+    let mydomains = await listFav(jwt, account); // 获取用户的域名列表
+    console.log("mydomains", mydomains);
 
-    let domainId = mydomains[0].id
-    console.log('mydomains', domainId)
+    let domainId = mydomains[0].id;
+    console.log("mydomains", domainId);
 
-    await deleteFav(jwt, domainId) // 删除用户的域名
+    await deleteFav(jwt, domainId); // 删除用户的域名
 
-    mydomains = await listFav(jwt, account) // 获取用户的域名列表
-    console.log('mydomains', mydomains)
-
-
-    
+    mydomains = await listFav(jwt, account); // 获取用户的域名列表
+    console.log("mydomains", mydomains);
 
     console.log("eth owner", await getOwner("eth"));
     console.log("eth addr", await getAddr("eth", "ETH"));

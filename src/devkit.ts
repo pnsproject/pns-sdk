@@ -504,21 +504,21 @@ export async function getLoginToken(sig: string): Promise<any> {
 }
 
 export async function tryLogin(): Promise<string> {
-  await setup()
-  let hasLocalstorage = typeof ((window as any).localStorage) !== "undefined"
+  await setup();
+  let hasLocalstorage = typeof (window as any).localStorage !== "undefined";
 
-  if (hasLocalstorage && localStorage.getItem('pns-jwt')) {
-    console.log('jwt loaded')
-    return localStorage.getItem('pns-jwt')
+  if (hasLocalstorage && localStorage.getItem("pns-jwt")) {
+    console.log("jwt loaded");
+    return localStorage.getItem("pns-jwt");
   } else {
-    let signed = await signLoginMessage()
-    let { jwt } = await getLoginToken(signed)
-    console.log('get new jwt')
+    let signed = await signLoginMessage();
+    let { jwt } = await getLoginToken(signed);
+    console.log("get new jwt");
 
     if (hasLocalstorage) {
-      localStorage.setItem('pns-jwt', jwt)
+      localStorage.setItem("pns-jwt", jwt);
     }
-    return jwt
+    return jwt;
   }
 }
 
@@ -565,8 +565,9 @@ export async function deleteFav(token: string, id: string): Promise<any> {
     headers: new Headers({
       "Content-Type": "application/json",
     }),
-  }).then((res) => res.json())
-  .catch((err) => "err");
+  })
+    .then((res) => res.json())
+    .catch((err) => "err");
 }
 
 /** 列出用户的子域名列表 */
