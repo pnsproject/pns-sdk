@@ -70,7 +70,7 @@ await getOwner("eth"))
 #### 注册域名前查询加个
 
 ```ts
-await getRentPrice("jiang", 86400); // 换算成"天"
+await getRentPrice("jiang", 86400*365); // 换算成"秒"
 // -> number
 ```
 
