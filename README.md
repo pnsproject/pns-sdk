@@ -123,7 +123,7 @@ await setSubnodeOwner(node: DomainString, label: string, newOwner: HexAddress)
 await createSubdomain(token: string, account: HexAddress, domain: DomainString, data: string)
 ```
 
-#### 获取一名记录内容
+#### 获取域名记录内容
 
 获取 Address 部分的内容:
 
@@ -168,6 +168,10 @@ await setText(node: DomainString, key: string, value: string)
 ```ts
 await setOwner(node: DomainString, newOwner: HexAddress)
 ```
+
+#### 设置 Reverse Record
+
+TODO
 
 #### 删除域名(暂不实现)
 
