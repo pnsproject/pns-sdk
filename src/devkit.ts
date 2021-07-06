@@ -272,6 +272,12 @@ export async function getRentPrice(name: DomainString, duration: number): Promis
   let price = result.toNumber();
   return price;
 }
+/** 同上, 但返回一个 BigNumber, 内部需要 */
+export async function getRentPriceBigNumber(name: DomainString, duration: number): Promise<BigNumber> {
+  await setup();
+  let result: BigNumber = await controller.rentPrice(name, duration);
+  return result;
+}
 
 /** 批量获得当前域名注册价格 */
 export async function getRentPrices(labels: string[], duration: number): Promise<number> {
@@ -308,7 +314,7 @@ export async function commit(label: DomainString, account: string) {
 
 /** 域名注册（第二步），完成域名注册 */
 export async function register(label: DomainString, account: string, duration: number): Promise<void> {
-  const price = await getRentPrice(label, duration);
+  const price = await getRentPriceBigNumber(label, duration);
   const priceWithBuffer = getBufferedPrice(price);
   // const resolverAddr = await getowner("resolver.eth");
   let secret = getNamehash("eth");
