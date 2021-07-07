@@ -35,6 +35,8 @@ import {
   listFav,
   createFav,
   deleteFav,
+  expiriesAt,
+  available,
 } from "./devkit";
 
 function start() {
@@ -67,6 +69,16 @@ function start() {
     console.log("jiang.eth addr", await getAddr("jiang.eth", "ETH"));
 
     console.log("jiang.eth getRentPrice", await getRentPrice("jiang", 86400));
+
+    console.log("jiang.eth expiries", await expiriesAt("jiang"));
+
+    console.log("jiang.eth available", await available("jiang"));
+
+    // console.log("jiang.eth commit", await commit("jiang3", '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'));
+
+    // console.log("jiang.eth register", await register("jiang3", '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4', 28 * 86400));
+
+
   });
 }
 
