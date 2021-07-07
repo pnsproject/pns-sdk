@@ -276,14 +276,21 @@ export function getMaximumCommitmentAge(controller: any): Promise<number> {
 /** 获得当前域名注册价格
  * function getRentPrice(string name, uint duration) returns (uint)
  * getRentPrice('hero', 86400*365) */
-export async function getRentPrice(name: DomainString, duration: number): Promise<BigNumber> {
+export async function getRentPrice(name: DomainString, duration: number): Promise<number> {
   await setup();
-  let price = await (await controller.rentPrice(name, duration)).toNumber();
+  let result: BigNumber = await controller.rentPrice(name, duration);
+  let price = result.toNumber();
   return price;
 }
+/** 同上, 但返回一个 BigNumber, 内部需要 */
+export async function getRentPriceBigNumber(name: DomainString, duration: number): Promise<BigNumber> {
+  await setup();
+  let result: BigNumber = await controller.rentPrice(name, duration);
+  return result;
+}
 
-/** 批啦获得当前域名注册价格 */
-export async function getRentPrices(labels: string[], duration: number): Promise<BigNumber> {
+/** 批量获得当前域名注册价格 */
+export async function getRentPrices(labels: string[], duration: number): Promise<number> {
   const pricesArray = await Promise.all(
     labels.map((label) => {
       return getRentPrice(label, duration);
@@ -317,7 +324,7 @@ export async function commit(label: DomainString, account: string) {
 
 /** 域名注册（第二步），完成域名注册 */
 export async function register(label: DomainString, account: string, duration: number): Promise<void> {
-  const price = await getRentPrice(label, duration);
+  const price = await getRentPriceBigNumber(label, duration);
   const priceWithBuffer = getBufferedPrice(price);
   // const resolverAddr = await getowner("resolver.eth");
   let secret = getNamehash("eth");

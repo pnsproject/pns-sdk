@@ -70,11 +70,11 @@ await getOwner("eth"))
 #### 注册域名前查询加个
 
 ```ts
-await getRentPrice("jiang", 86400); // 换算成"天"
+await getRentPrice("jiang", 86400*365); // 换算成"秒"
 // -> number
 ```
 
-#### 管理 favorites
+#### 管理 favorites(暂不处理子域名收藏)
 
 ```ts
 await listFav(jwt, account);
@@ -88,8 +88,91 @@ await deleteFav(jwt, domainId);
 await getAddr("eth", "ETH"); // ??
 ```
 
+#### 查询 Resolver
+
+```ts
+await getResolver("jieng.eth");
+// -> HexAddress
+```
+
 #### 提交域名注册请求
 
-???
+```ts
+// 先进行一次提交,再等待一分钟
+await commit(label: DomainString, account: string)
+// 等待一分钟
+await register(label: DomainString, account: string, duration: number)
+```
+
+#### 域名详细信息
+
+```ts
+await getDomainDetails(name: DomainString)
+```
+
+#### 列出子域名(??)
+
+```ts
+await listSubdomain(token: string, account: HexAddress)
+```
+
+#### 添加新的子域名(??)
+
+```ts
+await setSubnodeOwner(node: DomainString, label: string, newOwner: HexAddress)
+await createSubdomain(token: string, account: HexAddress, domain: DomainString, data: string)
+```
+
+#### 获取域名记录内容
+
+获取 Address 部分的内容:
+
+```ts
+getAddr(name, key);
+```
+
+获取 Content 部分的内容:
+
+```ts
+getContent(name: DomainString)
+```
+
+获取 Text 部分的内容:
+
+```ts
+getText(node: DomainString, key: string)
+```
+
+#### 修改域名记录内容
+
+Address 部分:
+
+```ts
+setAddr(name: DomainString, key: string, value: string)
+```
+
+Content 部分:
+
+```ts
+setContent(node: DomainString, value: string)
+```
+
+Text 部分:
+
+```ts
+await setText(node: DomainString, key: string, value: string)
+```
+
+#### 转义域名所有权
+
+```ts
+await setOwner(node: DomainString, newOwner: HexAddress)
+```
+
+#### 设置 Reverse Record
+
+TODO
+
+#### 删除域名(暂不实现)
 
 #### TODO
