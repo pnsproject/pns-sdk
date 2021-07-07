@@ -213,53 +213,49 @@ export function getResolver(name: DomainString): Promise<HexAddress> {
 
 /** 获取域名的解析地址 */
 export async function getAddr(name: DomainString, key: string): Promise<HexAddress> {
-  const namehash = getNamehash(name)
+  const namehash = getNamehash(name);
   // const resolverAddr = await ensContract.resolver(namehash)
 
   try {
     let coinTypes: any = {
-      'BTC': 0,
-      'ETH': 60,
-      'DOT': 354,
-    }
+      BTC: 0,
+      ETH: 60,
+      DOT: 354,
+    };
     let coinType = coinTypes[key];
-    const addr = await resolver['addr(bytes32,uint256)'](namehash, coinType)
-    if (addr === '0x') return emptyAddress
+    const addr = await resolver["addr(bytes32,uint256)"](namehash, coinType);
+    if (addr === "0x") return emptyAddress;
 
     // return encoder(Buffer.from(addr.slice(2), 'hex'))
-    return addr
+    return addr;
   } catch (e) {
-    console.log(e)
-    console.warn(
-      'Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?'
-    )
-    return emptyAddress
+    console.log(e);
+    console.warn("Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?");
+    return emptyAddress;
   }
 }
 
 /** 设置域名的解析地址 */
 export async function setAddr(name: DomainString, key: string, value: string): Promise<HexAddress> {
-  const namehash = getNamehash(name)
+  const namehash = getNamehash(name);
   // const resolverAddr = await ensContract.resolver(namehash)
 
   try {
     let coinTypes: any = {
-      'BTC': 0,
-      'ETH': 60,
-      'DOT': 354,
-    }
+      BTC: 0,
+      ETH: 60,
+      DOT: 354,
+    };
     let coinType = coinTypes[key];
-    const addr = await resolver['setAddr(bytes32,uint256,bytes)'](namehash, coinType, value)
-    if (addr === '0x') return emptyAddress
+    const addr = await resolver["setAddr(bytes32,uint256,bytes)"](namehash, coinType, value);
+    if (addr === "0x") return emptyAddress;
 
     // return encoder(Buffer.from(addr.slice(2), 'hex'))
-    return addr
+    return addr;
   } catch (e) {
-    console.log(e)
-    console.warn(
-      'Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?'
-    )
-    return emptyAddress
+    console.log(e);
+    console.warn("Error getting addr on the resolver contract, are you sure the resolver address is a resolver contract?");
+    return emptyAddress;
   }
 }
 
@@ -329,7 +325,7 @@ export async function register(label: DomainString, account: string, duration: n
   // const resolverAddr = await getowner("resolver.eth");
   let secret = getNamehash("eth");
 
-  return controller.registerWithConfig(label, account, duration, secret, resolverAddr, account, { value: price * 100, gasLimit: 500000 });
+  return controller.registerWithConfig(label, account, duration, secret, resolverAddr, account, { value: price.toNumber() * 100, gasLimit: 500000 });
 }
 
 export async function expiriesAt(label: DomainString): Promise<void> {
@@ -343,7 +339,7 @@ export async function available(label: DomainString): Promise<void> {
 }
 
 export async function renew(label: DomainString, duration: number): Promise<void> {
-  const price = await getRentPrice(label, duration);
+  const price = await getRentPriceBigNumber(label, duration);
   const priceWithBuffer = getBufferedPrice(price);
   // const resolverAddr = await getowner("resolver.eth");
   let secret = getNamehash("eth");
@@ -384,34 +380,24 @@ export async function getContent(name: DomainString): Promise<ContentType> {
   }
 }
 
-
 function buildKeyValueObjects(keys, values) {
   return values.map((record, i) => ({
     key: keys[i],
-    value: record
-  }))
+    value: record,
+  }));
 }
 
 /** 获得域名详细信息 */
 export async function getDomainDetails(name: DomainString) {
-  const nameArray = name.split('.')
-  const labelhash = getLabelhash(nameArray[0])
-  const nameResolver = await getResolver(name)
-  const owner = await getOwner(name)
-  const TEXT_RECORD_KEYS = [
-    "email",
-    "url",
-    "avatar",
-    "description",
-    "notice",
-    "keywords",
-    "com.twitter",
-    "com.github"
-  ]
+  const nameArray = name.split(".");
+  const labelhash = getLabelhash(nameArray[0]);
+  const nameResolver = await getResolver(name);
+  const owner = await getOwner(name);
+  const TEXT_RECORD_KEYS = ["email", "url", "avatar", "description", "notice", "keywords", "com.twitter", "com.github"];
 
-  const promises = TEXT_RECORD_KEYS.map(key => getText(name, key))
-  const records = await Promise.all(promises)
-  let textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records)
+  const promises = TEXT_RECORD_KEYS.map((key) => getText(name, key));
+  const records = await Promise.all(promises);
+  let textRecords = buildKeyValueObjects(TEXT_RECORD_KEYS, records);
 
   const node = {
     name,
@@ -426,8 +412,8 @@ export async function getDomainDetails(name: DomainString) {
     return {
       ...node,
       addr: null,
-      content: null
-    }
+      content: null,
+    };
   } else {
     try {
       const addr = await getAddr(node.name, "ETH");
@@ -435,40 +421,37 @@ export async function getDomainDetails(name: DomainString) {
       return {
         ...node,
         addrs: [
-          {key: 'BTC', value: await getAddr(node.name, "BTC")},
-          {key: 'ETH', value: await getAddr(node.name, "ETH")},
-          {key: 'DOT', value: await getAddr(node.name, "DOT")},
+          { key: "BTC", value: await getAddr(node.name, "BTC") },
+          { key: "ETH", value: await getAddr(node.name, "ETH") },
+          { key: "DOT", value: await getAddr(node.name, "DOT") },
         ],
         content: content.value,
-        contentType: "ipfs"
+        contentType: "ipfs",
       };
     } catch (e) {
       return {
         ...node,
-        addr: '0x0',
-        content: '0x0',
-        contentType: 'error'
-      }
+        addr: "0x0",
+        content: "0x0",
+        contentType: "error",
+      };
     }
   }
 }
 
-
-
 export async function setDomainDetails(name: string, textRecords: any, addrs: any, content: string) {
   textRecords.forEach(async (item: any) => {
-    await setText(name, item.key, item.value)
-  })
+    await setText(name, item.key, item.value);
+  });
 
   addrs.forEach(async (item: any) => {
-    await setAddr(name, item.key, item.value)
-  })
+    await setAddr(name, item.key, item.value);
+  });
 
   if (content && content !== "") {
-    await setContent(name, content)
+    await setContent(name, content);
   }
 }
-
 
 /** 一次性设置域名信息
  * function setRecord(bytes32 node, address owner, address resolver, uint64 ttl)
