@@ -138,7 +138,7 @@ export async function setProvider() {
   }
 
   console.log(provider, signer, account);
-  console.log('network', await provider.getNetwork())
+  console.log("network", await provider.getNetwork());
   return;
 }
 
@@ -296,9 +296,8 @@ export async function getRentPrices(labels: string[], duration: number): Promise
   return pricesArray.reduce((a: any, c) => a.add(c));
 }
 
-
 export async function getMinCommitmentAge(): Promise<BigNumber> {
-    return controller.minCommitmentAge()
+  return controller.minCommitmentAge();
 }
 
 /** 计算commitment */

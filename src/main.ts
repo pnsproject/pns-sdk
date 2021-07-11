@@ -40,7 +40,7 @@ import {
   available,
   renew,
   decodeIpfsUrl,
-  setDomainDetails
+  setDomainDetails,
 } from "./devkit";
 
 function start() {
@@ -65,7 +65,6 @@ function start() {
     mydomains = await listFav(jwt, account); // 获取用户的域名列表
     console.log("my fav domains", mydomains);
 
-
     console.log("eth owner", await getOwner("eth"));
     console.log("eth addr", await getAddr("eth", "ETH"));
 
@@ -79,29 +78,25 @@ function start() {
 
     console.log("jiang0.eth available", await available("jiang0"));
 
-    console.log('getMinCommitmentAge', (await getMinCommitmentAge()).toNumber())
+    console.log("getMinCommitmentAge", (await getMinCommitmentAge()).toNumber());
 
-    console.log('getDomainDetails', await getDomainDetails('jiang0'))
+    console.log("getDomainDetails", await getDomainDetails("jiang0"));
 
-    let code = 'Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu'
-    console.log(ethers.utils.base58.decode(code))
+    let code = "Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu";
+    console.log(ethers.utils.base58.decode(code));
 
-
-    let url = '/ipfs/QmV1F3RbQeQEs3FToNi81JXkxaTDLYpHqDeQC9bpxJLLnC'
+    let url = "/ipfs/QmV1F3RbQeQEs3FToNi81JXkxaTDLYpHqDeQC9bpxJLLnC";
 
     // console.log('jiang0.eth setContent', await setContent('jiang0.eth', decodeIpfsUrl(url)))
 
-
     // console.log('getDomainDetails', await setDomainDetails('jiang0', [], [], ))
-    console.log('setDomainDetails', await setDomainDetails('jiang0.eth', [], [], decodeIpfsUrl(url)))
+    console.log("setDomainDetails", await setDomainDetails("jiang0.eth", [], [], decodeIpfsUrl(url)));
 
     // console.log("jiang0.eth commit", await commit("jiang0", '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'));
 
     // console.log("jiang.eth register", await register("jiang0", '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4', 28 * 86400));
 
     // console.log("jiang0.eth renew", await renew("jiang0", 86400));
-
-
   });
 }
 
