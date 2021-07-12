@@ -51,18 +51,18 @@ function start() {
     let account = getAccount(); // 获取 account
     console.log(account);
 
-    let res = await createFav(jwt, account, "polkadot.eth"); // 添加用户的域名
+    let res = await createFav(account, "polkadot.eth"); // 添加用户的域名
     console.log(res);
 
-    let mydomains = await listFav(jwt, account); // 获取用户的域名列表
+    let mydomains = await listFav(account); // 获取用户的域名列表
     console.log("my fav domains", mydomains);
 
     let domainId = mydomains[0].id;
     console.log("domainId to delete", domainId);
 
-    await deleteFav(jwt, domainId); // 删除用户的域名
+    await deleteFav(domainId); // 删除用户的域名
 
-    mydomains = await listFav(jwt, account); // 获取用户的域名列表
+    mydomains = await listFav(account); // 获取用户的域名列表
     console.log("my fav domains", mydomains);
 
     console.log("eth owner", await getOwner("eth"));

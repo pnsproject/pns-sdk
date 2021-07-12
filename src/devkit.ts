@@ -14,6 +14,19 @@ import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 import { default as domainChecker } from "is-valid-domain";
 
+/** 用于服务器的 token */
+let serverJwtToken: string = null;
+
+/** 做一些检查 */
+let getJwtToken = (): string => {
+  if (serverJwtToken != null) {
+    return serverJwtToken;
+  } else {
+    console.error("token 为空, 需要先登录获取 token");
+    return null;
+  }
+};
+
 export function getNamehash(name: string): HexAddress {
   let node = "";
   for (let i = 0; i < 32; i++) {
@@ -577,11 +590,21 @@ export async function tryLogin(): Promise<string> {
 
   if (hasLocalstorage && localStorage.getItem("pns-jwt")) {
     console.log("jwt loaded");
-    return localStorage.getItem("pns-jwt");
+    let jwt = localStorage.getItem("pns-jwt");
+
+    // 在类库当中缓存 token
+    console.info("jwtToken loaded");
+    serverJwtToken = jwt;
+
+    return jwt;
   } else {
     let signed = await signLoginMessage();
     let { jwt } = await getLoginToken(signed);
     console.log("get new jwt");
+
+    // 在类库当中缓存 token
+    console.info("jwtToken loaded");
+    serverJwtToken = jwt;
 
     if (hasLocalstorage) {
       localStorage.setItem("pns-jwt", jwt);
@@ -591,12 +614,12 @@ export async function tryLogin(): Promise<string> {
 }
 
 /** 列出用户关注的域名列表 */
-export async function listFav(token: string, account: HexAddress): Promise<any> {
+export async function listFav(account: HexAddress): Promise<any> {
   return fetch(api_url_base, {
     method: "POST",
     body: JSON.stringify({
       action: "listFav",
-      token: token,
+      token: getJwtToken(),
       account: account,
     }),
     headers: new Headers({
@@ -606,12 +629,12 @@ export async function listFav(token: string, account: HexAddress): Promise<any> 
 }
 
 /** 创建用户关注的域名 */
-export async function createFav(token: string, account: HexAddress, domain: DomainString): Promise<any> {
+export async function createFav(account: HexAddress, domain: DomainString): Promise<any> {
   return fetch(api_url_base, {
     method: "POST",
     body: JSON.stringify({
       action: "createFav",
-      token: token,
+      token: getJwtToken(),
       account: account,
       domain: domain,
     }),
@@ -622,12 +645,12 @@ export async function createFav(token: string, account: HexAddress, domain: Doma
 }
 
 /** 取消用户关注的域名 */
-export async function deleteFav(token: string, id: string): Promise<any> {
+export async function deleteFav(id: string): Promise<any> {
   return fetch(api_url_base, {
     method: "POST",
     body: JSON.stringify({
       action: "deleteFav",
-      token: token,
+      token: getJwtToken(),
       ref: id,
     }),
     headers: new Headers({
@@ -639,12 +662,12 @@ export async function deleteFav(token: string, id: string): Promise<any> {
 }
 
 /** 列出用户的子域名列表 */
-export async function listSubdomain(token: string, account: HexAddress): Promise<any> {
+export async function listSubdomain(account: HexAddress): Promise<any> {
   return fetch(api_url_base, {
     method: "POST",
     body: JSON.stringify({
       action: "listSubdomain",
-      token: token,
+      token: getJwtToken(),
       account: account,
     }),
     headers: new Headers({
@@ -654,12 +677,12 @@ export async function listSubdomain(token: string, account: HexAddress): Promise
 }
 
 /** 创建用户的子域名 */
-export async function createSubdomain(token: string, account: HexAddress, domain: DomainString, data: string): Promise<any> {
+export async function createSubdomain(account: HexAddress, domain: DomainString, data: string): Promise<any> {
   return fetch(api_url_base, {
     method: "POST",
     body: JSON.stringify({
       action: "createSubdomain",
-      token: token,
+      token: getJwtToken(),
       account: account,
       domain: domain,
       data: data,
@@ -671,12 +694,12 @@ export async function createSubdomain(token: string, account: HexAddress, domain
 }
 
 /** 删除用户的子域名 */
-export async function deleteSubdomain(token: string, id: string): Promise<any> {
+export async function deleteSubdomain(id: string): Promise<any> {
   return fetch(api_url_base, {
     method: "POST",
     body: JSON.stringify({
       action: "deleteSubdomain",
-      token: token,
+      token: getJwtToken(),
       ref: id,
     }),
     headers: new Headers({
