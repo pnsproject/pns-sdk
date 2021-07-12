@@ -333,7 +333,7 @@ export async function register(label: DomainString, account: string, duration: n
   return controller.registerWithConfig(label, account, duration, secret, resolverAddr, account, { value: price.toNumber() * 100, gasLimit: 500000 });
 }
 
-export async function expiriesAt(label: DomainString): Promise<void> {
+export async function expiriesAt(label: DomainString): Promise<BigNumber> {
   label = "0x" + sha3(label) || "0x0";
   return registrar.nameExpires(label);
 }

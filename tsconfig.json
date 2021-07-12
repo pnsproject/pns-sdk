@@ -16,6 +16,7 @@
     "baseUrl": "./src/",
     "importsNotUsedAsValues": "preserve",
     "skipLibCheck": true,
+    "outDir": "lib/",
     "plugins": []
   }
 }
