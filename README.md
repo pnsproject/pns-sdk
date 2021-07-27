@@ -61,7 +61,7 @@ let account = await getAccount();
 #### 查询域名是否已经注册
 
 ```ts
-await getOwner("eth"))
+await getOwner("eth")
 ```
 
 - 可用, 返回 `0x00000`
