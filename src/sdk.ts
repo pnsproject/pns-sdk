@@ -10,7 +10,6 @@ import { HexAddress, DomainString, ContentType } from "./types";
 
 import { EnsAbi, RegistrarAbi, ResolverAbi, ETHRegistrarControllerAbi, BulkRenewalAbi } from "./contracts";
 
-import { MetaMaskInpageProvider } from "@metamask/providers";
 import { Web3Provider, JsonRpcSigner } from "@ethersproject/providers";
 import { default as domainChecker } from "is-valid-domain";
 
