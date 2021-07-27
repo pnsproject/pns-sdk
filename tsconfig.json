@@ -14,7 +14,7 @@
     "esModuleInterop": true,
     "types": ["node"],
     "baseUrl": "./src/",
-    "importsNotUsedAsValues": "preserve",
+    "importsNotUsedAsValues": "remove",
     "skipLibCheck": true,
     "outDir": "lib/",
     "plugins": []
