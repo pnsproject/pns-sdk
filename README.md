@@ -21,6 +21,12 @@ npm run build
 npm run fmt
 ```
 
+通过 npm 提供依赖的话, 提交之前需要编译 js 提交:
+
+```bash
+npm run compile
+```
+
 ### 业务功能
 
 用户注册流程:
