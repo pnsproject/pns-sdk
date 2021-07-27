@@ -5,7 +5,7 @@
   "description": "",
   "main": "./lib/sdk.js",
   "scripts": {
-    "compile": "rm -rfv lib/* && tsc -d --project tsconfig.json --outDir lib/",
+    "compile": "rm -rfv lib/* && tsc -d --project tsconfig.json --outDir lib/ && cp -v src/contracts.js lib/",
     "serve": "vite",
     "build": "vite build --base=./",
     "fmt": "prettier --write src/**",
