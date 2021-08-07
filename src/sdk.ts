@@ -135,34 +135,12 @@ let resolverAddr: string;
 //   controller: "0x69327224Df3181963574Ea0b72306453B330feE8",
 // };
 
-// ens deployed to: 0x64f58DaBFbAa801F247429656cD37d16231890De
-// resolver deployed to: 0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73
-// registrar deployed to: 0x938ce6808Fb2636F124A6da682666456fD9e656F
-// dummyOracle deployed to: 0x17Cf83bBCE053c264626cD46FE312368f0433127
-// stablePriceOracle deployed to: 0x01Eee6B2DC48810488B781F1Cdf0b4b2D73f2C1B
-// controller deployed to: 0x511dB9C9f455a0aeb1f4E87de8ad8e87256253eE
-
-// // moonbeam
-// export const ContractAddrs = {
-//   ens: "0x64f58DaBFbAa801F247429656cD37d16231890De",
-//   resolver: "0x9a1006d456F9C7a5Ab2208E0f7e9DF9A438F7f73",
-//   registrar: "0x938ce6808Fb2636F124A6da682666456fD9e656F",
-//   controller: "0x511dB9C9f455a0aeb1f4E87de8ad8e87256253eE",
-// };
-
-// ens deployed to: 0x1C8B199E611446f6c75308c97400539fB79E8688
-// resolver deployed to: 0x1C367639148168E472F2BCB57ABB43EaA3Cbe031
-// registrar deployed to: 0xf8b31aD8eF5cE95F60C5EDB8b163048DAaBCaCCC
-// dummyOracle deployed to: 0xbF670e06cBC959b073E42BEbA3c4a0AF296d6d2B
-// stablePriceOracle deployed to: 0xf647104dba724279b4c02DeA547F925eFdFa99b0
-// controller deployed to: 0x7dCb34e3617E88BD830F4C030B06201a69657173
-
-// moonbeam dot
+// moonbeamx
 export const ContractAddrs = {
-  ens: "0x1C8B199E611446f6c75308c97400539fB79E8688",
-  resolver: "0x1C367639148168E472F2BCB57ABB43EaA3Cbe031",
-  registrar: "0xf8b31aD8eF5cE95F60C5EDB8b163048DAaBCaCCC",
-  controller: "0x7dCb34e3617E88BD830F4C030B06201a69657173",
+  ens: "0x598efcBD0B5b4Fd0142bEAae1a38f6Bd4d8a218d",
+  resolver: "0x746DFE0F96789e62CECeeA3CA2a9b5556b3AaD6c",
+  registrar: "0x493275370aF3f63d9ccd10a6539435121cF4fbb9",
+  controller: "0x7acc1aC65892CF3547b1b0590066FB93199b430D",
 };
 
 const isNode = new Function("try {return this===global;}catch(e){return false;}");
@@ -184,7 +162,7 @@ export async function setProvider() {
   }
 
   // console.log(provider, signer, account);
-  // console.log("network", await provider.getNetwork());
+  console.log("network", await provider.getNetwork());
   return;
 }
 

@@ -62,7 +62,13 @@ function start() {
     // let jwt = await tryLogin(); // 进行登录，获取 jwt
 
     await autoLogin();
-    console.log("getProvider", getProvider());
+
+    let provider = getProvider()
+    console.log("getProvider", provider);
+
+    const { chainId } = await provider.getNetwork()
+    console.log(chainId)
+
     console.log("getSigner", getSigner());
     console.log(await getOwner("yong.dot"));
 
@@ -156,11 +162,11 @@ function start() {
     //   )
     // );
 
-    // console.log("gavin0.dot commit", await commit("gavin0", Aliceth));
+    console.log("gavin0.dot commit", await commit("gavin0", Aliceth));
 
-    // console.log("gavin0.dot register", await register("gavin0", Aliceth, 28 * 86400));
+    console.log("gavin0.dot register", await register("gavin0", Aliceth, 28 * 86400));
 
-    // console.log("gavin0.dot renew", await renew("gavin0", 86400));
+    console.log("gavin0.dot renew", await renew("gavin0", 86400));
   });
 }
 
@@ -205,6 +211,6 @@ async function main() {
   console.log(`You are connected to chain ${chain} using ${nodeName} v${nodeVersion}`);
 }
 
-main()
-  .catch(console.error)
-  .finally(() => {});
+// main()
+//   .catch(console.error)
+//   .finally(() => {});
