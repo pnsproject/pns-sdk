@@ -70,10 +70,57 @@ function start() {
     console.log(chainId)
 
     console.log("getSigner", getSigner());
-    console.log(await getOwner("yong.dot"));
+    // console.log(await getOwner("yong.dot"));
 
     let account = getAccount(); // 获取 account
     console.log(account);
+
+    console.log(ethers.utils.hexlify(5))
+
+    // let chain: any = {
+    //   "name": "Avalanche Mainnet",
+    //   "chain": "AVAX",
+    //   "network": "mainnet",
+    //   "rpc": [
+    //     "https://api.avax.network/ext/bc/C/rpc"
+    //   ],
+    //   "faucets": [],
+    //   "nativeCurrency": {
+    //     "name": "Avalanche",
+    //     "symbol": "AVAX",
+    //     "decimals": 18
+    //   },
+    //   "infoURL": "https://cchain.explorer.avax.network/",
+    //   "shortName": "Avalanche",
+    //   "chainId": 43114,
+    //   "networkId": 1    
+    // }
+
+    // const params = {
+    //   chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+    //   chainName: chain.name,
+    //   nativeCurrency: {
+    //     name: chain.nativeCurrency.name,
+    //     symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+    //     decimals: chain.nativeCurrency.decimals,
+    //   },
+    //   rpcUrls: chain.rpc,
+    //   blockExplorerUrls: [ chain.infoURL ]
+    // };
+
+    // window.ethereum.request({
+    //   method: 'wallet_addEthereumChain',
+    //   params: [params, account],
+    // })
+    // .then((result) => {
+    //   console.log(result)
+    // })
+    // .catch((error) => {
+    //   console.log(error)
+    // });
+
+
+    
 
     // let res = await createFav(account, "polkadot.eth"); // 添加用户收藏的域名
     // console.log(res);
@@ -162,11 +209,11 @@ function start() {
     //   )
     // );
 
-    console.log("gavin0.dot commit", await commit("gavin0", Aliceth));
+    // console.log("gavin0.dot commit", await commit("gavin0", Aliceth));
 
-    console.log("gavin0.dot register", await register("gavin0", Aliceth, 28 * 86400));
+    // console.log("gavin0.dot register", await register("gavin0", Aliceth, 28 * 86400));
 
-    console.log("gavin0.dot renew", await renew("gavin0", 86400));
+    // console.log("gavin0.dot renew", await renew("gavin0", 86400));
   });
 }
 
