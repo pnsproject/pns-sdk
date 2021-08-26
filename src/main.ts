@@ -50,6 +50,8 @@ import {
   autoLogin,
 } from "./sdk";
 
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Web3Modal from "web3modal";
 
 const Aliceth = '0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac'
 const Alice = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
@@ -75,52 +77,81 @@ function start() {
     let account = getAccount(); // 获取 account
     console.log(account);
 
+
+    const INFURA_ID = '75e0d27975114086be0463cf2597549e'
+    // const providerOptions = {};
+    const providerOptions = {
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            infuraId: INFURA_ID
+          }
+        },
+    };
+
+    const web3Modal = new Web3Modal({
+      network: "mainnet", // optional
+      cacheProvider: true, // optional
+      providerOptions // required
+    });
+
+    const web3provider = await web3Modal.connect();
+    const eprovider = new ethers.providers.Web3Provider(web3provider) as Web3Provider;
+    console.log(await eprovider.getNetwork())
+
+
+
+//  Create WalletConnect Provider
+// const wprovider: any = new WalletConnectProvider({
+//   infuraId: "75e0d27975114086be0463cf2597549e",
+// });
+
+//  Enable session (triggers QR Code modal)
+// await wprovider.enable();
+
     console.log(ethers.utils.hexlify(5))
 
-    // let chain: any = {
-    //   "name": "Avalanche Mainnet",
-    //   "chain": "AVAX",
-    //   "network": "mainnet",
-    //   "rpc": [
-    //     "https://api.avax.network/ext/bc/C/rpc"
-    //   ],
-    //   "faucets": [],
-    //   "nativeCurrency": {
-    //     "name": "Avalanche",
-    //     "symbol": "AVAX",
-    //     "decimals": 18
-    //   },
-    //   "infoURL": "https://cchain.explorer.avax.network/",
-    //   "shortName": "Avalanche",
-    //   "chainId": 43114,
-    //   "networkId": 1    
-    // }
+    let chain: any = {
+      "name": "Avalanche Mainnet",
+      "chain": "AVAX",
+      "network": "mainnet",
+      "rpc": [
+        "https://api.avax.network/ext/bc/C/rpc"
+      ],
+      "faucets": [],
+      "nativeCurrency": {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "decimals": 18
+      },
+      "infoURL": "https://cchain.explorer.avax.network/",
+      "shortName": "Avalanche",
+      "chainId": 43114,
+      "networkId": 1    
+    }
 
-    // const params = {
-    //   chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
-    //   chainName: chain.name,
-    //   nativeCurrency: {
-    //     name: chain.nativeCurrency.name,
-    //     symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-    //     decimals: chain.nativeCurrency.decimals,
-    //   },
-    //   rpcUrls: chain.rpc,
-    //   blockExplorerUrls: [ chain.infoURL ]
-    // };
+    const params = {
+      chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+      chainName: chain.name,
+      nativeCurrency: {
+        name: chain.nativeCurrency.name,
+        symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+        decimals: chain.nativeCurrency.decimals,
+      },
+      rpcUrls: chain.rpc,
+      blockExplorerUrls: [ chain.infoURL ]
+    };
 
-    // window.ethereum.request({
-    //   method: 'wallet_addEthereumChain',
-    //   params: [params, account],
-    // })
-    // .then((result) => {
-    //   console.log(result)
-    // })
-    // .catch((error) => {
-    //   console.log(error)
-    // });
-
-
-    
+    window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [params, account],
+    })
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((error) => {
+      console.log(error)
+    });
 
     // let res = await createFav(account, "polkadot.eth"); // 添加用户收藏的域名
     // console.log(res);
