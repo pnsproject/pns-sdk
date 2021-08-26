@@ -79,15 +79,15 @@ function start() {
 
 
     const INFURA_ID = '75e0d27975114086be0463cf2597549e'
-    // const providerOptions = {};
-    const providerOptions = {
-        walletconnect: {
-          package: WalletConnectProvider,
-          options: {
-            infuraId: INFURA_ID
-          }
-        },
-    };
+    const providerOptions = {};
+    // const providerOptions = {
+    //     walletconnect: {
+    //       package: WalletConnectProvider,
+    //       options: {
+    //         infuraId: INFURA_ID
+    //       }
+    //     },
+    // };
 
     const web3Modal = new Web3Modal({
       network: "mainnet", // optional
@@ -109,49 +109,53 @@ function start() {
 //  Enable session (triggers QR Code modal)
 // await wprovider.enable();
 
-    console.log(ethers.utils.hexlify(5))
+    // console.log(ethers.utils.hexlify(5))
 
-    let chain: any = {
-      "name": "Avalanche Mainnet",
-      "chain": "AVAX",
-      "network": "mainnet",
-      "rpc": [
-        "https://api.avax.network/ext/bc/C/rpc"
-      ],
-      "faucets": [],
-      "nativeCurrency": {
-        "name": "Avalanche",
-        "symbol": "AVAX",
-        "decimals": 18
-      },
-      "infoURL": "https://cchain.explorer.avax.network/",
-      "shortName": "Avalanche",
-      "chainId": 43114,
-      "networkId": 1    
-    }
+    // let chain: any = {
+    //   "name": "Avalanche Mainnet",
+    //   "chain": "AVAX",
+    //   "network": "mainnet",
+    //   "rpc": [
+    //     "https://api.avax.network/ext/bc/C/rpc"
+    //   ],
+    //   "faucets": [],
+    //   "nativeCurrency": {
+    //     "name": "Avalanche",
+    //     "symbol": "AVAX",
+    //     "decimals": 18
+    //   },
+    //   "infoURL": "https://cchain.explorer.avax.network/",
+    //   "shortName": "Avalanche",
+    //   "chainId": 43114,
+    //   "networkId": 1
+    // }
 
-    const params = {
-      chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
-      chainName: chain.name,
-      nativeCurrency: {
-        name: chain.nativeCurrency.name,
-        symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-        decimals: chain.nativeCurrency.decimals,
-      },
-      rpcUrls: chain.rpc,
-      blockExplorerUrls: [ chain.infoURL ]
-    };
+    // const params = {
+    //   chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+    //   chainName: chain.name,
+    //   nativeCurrency: {
+    //     name: chain.nativeCurrency.name,
+    //     symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+    //     decimals: chain.nativeCurrency.decimals,
+    //   },
+    //   rpcUrls: chain.rpc,
+    //   blockExplorerUrls: [ chain.infoURL ]
+    // };
 
-    window.ethereum.request({
-      method: 'wallet_addEthereumChain',
-      params: [params, account],
-    })
-    .then((result) => {
-      console.log(result)
-    })
-    .catch((error) => {
-      console.log(error)
-    });
+    // window.ethereum.request({
+    //   method: 'wallet_addEthereumChain',
+    //   params: [params, account],
+    // })
+    // .then((result) => {
+    //   console.log(result)
+    // })
+    // .catch((error) => {
+    //   console.log(error)
+    // });
+
+
+
+
 
     // let res = await createFav(account, "polkadot.eth"); // 添加用户收藏的域名
     // console.log(res);
@@ -197,13 +201,13 @@ function start() {
 
     // console.log("yong.eth owner", await getOwner("yong.eth"));
 
-    // console.log("gavin0.dot owner", await getOwner("gavin0.dot"));
+    console.log("gavin0.dot owner", await getOwner("gavin0.dot"));
 
     // console.log("gavin0.dot addr", await getAddr("gavin0.dot", "ETH"));
 
     // console.log("gavin0.dot getRentPrice", await getRentPrice("gavin0", 86400));
 
-    // console.log("gavin0.dot expiries", (await expiriesAt("gavin0")).toNumber());
+    console.log("gavin0.dot expiries", (await expiriesAt("gavin0")).toNumber());
 
     // console.log("gavin0.dot available", await available("gavin0"));
 
@@ -250,43 +254,6 @@ function start() {
 
 if (document) {
   start();
-}
-
-import { ApiPromise, WsProvider } from "@polkadot/api";
-
-async function main() {
-  const provider = new WsProvider("ws://127.0.0.1:9944");
-
-  const api = await ApiPromise.create({ provider });
-
-
-  let {
-    data: { free: previousFree },
-    nonce: previousNonce,
-  } = await api.query.system.account(Alice);
-
-  console.log(`${Alice} has a balance of ${previousFree}, nonce ${previousNonce}`);
-
-  //////////
-
-  let count = 0;
-
-  // Subscribe to the new headers on-chain. The callback is fired when new headers
-  // are found, the call itself returns a promise with a subscription that can be
-  // used to unsubscribe from the newHead subscription
-  const unsubscribe = await api.rpc.chain.subscribeNewHeads((header) => {
-    console.log(`Chain is at block: #${header.number}`);
-
-    if (++count === 256) {
-      unsubscribe();
-    }
-  });
-
-  //////////
-
-  const [chain, nodeName, nodeVersion] = await Promise.all([api.rpc.system.chain(), api.rpc.system.name(), api.rpc.system.version()]);
-
-  console.log(`You are connected to chain ${chain} using ${nodeName} v${nodeVersion}`);
 }
 
 // main()
