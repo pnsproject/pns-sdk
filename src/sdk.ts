@@ -452,6 +452,19 @@ export function setResolver(name: DomainString, resolver?: HexAddress): Promise<
   return ens.setResolver(namehash, resolver);
 }
 
+/** 设置域名的所有者
+ * function setOwner(bytes32 name, address owner)
+ * setOwner('hero.eth', '0x123456789') */
+export function setOwner(
+  name: DomainString,
+  newOwner: HexAddress
+): Promise<{
+  wait: () => Promise<void>;
+}> {
+  let namehash = getNamehash(name);
+  return ens.setOwner(namehash, newOwner);
+}
+
 /** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
  * function setTTL(bytes32 name, uint64 ttl)
  * setTTL('hero.eth', 3600) */

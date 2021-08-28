@@ -23,6 +23,7 @@ import {
   setOwner,
   setSubnodeOwner,
   setResolver,
+  setOwner,
   setTTL,
   setDefaultResolver,
   setAddr,
@@ -149,6 +150,8 @@ function start() {
     console.log("gavin012345.dot setTTL", await setTTL("gavin012345.dot", 86400));
 
     console.log("gavin012345.dot setAddr", await setAddr("gavin012345.dot", 'ETH', account));
+
+    console.log("gavin012345.dot setOwner", await setOwner("gavin012345.dot", account));
 
     console.log("gavin012345.dot setText", await setText("gavin012345.dot", 'com.github', 'gavinwood'));
 
