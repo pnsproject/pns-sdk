@@ -106,9 +106,9 @@ export async function setProvider(providerOpt: any) {
 
 
 export const ContractAddrs = {
-  ens: "0xE86E5e51b57D83c4420c78eB1bd30453cA2C0a8F",
-  resolver: "0x263E845eD8536782b1FFDe3908ad36d4d023b139",
-  registrar: "0xDa98d56F3357422ba9397F102E8C311Fd3fE004A"
+  ens: "0xcb3B1D40bbAde960150400fe99198e7939d998f0",
+  resolver: "0xc8ddD10a9E9bAFA6aD58C5fbaFEB65E8a48b21Ff",
+  registrar: "0xb6c763b610efCb20E8046B39624269CcB73721b0"
 };
 
 export async function setup(ensAddress?: string, resolverAddress?: string, registrarAddress?: string, providerOpt?: Web3Provider) {
@@ -526,6 +526,22 @@ export function setSubnodeRecord(name: DomainString, label: string, newOwner: He
   return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
 }
 
+/** 根据名字设置子域名的所有者
+ * function setSubnodeOwner(bytes32 name, string subname, address owner)
+ * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
+export function setSubnameOwner(name: DomainString, subname: string, newOwner: HexAddress): Promise<any> {
+  let namehash = getNamehash(name);
+  return ens.setSubnameOwner(namehash, subname, newOwner);
+}
+
+/** 根据名字一次性设置域名信息
+ * function setSubnameRecord(bytes32 name, string subname, address owner, address resolver, uint64 ttl)
+ * setSubnameRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
+export function setSubnameRecord(name: DomainString, subname: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
+  let namehash = getNamehash(name);
+  return ens.setSubnameRecord(namehash, subname, newOwner, resolver, ttl);
+}
+
 export function matchProtocol(text: string): RegExpMatchArray | null {
   return text.match(/^(ipfs|sia|ipns|bzz|onion|onion3):\/\/(.*)/) || text.match(/\/(ipfs)\/(.*)/) || text.match(/\/(ipns)\/(.*)/);
 }
@@ -872,3 +888,23 @@ export async function deleteDomain(id: string): Promise<any> {
     }),
   }).then((res) => res.json());
 }
+
+
+
+let urlbase = "https://trusted-quagga-17.hasura.app/v1/graphql"
+
+/** 列出用户的域名列表 */
+async function listAccountDomains(account: HexAddress): Promise<any> {
+  let query = "{\"query\":\"{\\n  domains(order_by: {name: asc}, where: {owner: {_eq: \\\""+ account +"\\\"}}) {\\n    id\\n    name\\n    owner\\n    expires\\n  }\\n}\",\"variables\":null}"
+
+  let resp = await fetch(urlbase, {
+    "headers": {
+      "content-type": "application/json",
+    },
+    "body": query,
+    "method": "POST",
+  })
+  resp = await resp.json()
+  return resp.data
+}
+
