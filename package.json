@@ -22,7 +22,8 @@
     "buffer": "^6.0.3",
     "ethers": "^5.2.0",
     "is-valid-domain": "0.0.20",
-    "web3modal": "^1.9.4"
+    "web3modal": "^1.9.4",
+    "ws": ">=7.4.6"
   },
   "devDependencies": {
     "@types/node": "^15.12.1",

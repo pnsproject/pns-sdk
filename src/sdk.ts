@@ -605,19 +605,6 @@ export function isValidDomain(rawName: string): boolean {
   return name.length > 3 && name.length < 64 && domainChecker(name, { allowUnicode: false, subdomain: false });
 }
 
-/** 用于服务器的 token */
-let serverJwtToken: string = null;
-
-/** 做一些检查 */
-let getJwtToken = (): string => {
-  if (serverJwtToken != null) {
-    return serverJwtToken;
-  } else {
-    console.error("token 为空, 需要先登录获取 token");
-    return null;
-  }
-};
-
 //////////////////////
 const secret = "0x0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
 // const api_url_base = "http://localhost:5000/api/handler";
@@ -639,29 +626,7 @@ export function setDefaultResolver(name: DomainString): Promise<any> {
 
 // server api
 
-/** 获取用户登录的签名token */
-export async function signLoginMessage(): Promise<string> {
-  let signer = provider.getSigner();
-
-  let content = "PNS Login";
-  return signer.signMessage(content);
-}
-
-/** 通过用户登录的签名token登录 */
-export async function getLoginToken(sig: string): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "login",
-      sig: sig,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-export async function autoLogin(): Promise<string> {
+export async function autoLogin(): Promise<void> {
   console.log("auto login");
 
   if (!(window as any).ethereum) {
@@ -688,209 +653,11 @@ export async function autoLogin(): Promise<string> {
   }
 
   await setup();
-  let hasLocalstorage = typeof (window as any).localStorage !== "undefined";
-
-  if (hasLocalstorage && localStorage.getItem("pns-jwt")) {
-    console.log("jwt loaded");
-    let jwt = localStorage.getItem("pns-jwt");
-
-    // 在类库当中缓存 token
-    serverJwtToken = jwt;
-
-    return jwt;
-  } else {
-    let signed = await signLoginMessage();
-    let { jwt } = await getLoginToken(signed);
-    console.log("get new jwt");
-
-    // 在类库当中缓存 token
-    serverJwtToken = jwt;
-
-    if (hasLocalstorage) {
-      localStorage.setItem("pns-jwt", jwt);
-    }
-    return jwt;
-  }
 }
 
-export async function tryLogin(): Promise<string> {
+export async function tryLogin(): Promise<void> {
   await setup();
-  let hasLocalstorage = typeof (window as any).localStorage !== "undefined";
-
-  if (hasLocalstorage && localStorage.getItem("pns-jwt")) {
-    console.log("jwt loaded");
-    let jwt = localStorage.getItem("pns-jwt");
-
-    // 在类库当中缓存 token
-    console.info("jwtToken loaded");
-    serverJwtToken = jwt;
-
-    return jwt;
-  } else {
-    let signed = await signLoginMessage();
-    let { jwt } = await getLoginToken(signed);
-    console.log("get new jwt");
-
-    // 在类库当中缓存 token
-    console.info("jwtToken loaded");
-    serverJwtToken = jwt;
-
-    if (hasLocalstorage) {
-      localStorage.setItem("pns-jwt", jwt);
-    }
-    return jwt;
-  }
 }
-
-/** 列出用户关注的域名列表 */
-export async function listFav(account: HexAddress): Promise<
-  {
-    domain: string;
-    id: string;
-    account: HexAddress;
-  }[]
-> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "listFav",
-      token: getJwtToken(),
-      account: account,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-/** 创建用户关注的域名 */
-export async function createFav(account: HexAddress, domain: DomainString): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "createFav",
-      token: getJwtToken(),
-      account: account,
-      domain: domain,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-/** 取消用户关注的域名 */
-export async function deleteFav(id: string): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "deleteFav",
-      token: getJwtToken(),
-      ref: id,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  })
-    .then((res) => res.json())
-    .catch((err) => "err");
-}
-
-/** 列出用户的子域名列表 */
-export async function listSubdomain(account: HexAddress): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "listSubdomain",
-      token: getJwtToken(),
-      account: account,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-/** 创建用户的子域名 */
-export async function createSubdomain(account: HexAddress, domain: DomainString, data: string): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "createSubdomain",
-      token: getJwtToken(),
-      account: account,
-      domain: domain,
-      data: data,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-/** 删除用户的子域名 */
-export async function deleteSubdomain(id: string): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "deleteSubdomain",
-      token: getJwtToken(),
-      ref: id,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-/** 列出用户的域名列表 */
-export async function listDomain(account: HexAddress): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "listDomain",
-      token: getJwtToken(),
-      account: account,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-/** 创建用户的域名 */
-export async function createDomain(account: HexAddress, domain: DomainString, data: string): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "createDomain",
-      token: getJwtToken(),
-      account: account,
-      domain: domain,
-      data: data,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-/** 删除用户的域名 */
-export async function deleteDomain(id: string): Promise<any> {
-  return fetch(api_url_base, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "deleteDomain",
-      token: getJwtToken(),
-      ref: id,
-    }),
-    headers: new Headers({
-      "Content-Type": "application/json",
-    }),
-  }).then((res) => res.json());
-}
-
-
 
 const hasuraUrl = "https://trusted-quagga-17.hasura.app/v1/graphql"
 
