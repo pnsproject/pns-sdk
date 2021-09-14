@@ -281,7 +281,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ],
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+  ]
 }

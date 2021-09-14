@@ -1,13 +1,8 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "ENSRegistry",
-  "sourceName": "contracts/registry/ENSRegistry.sol",
+  "contractName": "ENS",
+  "sourceName": "contracts/registry/ENS.sol",
   "abi": [
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
     {
       "anonymous": false,
       "inputs": [
@@ -50,6 +45,31 @@
         }
       ],
       "name": "NewResolver",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "NewSubnameOwner",
       "type": "event"
     },
     {
@@ -219,6 +239,68 @@
           "type": "bytes32"
         },
         {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "setSubnameOwner",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "resolver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint64",
+          "name": "ttl",
+          "type": "uint64"
+        }
+      ],
+      "name": "setSubnameRecord",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
           "internalType": "bytes32",
           "name": "label",
           "type": "bytes32"
@@ -310,7 +392,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ],
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+  ]
 }
