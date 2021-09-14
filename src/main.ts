@@ -52,6 +52,8 @@ import {
   decodeIpfsUrl,
   setDomainDetails,
   autoLogin,
+  getDomains,
+  getSubdomains,
 } from "./sdk";
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -139,9 +141,9 @@ function start() {
     console.log("getMinCommitmentAge", (await getMinCommitmentAge()).toNumber());
     console.log("formatEther", ethers.utils.formatEther(1000));
 
-    console.log("gavin0123456.dot commit", await commit("gavin0123456", account));
+    // console.log("gavin0123456.dot commit", await commit("gavin0123456", account));
 
-    console.log("gavin0123456.dot register", await register("gavin0123456", account, 28 * 86400));
+    // console.log("gavin0123456.dot register", await register("gavin0123456", account, 28 * 86400));
 
     // let wallet = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
     // console.log('wallet', account, await provider.getTransactionCount(wallet))
@@ -179,9 +181,9 @@ function start() {
 
     // console.log('gavin0123456.dot setSubnodeRecord', await setSubnodeRecord('gavin0123456.dot', 'sub', account, resolverAddr, 3600))
 
-    console.log('gavin0123456.dot setSubnameOwner', await setSubnameOwner('gavin0123456.dot', 'sub2', account))
+    // console.log('gavin0123456.dot setSubnameOwner', await setSubnameOwner('gavin0123456.dot', 'sub2', account))
 
-    console.log('gavin0123456.dot setSubnameRecord', await setSubnameRecord('gavin0123456.dot', 'sub3', account, resolverAddr, 3600))
+    // console.log('gavin0123456.dot setSubnameRecord', await setSubnameRecord('gavin0123456.dot', 'sub3', account, resolverAddr, 3600))
 
     // console.log("new getDomainDetails", await getDomainDetails("sub.gavin0123456.dot"));
 
@@ -206,6 +208,10 @@ function start() {
     // );
 
     console.log("new getDomainDetails", await getDomainDetails("gavin0123456.dot"));
+
+
+  console.log(await getDomains("0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"))
+  console.log(await getSubdomains(getNamehash("gavin0123456.dot")))
   });
 }
 

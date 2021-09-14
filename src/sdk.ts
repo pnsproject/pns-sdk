@@ -106,10 +106,11 @@ export async function setProvider(providerOpt: any) {
 
 
 export const ContractAddrs = {
-  ens: "0xcb3B1D40bbAde960150400fe99198e7939d998f0",
-  resolver: "0xc8ddD10a9E9bAFA6aD58C5fbaFEB65E8a48b21Ff",
-  registrar: "0xb6c763b610efCb20E8046B39624269CcB73721b0"
+  ens: "0x901B20472988Db08F96acd1Ddcfc89E9dAfDEA7a",
+  resolver: "0xd2AB06591ec1d77cDAff9985ab64688613b6F8b4",
+  registrar: "0x4A5Eb5E67Bc88aB728354CDCDC88De4BE200320B"
 };
+
 
 export async function setup(ensAddress?: string, resolverAddress?: string, registrarAddress?: string, providerOpt?: Web3Provider) {
   if (provider && ens) {
@@ -891,13 +892,12 @@ export async function deleteDomain(id: string): Promise<any> {
 
 
 
-let urlbase = "https://trusted-quagga-17.hasura.app/v1/graphql"
+const hasuraUrl = "https://trusted-quagga-17.hasura.app/v1/graphql"
 
 /** 列出用户的域名列表 */
-async function listAccountDomains(account: HexAddress): Promise<any> {
-  let query = "{\"query\":\"{\\n  domains(order_by: {name: asc}, where: {owner: {_eq: \\\""+ account +"\\\"}}) {\\n    id\\n    name\\n    owner\\n    expires\\n  }\\n}\",\"variables\":null}"
-
-  let resp = await fetch(urlbase, {
+export async function getDomains(account) {
+  let query = "{\"query\":\"{domains(order_by: {name: asc}, where: {owner: {_eq: \\\""+account+"\\\"}}, distinct_on: name) {id name owner expires } }\",\"variables\":null}"
+  let resp = await fetch(hasuraUrl, {
     "headers": {
       "content-type": "application/json",
     },
@@ -905,6 +905,19 @@ async function listAccountDomains(account: HexAddress): Promise<any> {
     "method": "POST",
   })
   resp = await resp.json()
-  return resp.data
+  return resp.data.domains
 }
 
+/** 列出域名的子域名列表 */
+export async function getSubdomains(domain) {
+  let query = "{\"query\":\"{subdomains(order_by: {label: asc}, where: {node: {_eq: \\\""+domain+"\\\"}}, distinct_on: label) {id node label owner } }\",\"variables\":null}"
+  let resp = await fetch(hasuraUrl, {
+    "headers": {
+      "content-type": "application/json",
+    },
+    "body": query,
+    "method": "POST",
+  })
+  resp = await resp.json()
+  return resp.data.subdomains
+}
