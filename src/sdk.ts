@@ -273,7 +273,6 @@ export function getTTL(name: DomainString): Promise<number> {
 /** 获取域名的解析地址 */
 export async function getAddr(name: DomainString, key: string): Promise<HexAddress> {
   const namehash = getNamehash(name);
-  // const resolverAddr = await ensContract.resolver(namehash)
 
   try {
     let coinType = coinTypes[key];
@@ -341,7 +340,7 @@ function buildKeyValueObjects(keys: any, values: any) {
   }));
 }
 
-function getLabelhash(rawlabel: string): HexAddress {
+export function getLabelhash(rawlabel: string): HexAddress {
   if (rawlabel === "[root]") {
     return "";
   }
@@ -430,7 +429,6 @@ export async function register(
   wait: () => Promise<void>;
 }> {
   const price = await getRentPrice(label, duration);
-  // console.log('price', price.toString())
 
   // const resolverAddr = await getowner("resolver.dot");
   // let secret = getNamehash("dot");
@@ -606,8 +604,6 @@ export function isValidDomain(rawName: string): boolean {
 }
 
 //////////////////////
-const secret = "0x0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
-// const api_url_base = "http://localhost:5000/api/handler";
 
 export function getTld() {
   return "dot";
@@ -672,7 +668,7 @@ export async function getDomains(account) {
     "method": "POST",
   })
   resp = await resp.json()
-  return resp.data.domains
+  return (resp as any).data.domains
 }
 
 /** 列出域名的子域名列表 */
@@ -686,5 +682,5 @@ export async function getSubdomains(domain) {
     "method": "POST",
   })
   resp = await resp.json()
-  return resp.data.subdomains
+  return (resp as any).data.subdomains
 }
