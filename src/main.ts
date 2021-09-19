@@ -56,7 +56,6 @@ import {
   getSubdomains,
 } from "./sdk";
 
-import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3Modal from "web3modal";
 
 const Aliceth = '0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac'
@@ -82,45 +81,6 @@ function start() {
 
     let account = getAccount(); // 获取 account
     console.log(account);
-
-    // let res = await createFav(account, "polkadot.eth"); // 添加用户收藏的域名
-    // console.log(res);
-
-    // let mydomains = await listFav(account); // 获取用户收藏的域名列表
-    // console.log("my fav domains", mydomains);
-
-    // let domainId = mydomains[0].id;
-    // console.log("domainId to delete", domainId);
-
-    // await deleteFav(domainId); // 删除用户收藏的域名
-
-    // res = await createDomain(account, "polkadot.eth", "{}"); // 添加用户的域名
-    // console.log(res);
-
-    // mydomains = await listDomain(account); // 获取用户的域名列表
-    // console.log("my domains", mydomains);
-
-    // domainId = mydomains[0].id;
-    // console.log("domainId to delete", domainId);
-
-    // await deleteDomain(domainId); // 删除用户的域名
-
-    // mydomains = await listDomain(account); // 获取用户的域名列表
-    // console.log("my domains", mydomains);
-
-    // res = await createSubdomain(account, "polkadot.eth", "{}"); // 添加用户的域名
-    // console.log(res);
-
-    // mydomains = await listSubdomain(account); // 获取用户的域名列表
-    // console.log("my domains", mydomains);
-
-    // domainId = mydomains[0].id;
-    // console.log("domainId to delete", domainId);
-
-    // await deleteSubdomain(domainId); // 删除用户的域名
-
-    // mydomains = await listSubdomain(account); // 获取用户的域名列表
-    // console.log("my domains", mydomains);
 
     let resolverAddr = ContractAddrs.resolver
 
@@ -209,9 +169,8 @@ function start() {
 
     console.log("new getDomainDetails", await getDomainDetails("gavin0123456.dot"));
 
-
-  console.log(await getDomains("0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"))
-  console.log(await getSubdomains(getNamehash("gavin0123456.dot")))
+    console.log(await getDomains("0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"))
+    console.log(await getSubdomains(getNamehash("gavin0123456.dot")))
   });
 }
 
