@@ -1,7 +1,7 @@
 {
   "name": "pns-sdk",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.5.0",
   "description": "",
   "main": "./lib/sdk.js",
   "scripts": {
@@ -13,10 +13,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@ensdomains/content-hash": "^2.5.6",
-    "@polkadot/api": "^5.0.1",
     "buffer": "^6.0.3",
     "ethers": "^5.2.0",
     "is-valid-domain": "0.0.20",

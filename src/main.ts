@@ -52,8 +52,6 @@ const ipfsurl = "/ipfs/QmV1F3RbQeQEs3FToNi81JXkxaTDLYpHqDeQC9bpxJLLnC";
 function start() {
   document.querySelector("button").addEventListener("click", async () => {
     // await setup();
-    // let jwt = await tryLogin(); // 进行登录，获取 jwt
-
     await autoLogin();
 
     let provider = getProvider()
