@@ -10,7 +10,6 @@ import { default as domainChecker } from "is-valid-domain";
 import { HexAddress, DomainString, ContentType } from "./types";
 import { EnsAbi, RegistrarAbi, ResolverAbi } from "./contracts";
 
-import Web3Modal from "web3modal";
 
 
 export function sha3 (data: string) {
@@ -49,17 +48,12 @@ export const toChecksumAddress = (address: HexAddress): HexAddress => {
 };
 
 
-function getBufferedPrice(price: BigNumber): BigNumber {
-  return BigNumber.from(price).mul(1);
-}
-
 const emptyAddress = "0x0000000000000000000000000000000000000000";
 const emptyNode = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
 const tld = "dot";
 const DAYS = 24 * 60 * 60;
 const INFURA_URL = "https://rinkeby.infura.io/v3/75e0d27975114086be0463cf2597549e";
-const api_url_base = "https://pns-engine.vercel.app/api/handler";
 
 let provider: Web3Provider;
 let signer: any;
@@ -81,13 +75,13 @@ let coinTypes: any = {
 };
 
 export async function setProvider(providerOpt: any) {
-  if (provider && account) return;
-
-  if (providerOpt) {
+  if (!!providerOpt) {
     provider = providerOpt
     signer = await provider.getSigner();
     account = await signer.getAddress();
-  } else if (typeof (window as any).ethereum !== "undefined") {
+  } else if (provider && account) {
+    return
+  } else if (!!(window as any) && typeof (window as any).ethereum !== "undefined") {
     // 调用窗口, 登录账户
     await (window as any).ethereum.request({ method: "eth_requestAccounts" });
     provider = new ethers.providers.Web3Provider((window as any).ethereum) as Web3Provider;
@@ -111,6 +105,19 @@ export const ContractAddrs = {
   registrar: "0x4A5Eb5E67Bc88aB728354CDCDC88De4BE200320B"
 };
 
+export const ContractAddrMap = {
+  '1281': {
+    ens: "0x5b108ABbD1e2F7278f2d833c87294f4733850FBb",
+    resolver: "0x010e53f41202ac6409FaA642777C7CbeB07dFF45",
+    registrar: "0x9E7f85eDf95eB37B48ACa2D6aD625FBd4B66a441"
+  },
+  '4': {
+    ens: "0x54CF46151d90b0a7880E4cBA8528dFBBeB718546",
+    resolver: "0xFD1d96e2F2a039F7b41Bf09a9793E558D474e537",
+    registrar: "0x3a2c8F8e6c7095B59EA18A34f009887B6B9bfCbb"
+  }
+}
+
 
 export async function setup(ensAddress?: string, resolverAddress?: string, registrarAddress?: string, providerOpt?: Web3Provider) {
   if (provider && ens) {
@@ -125,6 +132,8 @@ export async function setup(ensAddress?: string, resolverAddress?: string, regis
 
   await setProvider(providerOpt);
   console.log("init sdk");
+
+  // todo: detect network id
 
   ensAddress = ensAddress || ContractAddrs.ens;
   resolverAddress = resolverAddress || ContractAddrs.resolver;
@@ -153,16 +162,6 @@ export async function setup(ensAddress?: string, resolverAddress?: string, regis
 }
 
 export async function setupByContract(ensContract: any, resolverContract: any, registrarContract: string, providerOpt: Web3Provider) {
-  if (provider && ens) {
-    return {
-      provider,
-      signer,
-      ens,
-      resolver,
-      registrar,
-    };
-  }
-
   await setProvider(providerOpt);
   console.log("init sdk");
 
@@ -194,18 +193,20 @@ export function getAccount(): string {
   return account;
 }
 
-export async function createWeb3Modal(): Promise<Web3Provider> {
-  const providerOptions = {};
-  const web3Modal = new Web3Modal({
-    network: "mainnet", // optional
-    cacheProvider: true, // optional
-    providerOptions // required
-  });
+// import Web3Modal from "web3modal";
 
-  const web3provider = await web3Modal.connect();
-  let pvd = new ethers.providers.Web3Provider(web3provider) as Web3Provider;
-  return pvd
-}
+// export async function createWeb3Modal(): Promise<Web3Provider> {
+//   const providerOptions = {};
+//   const web3Modal = new Web3Modal({
+//     network: "mainnet", // optional
+//     cacheProvider: true, // optional
+//     providerOptions // required
+//   });
+
+//   const web3provider = await web3Modal.connect();
+//   let pvd = new ethers.providers.Web3Provider(web3provider) as Web3Provider;
+//   return pvd
+// }
 
 export async function switchChain(): Promise<any> {
   let chain: any = {
@@ -228,11 +229,11 @@ export async function switchChain(): Promise<any> {
   }
 
   const params = {
-    chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+    chainId: ethers.utils.hexlify(chain.chainId),
     chainName: chain.name,
     nativeCurrency: {
       name: chain.nativeCurrency.name,
-      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+      symbol: chain.nativeCurrency.symbol,
       decimals: chain.nativeCurrency.decimals,
     },
     rpcUrls: chain.rpc,
@@ -243,14 +244,6 @@ export async function switchChain(): Promise<any> {
     method: 'wallet_addEthereumChain',
     params: [params, account],
   })
-}
-
-export async function getMinCommitmentAge(): Promise<BigNumber> {
-  return registrar.minCommitmentAge();
-}
-
-export async function getMaximumCommitmentAge(): Promise<BigNumber> {
-  return registrar.maxCommitmentAge();
 }
 
 /** 获取域名的当前所有者 */
@@ -301,6 +294,7 @@ export async function getContent(name: DomainString): Promise<ContentType> {
   try {
     const namehash = getNamehash(name);
     const encoded = await resolver.contenthash(namehash);
+    // todo
     return {
       value: `ipfs://${ethers.utils.base58.encode(encoded)}`,
       contentType: "contenthash",
@@ -407,15 +401,8 @@ export async function available(label: DomainString): Promise<boolean> {
   return registrar.available(label);
 }
 
-/** 计算commitment */
-export async function makeCommitment(label: DomainString, account: HexAddress): Promise<HexAddress> {
-  let secret = getNamehash("dot");
-  return registrar.makeCommitment(label, account, secret);
-}
-
 /** 开始注册域名（第一步），这一步是提交commitment */
 export async function commit(label: DomainString, account: string) {
-  const commitment = await makeCommitment(label, account);
   return registrar.commit(commitment);
 }
 
@@ -429,9 +416,6 @@ export async function register(
   wait: () => Promise<void>;
 }> {
   const price = await getRentPrice(label, duration);
-
-  // const resolverAddr = await getowner("resolver.dot");
-  // let secret = getNamehash("dot");
 
   return registrar.register(label, account, duration, { value: price, gasLimit: 500000 });
 }
@@ -611,6 +595,10 @@ export function getTld() {
 
 export function suffixTld(label: string): DomainString {
   return label.replace(".dot", "") + ".dot";
+}
+
+export function removeTld(label: string): DomainString {
+  return label.replace(".dot", "")
 }
 
 /** 设置域名的默认 resolver 参数，表示域名的解析器 */
