@@ -1,0 +1,45 @@
+import './style.css'
+
+import {
+  setup,
+  getOwner,
+  getAddr,
+  getResolver,
+  nameExpires,
+  getRentPrice,
+  available,
+  getDomainDetails,
+  register,
+} from "./sdk";
+
+async function main() {
+  await setup()
+
+  let account = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
+  // console.log("gavin000001.dot register", await register("gavin000001", account, 28 * 86400));
+  
+  console.log("dot owner", await getOwner("dot"));
+
+  console.log("gavin000001.dot owner", await getOwner("gavin000001.dot"));
+  console.log("gavin000001.dot addr", await getAddr("gavin000001.dot", "ETH"));
+  console.log("gavin000001.dot resolver", await getResolver("gavin000001.dot"));
+  console.log("gavin000001.dot expiries", (await nameExpires("gavin000001")).toNumber());
+  console.log("gavin000001.dot getRentPrice", await getRentPrice("gavin000001", 86400));
+  console.log("gavin000001.dot available", await available("gavin000001"));
+  console.log("getDomainDetails", await getDomainDetails("gavin000001.dot"));
+}
+
+async function start() {
+  let button = document.querySelector("button")
+  if (button) {
+    button.addEventListener("click", async () => {
+      await main()
+    })
+  }
+}
+
+if (document) {
+  start()
+  .catch(console.error)
+  .finally(() => {});
+}

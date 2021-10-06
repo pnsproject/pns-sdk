@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": false,
+    "importsNotUsedAsValues": "remove",
+
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "esnext",
+    "lib": ["es2020", "dom"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+
+    "jsx": "react",
+    "baseUrl": "./src/",
+    "skipLibCheck": true,
+    "outDir": "lib/",
+    "plugins": []
+  }
+}
