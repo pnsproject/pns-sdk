@@ -1,0 +1,13 @@
+node_modules/
+other
+dist/
+bundle.js
+
+.DS_Store
+
+index.html
+favicon.svg
+src/main.ts
+src/style.css
+src/vite-env.d.ts
+lib/main.*

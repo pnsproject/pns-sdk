@@ -1,6 +1,6 @@
 {
   "name": "pns-sdk",
-  "version": "0.8.0",
+  "version": "0.1.0",
   "scripts": {
     "compile": "rm -rfv lib/* && tsc -d --project tsconfig.json --outDir lib/",
     "dev": "vite",
