@@ -87,9 +87,9 @@ interface IContractAddrsMap {
 
 export const ContractAddrMap: IContractAddrsMap = {
   1281: {
-    ens: "0x5b108ABbD1e2F7278f2d833c87294f4733850FBb",
-    resolver: "0x010e53f41202ac6409FaA642777C7CbeB07dFF45",
-    registrar: "0x9E7f85eDf95eB37B48ACa2D6aD625FBd4B66a441"
+    ens: "0x3ed62137c5DB927cb137c26455969116BF0c23Cb",
+    resolver: "0x962c0940d72E7Db6c9a5F81f1cA87D8DB2B82A23",
+    registrar: "0x5CC307268a1393AB9A764A20DACE848AB8275c46"
   },
   4: {
     ens: "0x54CF46151d90b0a7880E4cBA8528dFBBeB718546",

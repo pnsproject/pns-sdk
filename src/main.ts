@@ -12,7 +12,35 @@ import {
   register,
 } from "./sdk";
 
+import {
+  formatsByName
+} from "./encoder";
+
 async function main() {
+  let ethAddress = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
+  let polkaAddress = '5DPSiNGHJaRZy6e6qyD6FmWnC8wj9kGALLkDH5qxnc56QcGg'
+  let btcAddress = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'
+  let data
+
+  data = formatsByName['ETH'].decoder(ethAddress)
+  console.log(data.toString('hex'))
+  console.log(formatsByName['ETH'].encoder(data))
+
+  // data = formatsByName['BTC'].decoder(btcAddress)
+  // console.log(data.toString('hex'))
+  // console.log(formatsByName['BTC'].encoder(data))
+  // console.log('btc')
+
+  // data = formatsByName['DOT'].decoder(polkaAddress)
+  // console.log(data.toString('hex'))
+  // console.log(formatsByName['DOT'].encoder(data))
+  // console.log('')
+
+  // data = formatsByName['DOT'].decoder(polkaAddress)
+  // console.log(data.toString('hex'))
+  // console.log(formatsByName['KSM'].encoder(data))
+  // console.log('')
+  
   await setup()
 
   let account = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
