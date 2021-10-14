@@ -15,6 +15,7 @@
     "vite": "^2.6.0"
   },
   "dependencies": {
+    "@polkadot/keyring": "^7.4.1",
     "blakejs": "^1.1.1",
     "bs58": "^4.0.1",
     "buffer": "^6.0.3",

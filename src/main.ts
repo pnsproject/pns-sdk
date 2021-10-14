@@ -31,15 +31,15 @@ async function main() {
   // console.log(formatsByName['BTC'].encoder(data))
   // console.log('btc')
 
-  // data = formatsByName['DOT'].decoder(polkaAddress)
-  // console.log(data.toString('hex'))
-  // console.log(formatsByName['DOT'].encoder(data))
-  // console.log('')
+  data = formatsByName['DOT'].decoder(polkaAddress)
+  console.log(data.toString('hex'))
+  console.log(formatsByName['DOT'].encoder(data))
+  console.log('dot', polkaAddress)
 
-  // data = formatsByName['DOT'].decoder(polkaAddress)
-  // console.log(data.toString('hex'))
-  // console.log(formatsByName['KSM'].encoder(data))
-  // console.log('')
+  data = formatsByName['KSM'].decoder(polkaAddress)
+  console.log(data.toString('hex'))
+  console.log(formatsByName['KSM'].encoder(data))
+  console.log('ksm', polkaAddress)
   
   await setup()
 

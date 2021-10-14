@@ -54,6 +54,25 @@ function makeChecksummedHexDecoder() {
   };
 }
 
+//////////
+
+
+import { decodeAddress, encodeAddress } from '@polkadot/keyring'
+
+function ksmAddrEncoder(data: Buffer): string {
+  return encodeAddress(data);
+}
+
+function dotAddrEncoder(data: Buffer): string {
+  return encodeAddress(data);
+}
+
+function ksmAddrDecoder(data: string): Buffer {
+  return Buffer.from(decodeAddress(data));
+}
+
+//////////
+
 export interface IFormat {
   coinType: number;
   name: string;
@@ -74,18 +93,18 @@ export const formats: IFormat[] = [
     encoder: makeChecksummedHexEncoder(),
     name: 'ETH',
   },
-  // {
-  //   coinType: 434,
-  //   decoder: ksmAddrDecoder,
-  //   encoder: ksmAddrEncoder,
-  //   name: 'KSM',
-  // },
-  // {
-  //   coinType: 354,
-  //   decoder: ksmAddrDecoder,
-  //   encoder: dotAddrEncoder,
-  //   name: 'DOT',
-  // }
+  {
+    coinType: 434,
+    decoder: ksmAddrDecoder,
+    encoder: ksmAddrEncoder,
+    name: 'KSM',
+  },
+  {
+    coinType: 354,
+    decoder: ksmAddrDecoder,
+    encoder: dotAddrEncoder,
+    name: 'DOT',
+  }
 ];
 
 export const formatsByName: { [key: string]: IFormat } = Object.assign({}, ...formats.map(x => ({ [x.name]: x })));
