@@ -1,6 +1,8 @@
 {
   "name": "pns-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "main": "./lib/sdk.js",
+  "typings": "./lib/sdk.d.ts",
   "scripts": {
     "compile": "rm -rfv lib/* && tsc -d --project tsconfig.json --outDir lib/",
     "dev": "vite",
@@ -13,6 +15,7 @@
     "vite": "^2.6.0"
   },
   "dependencies": {
+    "js-sha3": "^0.8.0",
     "buffer": "^6.0.3",
     "ethers": "^5.4.7",
     "ws": ">=7.4.6"
