@@ -12,9 +12,46 @@ import {
   register,
 } from "./sdk";
 
+import { Buffer as Buffer } from "buffer/";
+(window as any).Buffer = Buffer
+
 import {
   formatsByName
 } from "./encoder";
+
+import { matchProtocol,
+    decodeContenthash,
+    encodeContenthash,
+    validateContent,
+    isValidContenthash,
+    getProtocolType,encodeContentUrl,
+    decodeContentUrl } from './encoder'
+
+function testContenthash() {
+  let ipfsFileHash = 'QmXXpqAyzxcXpuSX79u9CNWqm5oNkgdZFyBjEoeWUK37hE'
+  let ipfsDirHash = 'QmWTFxSWzpyXmXbeASu4sksmezhSR5fzPEaQJCrJgu7hbB'
+
+  let ipnsAddr = '12D3KooWLjfJj6fJiKPcmUTuNdmSTUHakKmDqeoaqTw1vhtM3yyR'
+
+  let ipfsFullPath = 'ipfs://bafybeiemxf5abjwjbikoz4mc3a3dla6ual3jsgpdr4cjr3oz3evfyavhwq/wiki/Vincent_van_Gogh.html'
+  let ipnsFullPath = 'ipns://12D3KooWLjfJj6fJiKPcmUTuNdmSTUHakKmDqeoaqTw1vhtM3yyR/wiki/Vincent_van_Gogh.html'
+
+  let ipfsUrlPath = 'ipfs://QmbFeRhQBfH4FBgvYQUphsXwQLxQoerwAsztHone8nBwQp'
+  let ipfsFilePath = '/ipfs/QmbFeRhQBfH4FBgvYQUphsXwQLxQoerwAsztHone8nBwQp'
+  let ipnsUrl = 'ipns://12D3KooWLjfJj6fJiKPcmUTuNdmSTUHakKmDqeoaqTw1vhtM3yyR'
+  let ipnsPath = '/ipns/12D3KooWLjfJj6fJiKPcmUTuNdmSTUHakKmDqeoaqTw1vhtM3yyR'
+
+
+  console.log(matchProtocol(ipfsUrlPath))
+  console.log(matchProtocol(ipfsFilePath))
+  console.log(matchProtocol(ipnsUrl))
+  console.log(matchProtocol(ipnsPath))
+
+  console.log(encodeContenthash(ipfsFileHash))
+  console.log(encodeContenthash(ipfsFilePath))
+  console.log(encodeContenthash(ipnsUrl))
+  console.log(encodeContenthash(ipnsPath))
+}
 
 async function main() {
   let ethAddress = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
@@ -41,6 +78,8 @@ async function main() {
   console.log(formatsByName['KSM'].encoder(data))
   console.log('ksm', polkaAddress)
   
+  // testContenthash()
+
   await setup()
 
   let account = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
