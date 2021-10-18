@@ -1,5 +1,9 @@
 import './style.css'
 
+import * as Buffer from "Buffer";
+// import { Buffer as Buffer } from "buffer/";
+// (window as any).Buffer = Buffer
+
 import {
   setup,
   getOwner,
@@ -12,8 +16,6 @@ import {
   register,
 } from "./sdk";
 
-import { Buffer as Buffer } from "buffer/";
-(window as any).Buffer = Buffer
 
 import {
   formatsByName
@@ -87,13 +89,13 @@ async function main() {
   
   console.log("dot owner", await getOwner("dot"));
 
-  console.log("gavin000001.dot owner", await getOwner("gavin000001.dot"));
-  console.log("gavin000001.dot addr", await getAddr("gavin000001.dot", "ETH"));
-  console.log("gavin000001.dot resolver", await getResolver("gavin000001.dot"));
-  console.log("gavin000001.dot expiries", (await nameExpires("gavin000001")).toNumber());
-  console.log("gavin000001.dot getRentPrice", await getRentPrice("gavin000001", 86400));
-  console.log("gavin000001.dot available", await available("gavin000001"));
-  console.log("getDomainDetails", await getDomainDetails("gavin000001.dot"));
+  // console.log("gavin000001.dot owner", await getOwner("gavin000001.dot"));
+  // console.log("gavin000001.dot addr", await getAddr("gavin000001.dot", "ETH"));
+  // console.log("gavin000001.dot resolver", await getResolver("gavin000001.dot"));
+  // console.log("gavin000001.dot expiries", (await nameExpires("gavin000001")).toNumber());
+  // console.log("gavin000001.dot getRentPrice", await getRentPrice("gavin000001", 86400));
+  // console.log("gavin000001.dot available", await available("gavin000001"));
+  // console.log("getDomainDetails", await getDomainDetails("gavin000001.dot"));
 }
 
 async function start() {
