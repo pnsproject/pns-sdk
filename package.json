@@ -1,6 +1,6 @@
 {
   "name": "pns-sdk",
-  "version": "0.2.0",
+  "version": "0.3.4",
   "main": "./lib/sdk.js",
   "typings": "./lib/sdk.d.ts",
   "scripts": {

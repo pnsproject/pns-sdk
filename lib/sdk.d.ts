@@ -15,7 +15,6 @@ export declare type DomainDetails = {
     label: string;
     labelhash: string;
     owner: string;
-    ttl: string;
     nameResolver: string;
     content: string;
     contentType?: string;
@@ -62,7 +61,9 @@ export declare function getAccount(): string;
 export declare function getOwner(name: DomainString): Promise<HexAddress>;
 /** 获取域名的解析器合约 */
 export declare function getResolver(name: DomainString): Promise<HexAddress>;
-export declare function getTTL(name: DomainString): Promise<number>;
+export declare function addKey(key: string): Promise<void>;
+export declare function setKey(name: DomainString, key: string, value: string): Promise<void>;
+export declare function getKey(name: DomainString, key: string): Promise<HexAddress>;
 /** 获取域名的解析地址 */
 export declare function getAddr(name: DomainString, key: string): Promise<HexAddress>;
 /** 获得域名 ttl 参数，由用户设置，表示域名可以在本地缓存的时间
@@ -74,14 +75,24 @@ export declare function getContent(name: DomainString): Promise<ContentType>;
 export declare function getLabelhash(rawlabel: string): HexAddress;
 /** 获得域名详细信息 */
 export declare function getDomainDetails(name: DomainString): Promise<DomainDetails>;
-export declare function getRentPrice(name: DomainString, duration: number): Promise<BigNumber>;
+export declare function totalRegisterPrice(name: DomainString, duration: number): Promise<BigNumber>;
+export declare function rentPrice(name: DomainString, duration: number): Promise<BigNumber>;
 export declare function nameExpires(label: DomainString): Promise<BigNumber>;
 export declare function available(label: DomainString): Promise<boolean>;
 /** 域名注册 */
 export declare function register(label: DomainString, account: string, duration: number): Promise<{
-    /** 额外的等待请求 */
     wait: () => Promise<void>;
 }>;
+export declare function controllerRoot(): Promise<{
+    wait: () => Promise<void>;
+}>;
+export declare function mintRedeem(start: number, end: number): Promise<{
+    wait: () => Promise<void>;
+}>;
+export declare function nameRedeemAny(label: DomainString, account: string, duration: number, nonce: number, code: string): Promise<{
+    wait: () => Promise<void>;
+}>;
+export declare function generateRedeemCode(duration: number, nonce: number): Promise<string>;
 export declare function renew(label: DomainString, duration: number): Promise<void>;
 /** 设置域名 resolver 参数，表示域名的解析器
  * function setResolver(bytes32 name, address resolver)
@@ -93,10 +104,6 @@ export declare function setResolver(name: DomainString, resolver?: HexAddress): 
 export declare function setOwner(name: DomainString, newOwner: HexAddress): Promise<{
     wait: () => Promise<void>;
 }>;
-/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
- * function setTTL(bytes32 name, uint64 ttl)
- * setTTL('hero.eth', 3600) */
-export declare function setTTL(name: DomainString, ttl: number): Promise<void>;
 /** 设置域名的解析地址 */
 export declare function setAddr(name: DomainString, key: string, value: string): Promise<HexAddress>;
 export declare function setText(name: DomainString, key: string, value: string): Promise<void>;
@@ -108,19 +115,7 @@ export declare function setRecord(name: DomainString, newOwner: HexAddress, reso
 /** 设置子域名的所有者
  * function setSubnodeOwner(bytes32 name, bytes32 label, address owner)
  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
-export declare function setSubnodeOwner(name: DomainString, label: string, newOwner: HexAddress): Promise<any>;
-/** 一次性设置域名信息
- * function setSubnodeRecord(bytes32 name, bytes32 label, address owner, address resolver, uint64 ttl)
- * setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
-export declare function setSubnodeRecord(name: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any>;
-/** 根据名字设置子域名的所有者
- * function setSubnodeOwner(bytes32 name, string subname, address owner)
- * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
-export declare function setSubnameOwner(name: DomainString, subname: string, newOwner: HexAddress): Promise<any>;
-/** 根据名字一次性设置域名信息
- * function setSubnameRecord(bytes32 name, string subname, address owner, address resolver, uint64 ttl)
- * setSubnameRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
-export declare function setSubnameRecord(name: DomainString, subname: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any>;
+export declare function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any>;
 export declare function matchProtocol(text: string): RegExpMatchArray | null;
 export declare function getProtocolType(encoded: string): {
     protocolType: string;

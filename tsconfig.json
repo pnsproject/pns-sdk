@@ -14,6 +14,11 @@
     "lib": ["es2020", "dom"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    
+    "declaration": true,
+    // This compiler run should
+    // only output d.ts files
+    // "emitDeclarationOnly": true,
 
     "jsx": "react",
     "baseUrl": "./src/",

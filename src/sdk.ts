@@ -22,7 +22,7 @@ export type DomainDetails = {
   label: string;
   labelhash: string;
   owner: string;
-  ttl: string;
+  // ttl: string;
   nameResolver: string;
 
   content: string;
@@ -87,9 +87,9 @@ interface IContractAddrsMap {
 
 export const ContractAddrMap: IContractAddrsMap = {
   1281: {
-    ens: "0xD45E290062Bd0D1C640D59C350cA03CC291b37FA",
-    resolver: "0x71d5a92A9056aB2Ee81811aF045439e059Dd6FBc",
-    registrar: "0x6eA3524AD29729b10F324fD2aF967beed9cc4E68"
+    ens: "0xc01Ee7f10EA4aF4673cFff62710E1D7792aBa8f3",
+    resolver: "0x962c0940d72E7Db6c9a5F81f1cA87D8DB2B82A23",
+    registrar: "0x970951a12F975E6762482ACA81E57D5A2A4e73F4"
   },
   4: {
     ens: "0x54CF46151d90b0a7880E4cBA8528dFBBeB718546",
@@ -97,7 +97,6 @@ export const ContractAddrMap: IContractAddrsMap = {
     registrar: "0x3a2c8F8e6c7095B59EA18A34f009887B6B9bfCbb"
   }
 }
-
 
 export function sha3 (data: string) {
   return "0x" + keccak_256(data)
@@ -231,10 +230,20 @@ export function getResolver(name: DomainString): Promise<HexAddress> {
   return ens.resolver(namehash);
 }
 
-export function getTTL(name: DomainString): Promise<number> {
-  let namehash = getNamehash(name);
-  return ens.ttl(namehash);
+export async function addKey(key: string): Promise<void> {
+  return await resolver.addKey(key)
 }
+
+export async function setKey(name: DomainString, key: string, value: string): Promise<void> {
+  const namehash = getNamehash(name);
+  await resolver.set(key, value, namehash)
+}
+
+export async function getKey(name: DomainString, key: string): Promise<HexAddress> {
+  const namehash = getNamehash(name);
+  return await resolver.get(key, namehash)
+}
+
 
 /** 获取域名的解析地址 */
 export async function getAddr(name: DomainString, key: string): Promise<HexAddress> {
@@ -259,24 +268,18 @@ export async function getAddr(name: DomainString, key: string): Promise<HexAddre
  * getTTL('hero.eth') */
  export function getText(name: DomainString, key: string): Promise<number> {
   let namehash = getNamehash(name);
-  return resolver.text(namehash, key);
+  return resolver.get("text."+key, namehash);
 }
 
 /** 获得域名的IPFS内容地址 */
 export async function getContent(name: DomainString): Promise<ContentType> {
-  try {
-    const namehash = getNamehash(name);
-    const encoded = await resolver.contenthash(namehash);
-    // todo
-    return {
-      value: `ipfs://${ethers.utils.base58.encode(encoded)}`,
-      contentType: "contenthash",
-    };
-  } catch (e) {
-    const message = "Error getting content on the resolver contract, are you sure the resolver address is a resolver contract?";
-    console.warn(message, e);
-    return { value: "", contentType: "error" };
-  }
+  const namehash = getNamehash(name);
+  const encoded = await resolver.get("contenthash", namehash);
+  // todo
+  return {
+    value: `ipfs://${ethers.utils.base58.encode(encoded)}`,
+    contentType: "contenthash",
+  };
 }
 
 function buildKeyValueObjects(keys: any, values: any) {
@@ -307,7 +310,6 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   const label = nameArray[0];
   const labelhash = getLabelhash(label);
   const nameResolver = await getResolver(name);
-  const ttl = (await getTTL(name)).toString();
   const owner = await getOwner(name);
 
   const promises = TEXT_RECORD_KEYS.map((key) => getText(name, key));
@@ -320,8 +322,7 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     labelhash,
     owner,
     nameResolver,
-    ttl,
-    textRecords,
+    textRecords: textRecords,
   };
 
   const content = await getContent(name);
@@ -341,38 +342,82 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   };
 }
 
-export async function getRentPrice(name: DomainString, duration: number): Promise<BigNumber> {
+export async function totalRegisterPrice(name: DomainString, duration: number): Promise<BigNumber> {
+  let result: BigNumber = await registrar.totalRegisterPrice(name, duration);
+  return result;
+}
+
+export async function rentPrice(name: DomainString, duration: number): Promise<BigNumber> {
   let result: BigNumber = await registrar.rentPrice(name, duration);
   return result;
 }
 
 export async function nameExpires(label: DomainString): Promise<BigNumber> {
-  label = "0x" + keccak_256(label) || "0x0";
-  return registrar.nameExpires(label);
+  // label = "0x" + keccak_256(label) || "0x0";
+  return registrar.nameExpires(getNamehash(label));
 }
 
 export async function available(label: DomainString): Promise<boolean> {
-  label = "0x" + keccak_256(label) || "0x0";
-  return registrar.available(label);
+  // label = "0x" + keccak_256(label) || "0x0";
+  return registrar.available(getNamehash(label));
 }
 
 
 /** 域名注册 */
-export async function register(
-  label: DomainString,
-  account: string,
-  duration: number
-): Promise<{
-  /** 额外的等待请求 */
-  wait: () => Promise<void>;
-}> {
-  const price = await getRentPrice(label, duration);
+export async function register(label: DomainString, account: string, duration: number ): Promise<{ wait: () => Promise<void>; }> {
+  const price = await totalRegisterPrice(label, duration);
 
-  return registrar.register(label, account, duration, { value: price, gasLimit: 500000 });
+  return registrar.nameRegister(label, account, duration, { value: price, gasLimit: 500000 });
+}
+
+export async function controllerRoot(): Promise<{ wait: () => Promise<void>; }> {
+  return registrar.root();
+}
+
+export async function mintRedeem(start: number, end: number ): Promise<{ wait: () => Promise<void>; }> {
+  return registrar.mintRedeem(start, end);
+}
+
+export async function nameRedeemAny(label: DomainString, account: string, duration: number, nonce: number, code: string ): Promise<{ wait: () => Promise<void>; }> {
+  return registrar.nameRedeemAny(label, account, duration, nonce, code);
+}
+
+
+function encodeNameMsg(name: string, duration: number, nonce: number): Uint8Array {
+  let durationEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ duration ]).slice(2)
+  let durationBuffer = Buffer.from(durationEncoded, "hex")
+
+  let nonceEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ nonce ]).slice(2)
+  let nonceBuffer = Buffer.from(nonceEncoded, "hex")
+
+  let encodeName = Buffer.from(name.slice(2), "hex")
+  return Buffer.concat([encodeName, durationBuffer, nonceBuffer])
+}
+
+function encodeMsg(duration: number, nonce: number): Uint8Array {
+  let durationEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ duration ]).slice(2)
+  let durationBuffer = Buffer.from(durationEncoded, "hex")
+
+  let nonceEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ nonce ]).slice(2)
+  let nonceBuffer = Buffer.from(nonceEncoded, "hex")
+
+  return Buffer.concat([durationBuffer, nonceBuffer])
+}
+
+function hashMsg(data: Uint8Array): Uint8Array {
+  let hashed = '0x' + keccak_256(data)
+  return ethers.utils.arrayify(hashed)
+}
+
+
+export async function generateRedeemCode(duration: number, nonce: number ): Promise<string> {
+  let hashedMsg = hashMsg(encodeMsg(duration, nonce))
+  let signer = getSigner()
+  return signer.signMessage(hashedMsg)
 }
 
 export async function renew(label: DomainString, duration: number): Promise<void> {
-  const price = await getRentPrice(label, duration);
+  const price = await rentPrice(label, duration);
 
   return registrar.renew(label, duration, { value: price, gasLimit: 500000 });
 }
@@ -381,6 +426,7 @@ export async function renew(label: DomainString, duration: number): Promise<void
  * function setResolver(bytes32 name, address resolver)
  * setResolver('hero.eth', '0x123456789') */
 export function setResolver(name: DomainString, resolver?: HexAddress): Promise<any> {
+  name = suffixTld(name)
   let namehash = getNamehash(name);
   resolver = resolver || resolverAddr
   return ens.setResolver(namehash, resolver);
@@ -389,24 +435,25 @@ export function setResolver(name: DomainString, resolver?: HexAddress): Promise<
 /** 设置域名的所有者
  * function setOwner(bytes32 name, address owner)
  * setOwner('hero.eth', '0x123456789') */
-export function setOwner(
+export async function setOwner(
   name: DomainString,
   newOwner: HexAddress
 ): Promise<{
   wait: () => Promise<void>;
 }> {
   let namehash = getNamehash(name);
-  return ens.setOwner(namehash, newOwner);
+  let oldOwner = await getOwner(name)
+  return await ens['safeTransferFrom(address,address,uint256)'](oldOwner, newOwner, namehash)
 }
 
 
-/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
- * function setTTL(bytes32 name, uint64 ttl)
- * setTTL('hero.eth', 3600) */
- export function setTTL(name: DomainString, ttl: number): Promise<void> {
-  let namehash = getNamehash(name);
-  return ens.setTTL(namehash, ttl);
-}
+// /** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
+//  * function setTTL(bytes32 name, uint64 ttl)
+//  * setTTL('hero.eth', 3600) */
+//  export function setTTL(name: DomainString, ttl: number): Promise<void> {
+//   let namehash = getNamehash(name);
+//   return ens.setTTL(namehash, ttl);
+// }
 
 /** 设置域名的解析地址 */
 export async function setAddr(name: DomainString, key: string, value: string): Promise<HexAddress> {
@@ -414,8 +461,8 @@ export async function setAddr(name: DomainString, key: string, value: string): P
   // const resolverAddr = await ensContract.resolver(namehash)
 
   try {
-    let coinType = coinTypes[key];
-    const addr = await resolver.setAddr(namehash, coinType, value);
+    // let coinType = coinTypes[key];
+    const addr = await resolver.setKey(namehash, key, value);
     if (addr === "0x") return emptyAddress;
     return addr;
   } catch (e) {
@@ -427,12 +474,14 @@ export async function setAddr(name: DomainString, key: string, value: string): P
 
 export function setText(name: DomainString, key: string, value: string): Promise<void> {
   let namehash = getNamehash(name);
-  return resolver.setText(namehash, key, value);
+  // return resolver.setText(namehash, key, value);
+  return resolver.set("text."+key, value, namehash);
 }
 
 export function setContent(name: DomainString, value: string): Promise<void> {
   let namehash = getNamehash(name);
-  return resolver.setContenthash(namehash, value);
+  return resolver.set("contenthash", value, namehash);
+  // return resolver.setContenthash(namehash, value);
 }
 
 /** 一次性设置域名信息
@@ -446,36 +495,44 @@ export function setRecord(name: DomainString, newOwner: HexAddress, resolver: He
 /** 设置子域名的所有者
  * function setSubnodeOwner(bytes32 name, bytes32 label, address owner)
  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
-export function setSubnodeOwner(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
+export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
   let namehash = getNamehash(name);
-  label = "0x" + keccak_256(label) || "0x0";
-  return ens.setSubnodeOwner(namehash, label, newOwner);
+  return ens.mintSubdomain(namehash, label, newOwner);
 }
 
-/** 一次性设置域名信息
- * function setSubnodeRecord(bytes32 name, bytes32 label, address owner, address resolver, uint64 ttl)
- * setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
-export function setSubnodeRecord(name: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
-  let namehash = getNamehash(name);
-  label = "0x" + keccak_256(label) || "0x0";
-  return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
-}
+// /** 设置子域名的所有者
+//  * function setSubnodeOwner(bytes32 name, bytes32 label, address owner)
+//  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
+// export function setSubnodeOwner(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
+//   let namehash = getNamehash(name);
+//   label = "0x" + keccak_256(label) || "0x0";
+//   return ens.setSubnodeOwner(namehash, label, newOwner);
+// }
 
-/** 根据名字设置子域名的所有者
- * function setSubnodeOwner(bytes32 name, string subname, address owner)
- * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
-export function setSubnameOwner(name: DomainString, subname: string, newOwner: HexAddress): Promise<any> {
-  let namehash = getNamehash(name);
-  return ens.setSubnameOwner(namehash, subname, newOwner);
-}
+// /** 一次性设置域名信息
+//  * function setSubnodeRecord(bytes32 name, bytes32 label, address owner, address resolver, uint64 ttl)
+//  * setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
+// export function setSubnodeRecord(name: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
+//   let namehash = getNamehash(name);
+//   label = "0x" + keccak_256(label) || "0x0";
+//   return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
+// }
 
-/** 根据名字一次性设置域名信息
- * function setSubnameRecord(bytes32 name, string subname, address owner, address resolver, uint64 ttl)
- * setSubnameRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
-export function setSubnameRecord(name: DomainString, subname: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
-  let namehash = getNamehash(name);
-  return ens.setSubnameRecord(namehash, subname, newOwner, resolver, ttl);
-}
+// /** 根据名字设置子域名的所有者
+//  * function setSubnodeOwner(bytes32 name, string subname, address owner)
+//  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
+// export function setSubnameOwner(name: DomainString, subname: string, newOwner: HexAddress): Promise<any> {
+//   let namehash = getNamehash(name);
+//   return ens.setSubnameOwner(namehash, subname, newOwner);
+// }
+
+// /** 根据名字一次性设置域名信息
+//  * function setSubnameRecord(bytes32 name, string subname, address owner, address resolver, uint64 ttl)
+//  * setSubnameRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
+// export function setSubnameRecord(name: DomainString, subname: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
+//   let namehash = getNamehash(name);
+//   return ens.setSubnameRecord(namehash, subname, newOwner, resolver, ttl);
+// }
 
 export function matchProtocol(text: string): RegExpMatchArray | null {
   return text.match(/^(ipfs|sia|ipns|bzz|onion|onion3):\/\/(.*)/) || text.match(/\/(ipfs)\/(.*)/) || text.match(/\/(ipns)\/(.*)/);

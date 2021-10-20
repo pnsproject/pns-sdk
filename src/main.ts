@@ -2,18 +2,27 @@ import './style.css'
 
 import * as Buffer from "Buffer";
 // import { Buffer as Buffer } from "buffer/";
-// (window as any).Buffer = Buffer
+(window as any).Buffer = Buffer.Buffer
 
 import {
   setup,
   getOwner,
   getAddr,
+  addKey,
+  setKey,
+  getKey,
   getResolver,
   nameExpires,
-  getRentPrice,
+  rentPrice,
   available,
   getDomainDetails,
+  setDomainDetails,
   register,
+  setResolver,
+  mintRedeem,
+nameRedeemAny,
+generateRedeemCode,
+controllerRoot,
 } from "./sdk";
 
 
@@ -86,16 +95,50 @@ async function main() {
 
   let account = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
   // console.log("gavin000001.dot register", await register("gavin000001", account, 28 * 86400));
+  // console.log("gavin000001.dot register", await setResolver("gavin000001.dot"));
+
   
   console.log("dot owner", await getOwner("dot"));
 
-  // console.log("gavin000001.dot owner", await getOwner("gavin000001.dot"));
-  // console.log("gavin000001.dot addr", await getAddr("gavin000001.dot", "ETH"));
+  console.log("gavin000002.dot owner", await getOwner("gavin000002.dot"));
+  // console.log("gavin000001.dot addKey", await addKey("ETH"));
+  // console.log("gavin000001.dot addKey", await addKey("BTC"));
+  // console.log("gavin000001.dot addKey", await addKey("DOT"));
+  // console.log("gavin000001.dot addKey", await addKey("KSM"));
+  // console.log("gavin000001.dot addKey", await addKey("text.email"));
+  // console.log("gavin000001.dot addKey", await addKey("text.url"));
+  // console.log("gavin000001.dot addKey", await addKey("text.avatar"));
+  // console.log("gavin000001.dot addKey", await addKey("text.description"));
+  // console.log("gavin000001.dot addKey", await addKey("text.notice"));
+  // console.log("gavin000001.dot addKey", await addKey("text.keywords"));
+  // console.log("gavin000001.dot addKey", await addKey("text.com.twitter"));
+  // console.log("gavin000001.dot addKey", await addKey("text.com.github"));
+  // console.log("gavin000001.dot addKey", await addKey("contenthash"));
+  // console.log("gavin000001.dot setKey", await setKey("gavin000001.dot", "ETH", account));
+  // console.log("gavin000001.dot getKey", await getKey("gavin000001.dot", "ETH"));
   // console.log("gavin000001.dot resolver", await getResolver("gavin000001.dot"));
-  // console.log("gavin000001.dot expiries", (await nameExpires("gavin000001")).toNumber());
-  // console.log("gavin000001.dot getRentPrice", await getRentPrice("gavin000001", 86400));
-  // console.log("gavin000001.dot available", await available("gavin000001"));
+  // console.log("gavin000001.dot expiries", (await nameExpires("gavin000001.dot")).toNumber());
+  // console.log("gavin000001.dot rentPrice", await rentPrice("gavin000001", 86400));
+  // console.log("gavin000001.dot available", await available("gavin000001.dot"));
+  
+  console.log("gavin000001.dot controllerRoot", await controllerRoot());
+  // console.log("gavin000001.dot mintRedeem", await mintRedeem(1,100));
+  // console.log("gavin000001.dot generateRedeemCode", await generateRedeemCode(86400*365,1));
+  
+  // let code = ''
+  
+  // console.log("gavin000002.dot nameRedeemAny", await nameRedeemAny("gavin000002", account, 86400*365, 1, code));
+
   // console.log("getDomainDetails", await getDomainDetails("gavin000001.dot"));
+
+
+    // console.log("setDomainDetails");
+    // await setDomainDetails(
+    //   "gavin000001.dot",
+    //   [{ key: "com.twitter", value: "gavinwood0" }],
+    //   [],
+    //   ''
+    // )
 }
 
 async function start() {
