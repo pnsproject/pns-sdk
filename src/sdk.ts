@@ -116,6 +116,44 @@ export function getNamehash (name: string) {
   return '0x' + node
 }
 
+export async function switchChain(): Promise<any> {
+  let chain: any = {
+    "name": "Moonbeam Testnet",
+    "chain": "moon",
+    "network": "mainnet",
+    "rpc": [
+      "http://moonbeam.pns.link:8833"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Moonbeam",
+      "symbol": "moon",
+      "decimals": 18
+    },
+    "infoURL": "",
+    "shortName": "moonbeam",
+    "chainId": 1281,
+    "networkId": 1
+  }
+
+  const params = {
+    chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+    chainName: chain.name,
+    nativeCurrency: {
+      name: chain.nativeCurrency.name,
+      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+      decimals: chain.nativeCurrency.decimals,
+    },
+    rpcUrls: chain.rpc,
+    blockExplorerUrls: [ chain.infoURL ]
+  };
+
+  return await window.ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [params, account],
+  })
+}
+
 export async function setProvider(providerOpt?: Web3Provider) {
   if (!!providerOpt) {
     provider = providerOpt

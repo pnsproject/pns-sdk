@@ -25,6 +25,7 @@ import {
   controllerRoot,
   ownerOf,
   exists,
+  switchChain,
 } from "./sdk";
 
 
@@ -94,6 +95,7 @@ async function main() {
   // testContenthash()
 
   await setup()
+
 
   let account = '0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4'
   // console.log("gavin000001.dot register", await register("gavin000001", account, 28 * 86400));
