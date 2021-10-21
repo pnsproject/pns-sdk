@@ -20,9 +20,11 @@ import {
   register,
   setResolver,
   mintRedeem,
-nameRedeemAny,
-generateRedeemCode,
-controllerRoot,
+  nameRedeemAny,
+  generateRedeemCode,
+  controllerRoot,
+  ownerOf,
+  exists,
 } from "./sdk";
 
 
@@ -99,6 +101,12 @@ async function main() {
 
   
   console.log("dot owner", await getOwner("dot"));
+  console.log("dot owner", await ownerOf("dot"));
+  console.log("dot owner", await exists("dot"));
+
+
+  console.log("eth owner", await getOwner("eth"));
+  console.log("eth owner", await exists("eth"));
 
   console.log("gavin000002.dot owner", await getOwner("gavin000002.dot"));
   // console.log("gavin000001.dot addKey", await addKey("ETH"));
