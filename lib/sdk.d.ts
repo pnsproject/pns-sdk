@@ -39,6 +39,7 @@ interface IContractAddrsMap {
 export declare const ContractAddrMap: IContractAddrsMap;
 export declare function sha3(data: string): string;
 export declare function getNamehash(name: string): string;
+export declare function switchChain(): Promise<any>;
 export declare function setProvider(providerOpt?: Web3Provider): Promise<void>;
 export declare function setup(ensAddress?: string, resolverAddress?: string, registrarAddress?: string, providerOpt?: Web3Provider): Promise<{
     provider: Web3Provider;
@@ -59,6 +60,10 @@ export declare function getSigner(): Web3Signer;
 export declare function getAccount(): string;
 /** 获取域名的当前所有者 */
 export declare function getOwner(name: DomainString): Promise<HexAddress>;
+/** 获取域名的当前所有者 */
+export declare function ownerOf(name: DomainString): Promise<HexAddress>;
+/** 获取域名的当前所有者 */
+export declare function exists(name: DomainString): Promise<HexAddress>;
 /** 获取域名的解析器合约 */
 export declare function getResolver(name: DomainString): Promise<HexAddress>;
 export declare function addKey(key: string): Promise<void>;

@@ -148,7 +148,7 @@ export async function switchChain(): Promise<any> {
     blockExplorerUrls: [ chain.infoURL ]
   };
 
-  return await window.ethereum.request({
+  return await (window as any).ethereum.request({
     method: 'wallet_addEthereumChain',
     params: [params, account],
   })
