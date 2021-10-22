@@ -26,7 +26,7 @@ export type DomainDetails = {
   label: string;
   labelhash: string;
   owner: string;
-  ttl: string;
+  // ttl: string;
   nameResolver: string;
 
   content: string;
@@ -74,10 +74,9 @@ const tld = "dot";
 const DAYS = 24 * 60 * 60;
 const INFURA_URL = "https://rinkeby.infura.io/v3/75e0d27975114086be0463cf2597549e";
 
-
-const ResolverAbi: any = [{"inputs":[{"internalType":"contract ENS","name":"_ens","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":false,"internalType":"uint256","name":"coinType","type":"uint256"},{"indexed":false,"internalType":"bytes","name":"newAddress","type":"bytes"}],"name":"AddressChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":false,"internalType":"bytes","name":"hash","type":"bytes"}],"name":"ContenthashChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":true,"internalType":"string","name":"indexedKey","type":"string"},{"indexed":false,"internalType":"string","name":"key","type":"string"}],"name":"TextChanged","type":"event"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"uint256","name":"coinType","type":"uint256"}],"name":"addr","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"}],"name":"contenthash","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"uint256","name":"coinType","type":"uint256"},{"internalType":"bytes","name":"a","type":"bytes"}],"name":"setAddr","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"bytes","name":"hash","type":"bytes"}],"name":"setContenthash","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"string","name":"key","type":"string"},{"internalType":"string","name":"value","type":"string"}],"name":"setText","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"string","name":"key","type":"string"}],"name":"text","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}]
-const RegistrarAbi: any = [{"inputs":[{"internalType":"contract ENS","name":"_ens","type":"address"},{"internalType":"bytes32","name":"_baseNode","type":"bytes32"},{"internalType":"uint256[]","name":"_rentPrices","type":"uint256[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"controller","type":"address"}],"name":"ControllerAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"controller","type":"address"}],"name":"ControllerRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":true,"internalType":"bytes32","name":"label","type":"bytes32"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"cost","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"expires","type":"uint256"}],"name":"NameRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":true,"internalType":"bytes32","name":"label","type":"bytes32"},{"indexed":false,"internalType":"uint256","name":"cost","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"expires","type":"uint256"}],"name":"NameRenewed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256[]","name":"prices","type":"uint256[]"}],"name":"RentPriceChanged","type":"event"},{"inputs":[],"name":"GRACE_PERIOD","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MIN_REGISTRATION_DURATION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"controller","type":"address"}],"name":"addController","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"available","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"baseNode","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"commitment","type":"bytes32"}],"name":"commit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"controllers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"ens","outputs":[{"internalType":"contract ENS","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxCommitmentAge","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minCommitmentAge","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"nameExpires","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"bytes","name":"code","type":"bytes"}],"name":"nameRedeem","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"nameRegister","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"expires","type":"uint256"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"price","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"bytes","name":"code","type":"bytes"}],"name":"recoverKey","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"register","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"controller","type":"address"}],"name":"removeController","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"renew","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"rentPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rentPrices","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_rentPrices","type":"uint256[]"}],"name":"setPrices","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"valid","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}]
-const EnsAbi: any = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"label","type":"bytes32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"}],"name":"NewOwner","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":false,"internalType":"address","name":"resolver","type":"address"}],"name":"NewResolver","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":false,"internalType":"string","name":"label","type":"string"},{"indexed":false,"internalType":"address","name":"owner","type":"address"}],"name":"NewSubnameOwner","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":false,"internalType":"uint64","name":"ttl","type":"uint64"}],"name":"NewTTL","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"node","type":"bytes32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"}],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"}],"name":"recordExists","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"}],"name":"resolver","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"address","name":"owner","type":"address"}],"name":"setOwner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"resolver","type":"address"},{"internalType":"uint64","name":"ttl","type":"uint64"}],"name":"setRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"address","name":"resolver","type":"address"}],"name":"setResolver","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"}],"name":"setSubnameOwner","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"resolver","type":"address"},{"internalType":"uint64","name":"ttl","type":"uint64"}],"name":"setSubnameRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"bytes32","name":"label","type":"bytes32"},{"internalType":"address","name":"owner","type":"address"}],"name":"setSubnodeOwner","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"bytes32","name":"label","type":"bytes32"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"resolver","type":"address"},{"internalType":"uint64","name":"ttl","type":"uint64"}],"name":"setSubnodeRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"},{"internalType":"uint64","name":"ttl","type":"uint64"}],"name":"setTTL","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"node","type":"bytes32"}],"name":"ttl","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"stateMutability":"view","type":"function"}]
+const ResolverAbi: any = [{"inputs":[{"internalType":"contract IPNS","name":"pns","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":true,"internalType":"string","name":"keyIndex","type":"string"},{"indexed":false,"internalType":"string","name":"key","type":"string"}],"name":"NewKey","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ResetRecords","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":true,"internalType":"string","name":"keyIndex","type":"string"},{"indexed":true,"internalType":"string","name":"valueIndex","type":"string"},{"indexed":false,"internalType":"string","name":"key","type":"string"},{"indexed":false,"internalType":"string","name":"value","type":"string"}],"name":"Set","type":"event"},{"inputs":[],"name":"_pns","outputs":[{"internalType":"contract IPNS","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"key","type":"string"}],"name":"addKey","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"key","type":"string"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"get","outputs":[{"internalType":"string","name":"value","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"keyHash","type":"uint256"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getByHash","outputs":[{"internalType":"string","name":"key","type":"string"},{"internalType":"string","name":"value","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"keyHash","type":"uint256"}],"name":"getKey","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"hashes","type":"uint256[]"}],"name":"getKeys","outputs":[{"internalType":"string[]","name":"values","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string[]","name":"keys","type":"string[]"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getMany","outputs":[{"internalType":"string[]","name":"values","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"keyHashes","type":"uint256[]"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getManyByHash","outputs":[{"internalType":"string[]","name":"keys","type":"string[]"},{"internalType":"string[]","name":"values","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"key","type":"string"},{"internalType":"string","name":"value","type":"string"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"keyHash","type":"uint256"},{"internalType":"string","name":"value","type":"string"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"setByHash","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string[]","name":"keys","type":"string[]"},{"internalType":"string[]","name":"values","type":"string[]"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"setMany","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"keyHashes","type":"uint256[]"},{"internalType":"string[]","name":"values","type":"string[]"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"setManyByHash","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+const RegistrarAbi: any = [{"inputs":[{"internalType":"contract IPNS","name":"pns","type":"address"},{"internalType":"uint256","name":"_baseNode","type":"uint256"},{"internalType":"uint256[]","name":"_basePrices","type":"uint256[]"},{"internalType":"uint256[]","name":"_rentPrices","type":"uint256[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256[]","name":"prices","type":"uint256[]"}],"name":"BasePriceChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":true,"internalType":"uint256","name":"node","type":"uint256"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"cost","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"expires","type":"uint256"}],"name":"NameRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"uint256","name":"node","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"cost","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"expires","type":"uint256"}],"name":"NameRenewed","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":true,"internalType":"uint256","name":"node","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"parent","type":"uint256"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}],"name":"NewSubdomain","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256[]","name":"prices","type":"uint256[]"}],"name":"RentPriceChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousRoot","type":"address"},{"indexed":true,"internalType":"address","name":"newRoot","type":"address"}],"name":"RootOwnershipTransferred","type":"event"},{"inputs":[],"name":"DEFAULT_DOMAIN_CAPACITY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"GRACE_PERIOD","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MIN_REGISTRATION_DURATION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_pns","outputs":[{"internalType":"contract IPNS","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"available","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"baseNode","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"basePrices","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"capacity","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"children","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"expires","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"start","type":"uint256"},{"internalType":"uint256","name":"end","type":"uint256"}],"name":"mintRedeem","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"nameExpires","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"nonce","type":"uint256"},{"internalType":"bytes","name":"code","type":"bytes"}],"name":"nameRedeem","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"duration","type":"uint256"},{"internalType":"uint256","name":"nonce","type":"uint256"},{"internalType":"bytes","name":"code","type":"bytes"}],"name":"nameRedeemAny","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"nameRegister","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"origin","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"parent","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes","name":"data","type":"bytes"},{"internalType":"bytes","name":"code","type":"bytes"}],"name":"recoverKey","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"registerPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"renew","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"renewByRoot","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"rentPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rentPrices","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"root","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_basePrices","type":"uint256[]"}],"name":"setBasePrices","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_rentPrices","type":"uint256[]"}],"name":"setRentPrices","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"to","type":"address"}],"name":"setSubdomain","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint256","name":"duration","type":"uint256"}],"name":"totalRegisterPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newRoot","type":"address"}],"name":"transferRootOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"valid","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"validLong","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"}]
+const EnsAbi: any = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"resolver","type":"address"}],"name":"NewResolver","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"address","name":"owner","type":"address"}],"name":"NewSubnameOwner","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousRoot","type":"address"},{"indexed":true,"internalType":"address","name":"newRoot","type":"address"}],"name":"RootOwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"balance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"exists","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"operator","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"addr","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"isApprovedOrOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"newTokenId","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"to","type":"address"}],"name":"mintSubdomain","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"owner","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"resolver","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"root","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"_approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address","name":"resolver","type":"address"}],"name":"setResolver","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newRoot","type":"address"}],"name":"transferRootOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 
 const theGraphURL = "http://moonbeam.pns.link:8000/subgraphs/name/pns/";
 const theGraphClient = new ApolloClient({
@@ -97,17 +96,16 @@ interface IContractAddrsMap {
 
 export const ContractAddrMap: IContractAddrsMap = {
   1281: {
-    ens: "0x3ed62137c5DB927cb137c26455969116BF0c23Cb",
-    resolver: "0x962c0940d72E7Db6c9a5F81f1cA87D8DB2B82A23",
-    registrar: "0x5CC307268a1393AB9A764A20DACE848AB8275c46"
+    ens: "0x7acc1aC65892CF3547b1b0590066FB93199b430D",
+    resolver: "0x9Aaaf5ef347F1f1aF5377dB81500Db2Aa4c5a216",
+    registrar: "0x78D714e1b47Bb86FE15788B917C9CC7B77975529"
   },
   4: {
-    ens: "0x54CF46151d90b0a7880E4cBA8528dFBBeB718546",
-    resolver: "0xFD1d96e2F2a039F7b41Bf09a9793E558D474e537",
-    registrar: "0x3a2c8F8e6c7095B59EA18A34f009887B6B9bfCbb"
+    ens: "0xD436ee017DD85921f4b83dc9f190aD683921b0A9",
+    resolver: "0x2541c5365A02e4D5cf4d05Bc2982a6AD4348512E",
+    registrar: "0x04f675fC7D9D514c01318A751CC10662eD18606a"
   }
 }
-
 
 export function sha3 (data: string) {
   return "0x" + keccak_256(data)
@@ -126,6 +124,44 @@ export function getNamehash (name: string) {
   }
 
   return '0x' + node
+}
+
+export async function switchChain(): Promise<any> {
+  let chain: any = {
+    "name": "Moonbeam Testnet",
+    "chain": "moon",
+    "network": "mainnet",
+    "rpc": [
+      "http://moonbeam.pns.link:8833"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "Moonbeam",
+      "symbol": "moon",
+      "decimals": 18
+    },
+    "infoURL": "",
+    "shortName": "moonbeam",
+    "chainId": 1281,
+    "networkId": 1
+  }
+
+  const params = {
+    chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
+    chainName: chain.name,
+    nativeCurrency: {
+      name: chain.nativeCurrency.name,
+      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+      decimals: chain.nativeCurrency.decimals,
+    },
+    rpcUrls: chain.rpc,
+    blockExplorerUrls: [ chain.infoURL ]
+  };
+
+  return await (window as any).ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [params, account],
+  })
 }
 
 export async function setProvider(providerOpt?: Web3Provider) {
@@ -232,7 +268,23 @@ export function getAccount(): string {
 /** 获取域名的当前所有者 */
 export async function getOwner(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
-  return ens.owner(namehash);
+  if (await ens.exists(namehash)) {
+    return ens.ownerOf(namehash);
+  } else {
+    return emptyAddress;
+  }
+}
+
+/** 获取域名的当前所有者 */
+export async function ownerOf(name: DomainString): Promise<HexAddress> {
+  let namehash = getNamehash(name);
+  return ens.ownerOf(namehash);
+}
+
+/** 获取域名的当前所有者 */
+export async function exists(name: DomainString): Promise<HexAddress> {
+  let namehash = getNamehash(name);
+  return ens.exists(namehash);
 }
 
 /** 获取域名的解析器合约 */
@@ -241,10 +293,20 @@ export function getResolver(name: DomainString): Promise<HexAddress> {
   return ens.resolver(namehash);
 }
 
-export function getTTL(name: DomainString): Promise<number> {
-  let namehash = getNamehash(name);
-  return ens.ttl(namehash);
+export async function addKey(key: string): Promise<void> {
+  return await resolver.addKey(key)
 }
+
+export async function setKey(name: DomainString, key: string, value: string): Promise<void> {
+  const namehash = getNamehash(name);
+  await resolver.set(key, value, namehash)
+}
+
+export async function getKey(name: DomainString, key: string): Promise<HexAddress> {
+  const namehash = getNamehash(name);
+  return await resolver.get(key, namehash)
+}
+
 
 /** 获取域名的解析地址 */
 export async function getAddr(name: DomainString, key: string): Promise<HexAddress> {
@@ -269,24 +331,18 @@ export async function getAddr(name: DomainString, key: string): Promise<HexAddre
  * getTTL('hero.eth') */
  export function getText(name: DomainString, key: string): Promise<number> {
   let namehash = getNamehash(name);
-  return resolver.text(namehash, key);
+  return resolver.get("text."+key, namehash);
 }
 
 /** 获得域名的IPFS内容地址 */
 export async function getContent(name: DomainString): Promise<ContentType> {
-  try {
-    const namehash = getNamehash(name);
-    const encoded = await resolver.contenthash(namehash);
-    // todo
-    return {
-      value: `ipfs://${ethers.utils.base58.encode(encoded)}`,
-      contentType: "contenthash",
-    };
-  } catch (e) {
-    const message = "Error getting content on the resolver contract, are you sure the resolver address is a resolver contract?";
-    console.warn(message, e);
-    return { value: "", contentType: "error" };
-  }
+  const namehash = getNamehash(name);
+  const encoded = await resolver.get("contenthash", namehash);
+  // todo
+  return {
+    value: `ipfs://${ethers.utils.base58.encode(encoded)}`,
+    contentType: "contenthash",
+  };
 }
 
 function buildKeyValueObjects(keys: any, values: any) {
@@ -317,7 +373,6 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   const label = nameArray[0];
   const labelhash = getLabelhash(label);
   const nameResolver = await getResolver(name);
-  const ttl = (await getTTL(name)).toString();
   const owner = await getOwner(name);
 
   const promises = TEXT_RECORD_KEYS.map((key) => getText(name, key));
@@ -330,8 +385,7 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
     labelhash,
     owner,
     nameResolver,
-    ttl,
-    textRecords,
+    textRecords: textRecords,
   };
 
   const content = await getContent(name);
@@ -351,38 +405,82 @@ export async function getDomainDetails(name: DomainString): Promise<DomainDetail
   };
 }
 
-export async function getRentPrice(name: DomainString, duration: number): Promise<BigNumber> {
+export async function totalRegisterPrice(name: DomainString, duration: number): Promise<BigNumber> {
+  let result: BigNumber = await registrar.totalRegisterPrice(name, duration);
+  return result;
+}
+
+export async function rentPrice(name: DomainString, duration: number): Promise<BigNumber> {
   let result: BigNumber = await registrar.rentPrice(name, duration);
   return result;
 }
 
 export async function nameExpires(label: DomainString): Promise<BigNumber> {
-  label = "0x" + keccak_256(label) || "0x0";
-  return registrar.nameExpires(label);
+  // label = "0x" + keccak_256(label) || "0x0";
+  return registrar.nameExpires(getNamehash(label));
 }
 
 export async function available(label: DomainString): Promise<boolean> {
-  label = "0x" + keccak_256(label) || "0x0";
-  return registrar.available(label);
+  // label = "0x" + keccak_256(label) || "0x0";
+  return registrar.available(getNamehash(label));
 }
 
 
 /** 域名注册 */
-export async function register(
-  label: DomainString,
-  account: string,
-  duration: number
-): Promise<{
-  /** 额外的等待请求 */
-  wait: () => Promise<void>;
-}> {
-  const price = await getRentPrice(label, duration);
+export async function register(label: DomainString, account: string, duration: number ): Promise<{ wait: () => Promise<void>; }> {
+  const price = await totalRegisterPrice(label, duration);
 
-  return registrar.register(label, account, duration, { value: price, gasLimit: 500000 });
+  return registrar.nameRegister(label, account, duration, { value: price, gasLimit: 500000 });
+}
+
+export async function controllerRoot(): Promise<{ wait: () => Promise<void>; }> {
+  return registrar.root();
+}
+
+export async function mintRedeem(start: number, end: number ): Promise<{ wait: () => Promise<void>; }> {
+  return registrar.mintRedeem(start, end);
+}
+
+export async function nameRedeemAny(label: DomainString, account: string, duration: number, nonce: number, code: string ): Promise<{ wait: () => Promise<void>; }> {
+  return registrar.nameRedeemAny(label, account, duration, nonce, code);
+}
+
+
+function encodeNameMsg(name: string, duration: number, nonce: number): Uint8Array {
+  let durationEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ duration ]).slice(2)
+  let durationBuffer = Buffer.from(durationEncoded, "hex")
+
+  let nonceEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ nonce ]).slice(2)
+  let nonceBuffer = Buffer.from(nonceEncoded, "hex")
+
+  let encodeName = Buffer.from(name.slice(2), "hex")
+  return Buffer.concat([encodeName, durationBuffer, nonceBuffer])
+}
+
+function encodeMsg(duration: number, nonce: number): Uint8Array {
+  let durationEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ duration ]).slice(2)
+  let durationBuffer = Buffer.from(durationEncoded, "hex")
+
+  let nonceEncoded = ethers.utils.defaultAbiCoder.encode([ "uint" ], [ nonce ]).slice(2)
+  let nonceBuffer = Buffer.from(nonceEncoded, "hex")
+
+  return Buffer.concat([durationBuffer, nonceBuffer])
+}
+
+function hashMsg(data: Uint8Array): Uint8Array {
+  let hashed = '0x' + keccak_256(data)
+  return ethers.utils.arrayify(hashed)
+}
+
+
+export async function generateRedeemCode(duration: number, nonce: number ): Promise<string> {
+  let hashedMsg = hashMsg(encodeMsg(duration, nonce))
+  let signer = getSigner()
+  return signer.signMessage(hashedMsg)
 }
 
 export async function renew(label: DomainString, duration: number): Promise<void> {
-  const price = await getRentPrice(label, duration);
+  const price = await rentPrice(label, duration);
 
   return registrar.renew(label, duration, { value: price, gasLimit: 500000 });
 }
@@ -391,6 +489,7 @@ export async function renew(label: DomainString, duration: number): Promise<void
  * function setResolver(bytes32 name, address resolver)
  * setResolver('hero.eth', '0x123456789') */
 export function setResolver(name: DomainString, resolver?: HexAddress): Promise<any> {
+  name = suffixTld(name)
   let namehash = getNamehash(name);
   resolver = resolver || resolverAddr
   return ens.setResolver(namehash, resolver);
@@ -399,24 +498,25 @@ export function setResolver(name: DomainString, resolver?: HexAddress): Promise<
 /** 设置域名的所有者
  * function setOwner(bytes32 name, address owner)
  * setOwner('hero.eth', '0x123456789') */
-export function setOwner(
+export async function setOwner(
   name: DomainString,
   newOwner: HexAddress
 ): Promise<{
   wait: () => Promise<void>;
 }> {
   let namehash = getNamehash(name);
-  return ens.setOwner(namehash, newOwner);
+  let oldOwner = await getOwner(name)
+  return await ens['safeTransferFrom(address,address,uint256)'](oldOwner, newOwner, namehash)
 }
 
 
-/** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
- * function setTTL(bytes32 name, uint64 ttl)
- * setTTL('hero.eth', 3600) */
- export function setTTL(name: DomainString, ttl: number): Promise<void> {
-  let namehash = getNamehash(name);
-  return ens.setTTL(namehash, ttl);
-}
+// /** 设置域名 ttl 参数，表示域名可以在本地缓存的时间
+//  * function setTTL(bytes32 name, uint64 ttl)
+//  * setTTL('hero.eth', 3600) */
+//  export function setTTL(name: DomainString, ttl: number): Promise<void> {
+//   let namehash = getNamehash(name);
+//   return ens.setTTL(namehash, ttl);
+// }
 
 /** 设置域名的解析地址 */
 export async function setAddr(name: DomainString, key: string, value: string): Promise<HexAddress> {
@@ -424,8 +524,8 @@ export async function setAddr(name: DomainString, key: string, value: string): P
   // const resolverAddr = await ensContract.resolver(namehash)
 
   try {
-    let coinType = coinTypes[key];
-    const addr = await resolver.setAddr(namehash, coinType, value);
+    // let coinType = coinTypes[key];
+    const addr = await resolver.setKey(namehash, key, value);
     if (addr === "0x") return emptyAddress;
     return addr;
   } catch (e) {
@@ -437,12 +537,14 @@ export async function setAddr(name: DomainString, key: string, value: string): P
 
 export function setText(name: DomainString, key: string, value: string): Promise<void> {
   let namehash = getNamehash(name);
-  return resolver.setText(namehash, key, value);
+  // return resolver.setText(namehash, key, value);
+  return resolver.set("text."+key, value, namehash);
 }
 
 export function setContent(name: DomainString, value: string): Promise<void> {
   let namehash = getNamehash(name);
-  return resolver.setContenthash(namehash, value);
+  return resolver.set("contenthash", value, namehash);
+  // return resolver.setContenthash(namehash, value);
 }
 
 /** 一次性设置域名信息
@@ -456,36 +558,44 @@ export function setRecord(name: DomainString, newOwner: HexAddress, resolver: He
 /** 设置子域名的所有者
  * function setSubnodeOwner(bytes32 name, bytes32 label, address owner)
  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
-export function setSubnodeOwner(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
+export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
   let namehash = getNamehash(name);
-  label = "0x" + keccak_256(label) || "0x0";
-  return ens.setSubnodeOwner(namehash, label, newOwner);
+  return ens.mintSubdomain(namehash, label, newOwner);
 }
 
-/** 一次性设置域名信息
- * function setSubnodeRecord(bytes32 name, bytes32 label, address owner, address resolver, uint64 ttl)
- * setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
-export function setSubnodeRecord(name: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
-  let namehash = getNamehash(name);
-  label = "0x" + keccak_256(label) || "0x0";
-  return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
-}
+// /** 设置子域名的所有者
+//  * function setSubnodeOwner(bytes32 name, bytes32 label, address owner)
+//  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
+// export function setSubnodeOwner(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
+//   let namehash = getNamehash(name);
+//   label = "0x" + keccak_256(label) || "0x0";
+//   return ens.setSubnodeOwner(namehash, label, newOwner);
+// }
 
-/** 根据名字设置子域名的所有者
- * function setSubnodeOwner(bytes32 name, string subname, address owner)
- * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
-export function setSubnameOwner(name: DomainString, subname: string, newOwner: HexAddress): Promise<any> {
-  let namehash = getNamehash(name);
-  return ens.setSubnameOwner(namehash, subname, newOwner);
-}
+// /** 一次性设置域名信息
+//  * function setSubnodeRecord(bytes32 name, bytes32 label, address owner, address resolver, uint64 ttl)
+//  * setSubnodeRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
+// export function setSubnodeRecord(name: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
+//   let namehash = getNamehash(name);
+//   label = "0x" + keccak_256(label) || "0x0";
+//   return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
+// }
 
-/** 根据名字一次性设置域名信息
- * function setSubnameRecord(bytes32 name, string subname, address owner, address resolver, uint64 ttl)
- * setSubnameRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
-export function setSubnameRecord(name: DomainString, subname: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
-  let namehash = getNamehash(name);
-  return ens.setSubnameRecord(namehash, subname, newOwner, resolver, ttl);
-}
+// /** 根据名字设置子域名的所有者
+//  * function setSubnodeOwner(bytes32 name, string subname, address owner)
+//  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
+// export function setSubnameOwner(name: DomainString, subname: string, newOwner: HexAddress): Promise<any> {
+//   let namehash = getNamehash(name);
+//   return ens.setSubnameOwner(namehash, subname, newOwner);
+// }
+
+// /** 根据名字一次性设置域名信息
+//  * function setSubnameRecord(bytes32 name, string subname, address owner, address resolver, uint64 ttl)
+//  * setSubnameRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
+// export function setSubnameRecord(name: DomainString, subname: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
+//   let namehash = getNamehash(name);
+//   return ens.setSubnameRecord(namehash, subname, newOwner, resolver, ttl);
+// }
 
 export function matchProtocol(text: string): RegExpMatchArray | null {
   return text.match(/^(ipfs|sia|ipns|bzz|onion|onion3):\/\/(.*)/) || text.match(/\/(ipfs)\/(.*)/) || text.match(/\/(ipns)\/(.*)/);

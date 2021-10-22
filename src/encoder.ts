@@ -1,5 +1,7 @@
 import { ethers, BigNumber } from "ethers";
+// import { Buffer as Buffer } from "buffer/";
 import { Buffer as Buffer } from "buffer/";
+(window as any).Buffer = Buffer
 
 import pkg from 'js-sha3'
 const { keccak_256 } = pkg;
