@@ -688,11 +688,12 @@ function checkDomain (value: string, opts: any) {
 /** 从theGraph获取用户的域名列表 */
 export async function getDomainsFromTheGraph(account: string) { 
   const domainsQuery = `query($owner: Bytes!) {
-                            domains(owner: $owner) {
+                            domains(where:{owner:$owner}) {
                               id
                               name
-                              labelHash
+                              node
                               owner
+                              cost
                               expires
                             }
                           }`
@@ -707,12 +708,12 @@ export async function getDomainsFromTheGraph(account: string) {
 }
 
 /** 从theGraph获取域名的子域名列表 */
-export async function getSubdomainsFromTheGraph(domain: string) {
-    const subdomainQuery = `query($node: Bytes!) {
-                              subdomains(node: $node) {
+export async function getSubdomainsFromTheGraph(domain: BigNumber) {
+    const subdomainQuery = `query($tokenId: BigInt!) {
+                              subdomains(tokenId: $tokenId) {
                                 id
-                                node
-                                label
+                                tokenId
+                                name
                                 owner
                               }
                             }`
@@ -720,7 +721,7 @@ export async function getSubdomainsFromTheGraph(domain: string) {
   theGraphClient.query({
     query: gql(subdomainQuery),
     variables: {
-      node:domain
+      tokenId:domain
     }
   }).then(data => {return data} )
   .catch(err => {return err} );
