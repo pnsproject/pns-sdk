@@ -29,9 +29,9 @@ export declare type DomainDetails = {
 };
 export declare const formatEther: typeof ethers.utils.formatEther;
 interface IContractAddrs {
-    ens: string;
+    pns: string;
     resolver: string;
-    registrar: string;
+    controller: string;
 }
 interface IContractAddrsMap {
     [index: number]: IContractAddrs;
@@ -41,17 +41,17 @@ export declare function sha3(data: string): string;
 export declare function getNamehash(name: string): string;
 export declare function switchChain(chainId: number): Promise<any>;
 export declare function setProvider(providerOpt?: Web3Provider): Promise<void>;
-export declare function setup(ensAddress?: string, resolverAddress?: string, registrarAddress?: string, providerOpt?: Web3Provider): Promise<{
+export declare function setup(pnsAddress?: string, resolverAddress?: string, controllerAddress?: string, providerOpt?: Web3Provider): Promise<{
     provider: Web3Provider;
     signer: ethers.Signer;
-    ens: any;
+    pns: any;
     resolver: any;
     registrar: any;
 }>;
-export declare function setupByContract(ensContract: any, resolverContract: any, registrarContract: string, providerOpt: Web3Provider): Promise<{
+export declare function setupByContract(pnsContract: any, resolverContract: any, registrarContract: string, providerOpt: Web3Provider): Promise<{
     provider: Web3Provider;
     signer: ethers.Signer;
-    ens: any;
+    pns: any;
     resolver: any;
     registrar: any;
 }>;

@@ -1,5 +1,5 @@
 import { ethers, Signer, BigNumber } from "ethers";
-import { ResolverAbi, RegistrarAbi, EnsAbi } from "./abi";
+import { ResolverAbi, ControllerAbi, PnsAbi } from "./abi";
 import { keccak_256 } from 'js-sha3';
 import { Buffer as Buffer } from "buffer/";
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider"
@@ -47,11 +47,11 @@ let signer: Web3Signer;
 let account: string;
 let networkId: number;
 
-let ens: any;
+let pns: any;
 let resolver: any;
 let registrar: any;
 
-let ensAddr: string;
+let pnsAddr: string;
 let resolverAddr: string;
 let registrarAddr: string;
 
@@ -73,9 +73,9 @@ const INFURA_URL = "https://rinkeby.infura.io/v3/75e0d27975114086be0463cf2597549
 
 
 interface IContractAddrs {
-  ens: string;
+  pns: string;
   resolver: string;
-  registrar: string;
+  controller: string;
 }
 
 interface IContractAddrsMap {
@@ -85,19 +85,19 @@ interface IContractAddrsMap {
 
 export const ContractAddrMap: IContractAddrsMap = {
   43113: {
-    ens: "0x17Cf83bBCE053c264626cD46FE312368f0433127",
+    pns: "0x17Cf83bBCE053c264626cD46FE312368f0433127",
     resolver: "0xB1FaceBD0bA48B66fc5096CB6609df2C0B4199E1",
-    registrar: "0x01Eee6B2DC48810488B781F1Cdf0b4b2D73f2C1B"
+    controller: "0x01Eee6B2DC48810488B781F1Cdf0b4b2D73f2C1B"
   },
   1287: {
-    ens: "0x04acC2f242D197f929448a81e5a927Aaa969c837",
+    pns: "0x04acC2f242D197f929448a81e5a927Aaa969c837",
     resolver: "0xfd6a62730c17Cc3a842963F70c95Be2b77DE0C90",
-    registrar: "0x64f58DaBFbAa801F247429656cD37d16231890De"
+    controller: "0x64f58DaBFbAa801F247429656cD37d16231890De"
   },
   4: {
-    ens: "0xD436ee017DD85921f4b83dc9f190aD683921b0A9",
+    pns: "0xD436ee017DD85921f4b83dc9f190aD683921b0A9",
     resolver: "0x2541c5365A02e4D5cf4d05Bc2982a6AD4348512E",
-    registrar: "0x04f675fC7D9D514c01318A751CC10662eD18606a"
+    controller: "0x04f675fC7D9D514c01318A751CC10662eD18606a"
   }
 }
 
@@ -209,12 +209,12 @@ export async function setProvider(providerOpt?: Web3Provider) {
 }
 
 
-export async function setup(ensAddress?: string, resolverAddress?: string, registrarAddress?: string, providerOpt?: Web3Provider) {
-  if (provider && ens && !providerOpt) {
+export async function setup(pnsAddress?: string, resolverAddress?: string, controllerAddress?: string, providerOpt?: Web3Provider) {
+  if (provider && pns && !providerOpt) {
     return {
       provider,
       signer,
-      ens,
+      pns,
       resolver,
       registrar,
     };
@@ -227,47 +227,47 @@ export async function setup(ensAddress?: string, resolverAddress?: string, regis
 
   console.log('addrs', addrMap)
 
-  ensAddress = ensAddress || addrMap.ens;
+  pnsAddress = pnsAddress || addrMap.pns;
   resolverAddress = resolverAddress || addrMap.resolver;
-  registrarAddress = registrarAddress || addrMap.registrar;
+  controllerAddress = controllerAddress || addrMap.controller;
 
   if (signer) {
-    ens = new ethers.Contract(ensAddress, EnsAbi, signer);
+    pns = new ethers.Contract(pnsAddress, PnsAbi, signer);
     resolver = new ethers.Contract(resolverAddress, ResolverAbi, signer);
-    registrar = new ethers.Contract(registrarAddress, RegistrarAbi, signer);
+    registrar = new ethers.Contract(controllerAddress, ControllerAbi, signer);
   } else {
-    ens = new ethers.Contract(ensAddress, EnsAbi, provider);
+    pns = new ethers.Contract(pnsAddress, PnsAbi, provider);
     resolver = new ethers.Contract(resolverAddress, ResolverAbi, provider);
-    registrar = new ethers.Contract(registrarAddress, RegistrarAbi, provider);
+    registrar = new ethers.Contract(controllerAddress, ControllerAbi, provider);
   }
 
-  ensAddr = ensAddress;
+  pnsAddr = pnsAddress;
   resolverAddr = resolverAddress;
 
   return {
     provider,
     signer,
-    ens,
+    pns,
     resolver,
     registrar,
   };
 }
 
-export async function setupByContract(ensContract: any, resolverContract: any, registrarContract: string, providerOpt: Web3Provider) {
+export async function setupByContract(pnsContract: any, resolverContract: any, registrarContract: string, providerOpt: Web3Provider) {
   await setProvider(providerOpt);
   console.log("set provider");
 
-  ens = ensContract
+  pns = pnsContract
   resolver = resolverContract
   registrar = registrarContract
 
-  ensAddr = ens.address;
+  pnsAddr = pns.address;
   resolverAddr = resolver.address;
 
   return {
     provider,
     signer,
-    ens,
+    pns,
     resolver,
     registrar,
   };
@@ -288,8 +288,8 @@ export function getAccount(): string {
 /** 获取域名的当前所有者 */
 export async function getOwner(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
-  if (await ens.exists(namehash)) {
-    return ens.ownerOf(namehash);
+  if (await pns.exists(namehash)) {
+    return pns.ownerOf(namehash);
   } else {
     return emptyAddress;
   }
@@ -298,19 +298,19 @@ export async function getOwner(name: DomainString): Promise<HexAddress> {
 /** 获取域名的当前所有者 */
 export async function ownerOf(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
-  return ens.ownerOf(namehash);
+  return pns.ownerOf(namehash);
 }
 
 /** 获取域名的当前所有者 */
 export async function exists(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
-  return ens.exists(namehash);
+  return pns.exists(namehash);
 }
 
 /** 获取域名的解析器合约 */
 export function getResolver(name: DomainString): Promise<HexAddress> {
   let namehash = getNamehash(name);
-  return ens.resolver(namehash);
+  return pns.resolver(namehash);
 }
 
 export async function addKey(key: string): Promise<void> {
@@ -512,7 +512,7 @@ export function setResolver(name: DomainString, resolver?: HexAddress): Promise<
   name = suffixTld(name)
   let namehash = getNamehash(name);
   resolver = resolver || resolverAddr
-  return ens.setResolver(namehash, resolver);
+  return pns.setResolver(namehash, resolver);
 }
 
 /** 设置域名的所有者
@@ -526,7 +526,7 @@ export async function setOwner(
 }> {
   let namehash = getNamehash(name);
   let oldOwner = await getOwner(name)
-  return await ens['safeTransferFrom(address,address,uint256)'](oldOwner, newOwner, namehash)
+  return await pns['safeTransferFrom(address,address,uint256)'](oldOwner, newOwner, namehash)
 }
 
 
@@ -535,13 +535,13 @@ export async function setOwner(
 //  * setTTL('hero.eth', 3600) */
 //  export function setTTL(name: DomainString, ttl: number): Promise<void> {
 //   let namehash = getNamehash(name);
-//   return ens.setTTL(namehash, ttl);
+//   return pns.setTTL(namehash, ttl);
 // }
 
 /** 设置域名的解析地址 */
 export async function setAddr(name: DomainString, key: string, value: string): Promise<HexAddress> {
   const namehash = getNamehash(name);
-  // const resolverAddr = await ensContract.resolver(namehash)
+  // const resolverAddr = await pnsContract.resolver(namehash)
 
   try {
     // let coinType = coinTypes[key];
@@ -572,7 +572,7 @@ export function setContent(name: DomainString, value: string): Promise<void> {
  * setRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
 export function setRecord(name: DomainString, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
   let namehash = getNamehash(name);
-  return ens.setRecord(namehash, newOwner, resolver, ttl);
+  return pns.setRecord(namehash, newOwner, resolver, ttl);
 }
 
 /** 设置子域名的所有者
@@ -580,7 +580,7 @@ export function setRecord(name: DomainString, newOwner: HexAddress, resolver: He
  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
 export function mintSubdomain(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
   let namehash = getNamehash(name);
-  return ens.mintSubdomain(namehash, label, newOwner);
+  return pns.mintSubdomain(namehash, label, newOwner);
 }
 
 // /** 设置子域名的所有者
@@ -589,7 +589,7 @@ export function mintSubdomain(name: DomainString, label: string, newOwner: HexAd
 // export function setSubnodeOwner(name: DomainString, label: string, newOwner: HexAddress): Promise<any> {
 //   let namehash = getNamehash(name);
 //   label = "0x" + keccak_256(label) || "0x0";
-//   return ens.setSubnodeOwner(namehash, label, newOwner);
+//   return pns.setSubnodeOwner(namehash, label, newOwner);
 // }
 
 // /** 一次性设置域名信息
@@ -598,7 +598,7 @@ export function mintSubdomain(name: DomainString, label: string, newOwner: HexAd
 // export function setSubnodeRecord(name: DomainString, label: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
 //   let namehash = getNamehash(name);
 //   label = "0x" + keccak_256(label) || "0x0";
-//   return ens.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
+//   return pns.setSubnodeRecord(namehash, label, newOwner, resolver, ttl);
 // }
 
 // /** 根据名字设置子域名的所有者
@@ -606,7 +606,7 @@ export function mintSubdomain(name: DomainString, label: string, newOwner: HexAd
 //  * setSubnodeOwner('hero.eth', 'sub', '0x123456789') */
 // export function setSubnameOwner(name: DomainString, subname: string, newOwner: HexAddress): Promise<any> {
 //   let namehash = getNamehash(name);
-//   return ens.setSubnameOwner(namehash, subname, newOwner);
+//   return pns.setSubnameOwner(namehash, subname, newOwner);
 // }
 
 // /** 根据名字一次性设置域名信息
@@ -614,7 +614,7 @@ export function mintSubdomain(name: DomainString, label: string, newOwner: HexAd
 //  * setSubnameRecord('hero.eth', 'sub', '0x123456789', '0x123456789', 86400) */
 // export function setSubnameRecord(name: DomainString, subname: string, newOwner: HexAddress, resolver: HexAddress, ttl: number): Promise<any> {
 //   let namehash = getNamehash(name);
-//   return ens.setSubnameRecord(namehash, subname, newOwner, resolver, ttl);
+//   return pns.setSubnameRecord(namehash, subname, newOwner, resolver, ttl);
 // }
 
 export function matchProtocol(text: string): RegExpMatchArray | null {
@@ -696,7 +696,7 @@ export function removeTld(label: string): DomainString {
 /** 设置域名的默认 resolver 参数，表示域名的解析器 */
 export function setDefaultResolver(name: DomainString): Promise<any> {
   let namehash = getNamehash(name);
-  return ens.setResolver(namehash, resolverAddr);
+  return pns.setResolver(namehash, resolverAddr);
 }
 
 export async function tryLogin(): Promise<void> {
