@@ -101,7 +101,6 @@ async function main() {
   // console.log("gavin000001.dot register", await register("gavin000001", account, 28 * 86400));
   // console.log("gavin000001.dot register", await setResolver("gavin000001.dot"));
 
-  
   console.log("dot owner", await getOwner("dot"));
   console.log("dot owner", await ownerOf("dot"));
   console.log("dot owner", await exists("dot"));
@@ -110,7 +109,9 @@ async function main() {
   console.log("eth owner", await getOwner("eth"));
   console.log("eth owner", await exists("eth"));
 
-  console.log("gavin000002.dot owner", await getOwner("gavin000002.dot"));
+  console.log("gavinwood123.dot owner", await getOwner("gavinwood123.dot"));
+
+  // console.log("gavin000002.dot owner", await getOwner("gavin000002.dot"));
   // console.log("gavin000001.dot addKey", await addKey("ETH"));
   // console.log("gavin000001.dot addKey", await addKey("BTC"));
   // console.log("gavin000001.dot addKey", await addKey("DOT"));
@@ -131,9 +132,11 @@ async function main() {
   // console.log("gavin000001.dot rentPrice", await rentPrice("gavin000001", 86400));
   // console.log("gavin000001.dot available", await available("gavin000001.dot"));
   
-  console.log("gavin000001.dot controllerRoot", await controllerRoot());
-  // console.log("gavin000001.dot mintRedeem", await mintRedeem(1,100));
-  // console.log("gavin000001.dot generateRedeemCode", await generateRedeemCode(86400*365,1));
+  console.log("controllerRoot", await controllerRoot());
+  // console.log("mintRedeem", await mintRedeem(20,40));
+  // for (let i=1; i< 20; i++) {
+  // console.log("generateRedeemCode", i, await generateRedeemCode(86400*365,i));
+  // }
   
   // let code = ''
   

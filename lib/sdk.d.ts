@@ -39,7 +39,7 @@ interface IContractAddrsMap {
 export declare const ContractAddrMap: IContractAddrsMap;
 export declare function sha3(data: string): string;
 export declare function getNamehash(name: string): string;
-export declare function switchChain(): Promise<any>;
+export declare function switchChain(chainId: number): Promise<any>;
 export declare function setProvider(providerOpt?: Web3Provider): Promise<void>;
 export declare function setup(ensAddress?: string, resolverAddress?: string, registrarAddress?: string, providerOpt?: Web3Provider): Promise<{
     provider: Web3Provider;

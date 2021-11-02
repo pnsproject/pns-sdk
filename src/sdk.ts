@@ -84,11 +84,17 @@ interface IContractAddrsMap {
   [index: number]: IContractAddrs;
 }
 
+
 export const ContractAddrMap: IContractAddrsMap = {
-  1281: {
-    ens: "0x7acc1aC65892CF3547b1b0590066FB93199b430D",
-    resolver: "0x9Aaaf5ef347F1f1aF5377dB81500Db2Aa4c5a216",
-    registrar: "0x78D714e1b47Bb86FE15788B917C9CC7B77975529"
+  43113: {
+    ens: "0x17Cf83bBCE053c264626cD46FE312368f0433127",
+    resolver: "0xB1FaceBD0bA48B66fc5096CB6609df2C0B4199E1",
+    registrar: "0x01Eee6B2DC48810488B781F1Cdf0b4b2D73f2C1B"
+  },
+  1287: {
+    ens: "0x04acC2f242D197f929448a81e5a927Aaa969c837",
+    resolver: "0xfd6a62730c17Cc3a842963F70c95Be2b77DE0C90",
+    registrar: "0x64f58DaBFbAa801F247429656cD37d16231890De"
   },
   4: {
     ens: "0xD436ee017DD85921f4b83dc9f190aD683921b0A9",
@@ -116,25 +122,51 @@ export function getNamehash (name: string) {
   return '0x' + node
 }
 
-export async function switchChain(): Promise<any> {
-  let chain: any = {
-    "name": "Moonbeam Testnet",
-    "chain": "moon",
-    "network": "mainnet",
-    "rpc": [
-      "http://moonbeam.pns.link:8833"
-    ],
-    "faucets": [],
-    "nativeCurrency": {
-      "name": "Moonbeam",
-      "symbol": "moon",
-      "decimals": 18
+
+export async function switchChain(chainId: number): Promise<any> {
+  let chains: any = {
+    43113: {
+      "name": "Avalanche Fuji Testnet",
+      "chain": "AVAX",
+      "network": "testnet",
+      "rpc": [
+        "https://api.avax-test.network/ext/bc/C/rpc"
+      ],
+      "faucets": [
+        "https://faucet.avax-test.network/"
+      ],
+      "nativeCurrency": {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "decimals": 18
+      },
+      "infoURL": "https://cchain.explorer.avax-test.network",
+      "shortName": "Fuji",
+      "chainId": 43113,
+      "networkId": 1
     },
-    "infoURL": "",
-    "shortName": "moonbeam",
-    "chainId": 1281,
-    "networkId": 1
+    1287: {
+      "name": "Moonbase Alpha",
+      "chain": "MOON",
+      "network": "moonbase",
+      "rpc": [
+        "https://rpc.testnet.moonbeam.network",
+        "wss://wss.testnet.moonbeam.network"
+      ],
+      "faucets": [],
+      "nativeCurrency": {
+        "name": "Dev",
+        "symbol": "DEV",
+        "decimals": 18
+      },
+      "infoURL": "https://docs.moonbeam.network/networks/testnet/",
+      "shortName": "mbase",
+      "chainId": 1287,
+      "networkId": 1287
+    }
   }
+
+  let chain: any = chains[chainId]
 
   const params = {
     chainId: ethers.utils.hexlify(chain.chainId), // A 0x-prefixed hexadecimal string
