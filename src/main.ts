@@ -26,6 +26,8 @@ import {
   ownerOf,
   exists,
   switchChain,
+  getRedeemCode,
+  useRedeemCode
 } from "./sdk";
 
 
@@ -152,6 +154,8 @@ async function main() {
     //   [],
     //   ''
     // )
+  console.log('getRedeemCode', await getRedeemCode('123456789012'))
+  console.log('useRedeemCode', await useRedeemCode('123456789012', account))
 }
 
 async function start() {

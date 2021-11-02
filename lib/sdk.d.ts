@@ -141,4 +141,6 @@ export declare function tryLogin(): Promise<void>;
 export declare function getDomains(account: string): Promise<any>;
 /** 列出域名的子域名列表 */
 export declare function getSubdomains(domain: string): Promise<any>;
+export declare function getRedeemCode(code: string): Promise<any>;
+export declare function useRedeemCode(code: string, owner: string): Promise<any>;
 export {};
