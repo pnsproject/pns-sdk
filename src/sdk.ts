@@ -186,28 +186,18 @@ export async function switchChain(chainId: number): Promise<any> {
 
 export async function setProvider(providerOpt?: Web3Provider) {
   if (!!providerOpt) {
-    provider = providerOpt
-    signer = await provider.getSigner();
-    account = await signer.getAddress();
-  } else if (provider && account) {
-    return
-  } else if (!!(window as any) && typeof (window as any).ethereum !== "undefined") {
-    // 调用窗口, 登录账户
-    await (window as any).ethereum.request({ method: "eth_requestAccounts" });
-    provider = (new ethers.providers.Web3Provider((window as any).ethereum) as unknown) as Web3Provider;
-    signer = await provider.getSigner();
-    account = await signer.getAddress();
+    provider = providerOpt;
+  } else if (!!window && typeof (window as any).ethereum !== "undefined") {
+    provider = new ethers.providers.Web3Provider((window as any).ethereum) as any;
   } else {
     console.log("cannot find a global `ethereum` object");
-    provider = (new ethers.providers.JsonRpcProvider(INFURA_URL) as unknown) as Web3Provider;
+    provider = new ethers.providers.JsonRpcProvider(INFURA_URL) as any;
     account = "0x0";
   }
-
   networkId = (await provider.getNetwork()).chainId;
   console.log("network", networkId);
   return;
 }
-
 
 export async function setup(pnsAddress?: string, resolverAddress?: string, controllerAddress?: string, providerOpt?: Web3Provider) {
   if (provider && pns && !providerOpt) {
@@ -699,8 +689,15 @@ export function setDefaultResolver(name: DomainString): Promise<any> {
   return pns.setResolver(namehash, resolverAddr);
 }
 
+// export async function tryLogin(): Promise<void> {
+//   await setup();
+// }
+
 export async function tryLogin(): Promise<void> {
-  await setup();
+  // 调用窗口, 登录账户
+  await (window as any).ethereum.request({ method: "eth_requestAccounts" });
+  signer = await provider.getSigner();
+  account = await signer.getAddress();
 }
 
 const hasuraUrl = "https://trusted-quagga-17.hasura.app/v1/graphql"
