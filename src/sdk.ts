@@ -5,6 +5,10 @@ import { Buffer as Buffer } from "buffer/";
 import { Provider as AbstractWeb3Provider } from "@ethersproject/abstract-provider"
 import { Signer as Web3Signer } from "@ethersproject/abstract-signer"
 
+import fetch from 'cross-fetch';
+import apolloClientPkg from '@apollo/client';
+const { ApolloClient, InMemoryCache, gql,HttpLink } = apolloClientPkg;
+
 export type HexAddress = string;
 
 export type DomainString = string;
@@ -71,6 +75,12 @@ const tld = "dot";
 const DAYS = 24 * 60 * 60;
 const INFURA_URL = "https://rinkeby.infura.io/v3/75e0d27975114086be0463cf2597549e";
 
+
+const theGraphURL = "http://moonbeam.pns.link:8100/subgraphs/name/pns/";
+const theGraphClient = new ApolloClient({
+  link: new HttpLink({ uri: theGraphURL, fetch }),
+  cache: new InMemoryCache()
+});
 
 interface IContractAddrs {
   pns: string;
@@ -835,4 +845,47 @@ function checkDomain (value: string, opts: any) {
   })
 
   return isValid
+}
+
+
+/** 从theGraph获取用户的域名列表 */
+export async function getDomainsFromTheGraph(account: string) { 
+  const domainsQuery = `query($owner: Bytes!) {
+                            domains(where:{owner:$owner}) {
+                              id
+                              name
+                              node
+                              owner
+                              cost
+                              expires
+                            }
+                          }`
+
+  theGraphClient.query({
+    query: gql(domainsQuery),
+    variables: {
+      owner: account
+    }
+  }).then(data => {return data} )
+  .catch(err => {return err} );
+}
+
+/** 从theGraph获取域名的子域名列表 */
+export async function getSubdomainsFromTheGraph(domain: BigNumber) {
+    const subdomainQuery = `query($tokenId: BigInt!) {
+                              subdomains(tokenId: $tokenId) {
+                                id
+                                tokenId
+                                name
+                                owner
+                              }
+                            }`
+
+  theGraphClient.query({
+    query: gql(subdomainQuery),
+    variables: {
+      tokenId:domain
+    }
+  }).then(data => {return data} )
+  .catch(err => {return err} );
 }
